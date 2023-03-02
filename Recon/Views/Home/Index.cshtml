@@ -2,7 +2,50 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="demo-container">
+    <div id="chart"></div>
+</div>
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+<script>
+
+    const dataSource = [{
+  day: 'Monday',
+  oranges: 3,
+}, {
+  day: 'Tuesday',
+  oranges: 2,
+}, {
+  day: 'Wednesday',
+  oranges: 3,
+}, {
+  day: 'Thursday',
+  oranges: 4,
+}, {
+  day: 'Friday',
+  oranges: 6,
+}, {
+  day: 'Saturday',
+  oranges: 11,
+}, {
+  day: 'Sunday',
+  oranges: 4,
+}];
+
+
+    $(() => {
+        $('#chart').dxChart({
+            dataSource,
+            series: {
+                argumentField: 'day',
+                valueField: 'oranges',
+                name: 'My oranges',
+                type: 'bar',
+                color: '#ffaa66',
+            },
+        });
+    });
+</script>
