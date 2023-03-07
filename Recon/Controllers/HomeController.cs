@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recon.Models;
 using System.Diagnostics;
+using Recon.Attribute;
 
 namespace Recon.Controllers
 {
@@ -11,6 +12,7 @@ namespace Recon.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+         
         }
 
         public IActionResult Index()
@@ -18,6 +20,20 @@ namespace Recon.Controllers
             return View();
         }
 
+        [Authenticated]
+        [CustomRole("Admin")]
+        public IActionResult Admin()
+        {
+            return View();
+        }
+
+        [Authenticated]
+        [CustomRole("Intern")]
+
+        public IActionResult Hr()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

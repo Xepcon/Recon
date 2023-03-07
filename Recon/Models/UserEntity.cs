@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
 
 namespace Recon.Models
 {
-    public class UserEntity : IdentityUser
+    public class UserEntity 
     {
-       
+        public int Id { get; set; }
+        public string Username { get; set; }        
+        public string PasswordHash { get; set; }
+        public string Email { get; set; }
+     
+        
     }
 }
