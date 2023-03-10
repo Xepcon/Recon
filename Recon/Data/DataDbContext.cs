@@ -18,6 +18,7 @@ namespace Recon.Data
         public DbSet<UsersInRoles> UsersInRole { get; set; }
 
         public DbSet<Person> Person { get; set; }
+
         public DbSet<WorkTimeUsers> WorkTimeUsers { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {

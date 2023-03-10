@@ -173,8 +173,11 @@ namespace Recon.Migrations
 
             modelBuilder.Entity("Recon.Models.Model.TimeManager.WorkTimeUsers", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("EndTime")
                         .IsRequired()

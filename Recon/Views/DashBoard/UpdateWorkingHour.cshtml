@@ -1,4 +1,8 @@
-﻿<style>
+﻿@using Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor HttpContextAccessor
+
+<style>
     .dx-scheduler-work-space {
         border: none;
     }
@@ -27,11 +31,32 @@
     <div id="scheduler"></div>
 </div>
 
-<button>Save</button>
+<button  id="save-btn" >Save</button>
 <script>
 
-
+    
+       
+    
     $(() => {
+
+        var TimeTable 
+        $.ajax({
+            type: "GET",
+            url: "/api/UpdateWorkHour/getWorkTime/",
+            data: { userid: `@HttpContextAccessor.HttpContext.Session.GetString("UserId")` },
+            success: function(response) {
+                // Handle the successful response here
+                TimeTable = response
+                setTimeTable(TimeTable);
+                console.log(response);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                // Handle any errors here
+                console.log("Error: " + errorThrown);
+            }
+        });
+        console.log("Test");
+        console.log(TimeTable)
 
           $('#scheduler').dxScheduler({
             timeZone: 'Europe/Paris',
@@ -58,10 +83,62 @@
     }
             
         });
-        let lunchStartTime = new Date(2023, 2, 9, 12);
-        let lunchEndTime = new Date(2023, 2, 9, 13);
-        let workingStartTime = new Date(2023, 2, 9, 8);
-        let workingEndTime = new Date(2023, 2, 9, 16);
+
+        
+        var lunchStartTime = new Date()
+        var lunchEndTime = new Date()
+        var workingStartTime = new Date()
+        var workingEndTime = new Date()
+       
+        lunchStartTime.setHours(12, 0, 0)
+        lunchEndTime.setHours(13, 0, 0)
+        workingStartTime.setHours(8, 0, 0)
+        workingEndTime.setHours(16, 0, 0)
+        
+
+        function setTimeTable(TimeTable) {
+            let startTimeParts = TimeTable.startTime.split(":");
+            let startHours = parseInt(startTimeParts[0]);
+            let startMinutes = parseInt(startTimeParts[1]);
+            let startAmPm = startTimeParts[2].split(" ")[1];
+            if(startAmPm=="AM"){
+                workingStartTime.setHours(startHours, startMinutes, 0)
+            }else{
+                workingStartTime.setHours(12+startHours, startMinutes, 0)
+            }
+            
+            let endTimeParts = TimeTable.endTime.split(":");
+            let endHours = parseInt(endTimeParts[0]);
+            let endMinutes = parseInt(endTimeParts[1]);
+            let EndAmPm = endTimeParts[2].split(" ")[1];
+            if (EndAmPm == "AM") {
+                workingEndTime.setHours(endHours, endMinutes, 0)
+            }else{
+                workingEndTime.setHours(12+endHours, endMinutes, 0)
+            }
+            //workingEndTime.setHours(endHours, endMinutes, 0)
+            let launchStart = TimeTable.lunchStartTime.split(":");
+            let startlunchHour = parseInt(launchStart[0]);
+            let startlunchMinutes = parseInt(launchStart[1]);
+            let starLunchAmPm = endTimeParts[2].split(" ")[1];
+            if (starLunchAmPm == "AM") {
+                lunchStartTime.setHours(startlunchHour, startlunchMinutes,0)
+            } else {
+                lunchStartTime.setHours(12+startlunchHour, startlunchMinutes, 0)
+            }
+            //lunchStartTime.setHours(startlunchHour, startlunchMinutes,0)
+            let launchEnd = TimeTable.lunchEndTime.split(":");
+            let endlunchHour = parseInt(launchEnd[0]);
+            let endlunchMinutes = parseInt(launchEnd[1]);
+            let endLunchAmPm = endTimeParts[2].split(" ")[1];
+             if (starLunchAmPm == "AM") {
+                lunchEndTime.setHours(endlunchHour, endlunchMinutes, 0)
+            } else {
+                lunchEndTime.setHours(12+endlunchHour, endlunchMinutes, 0)
+            }
+            //lunchEndTime.setHours(endlunchHour, endlunchMinutes, 0)
+            updateSchedulerData();
+        }
       
 
         $('#lunch-interval').dxDateBox({
@@ -118,6 +195,42 @@
         updateSchedulerData();
 
 
+        $("#save-btn").click(function () {
+            var startTime = $("#working-start-interval").dxDateBox("instance").option("value");
+            var endTime = $("#working-end-interval").dxDateBox("instance").option("value");
+            var lunchStartTime = $("#lunch-interval").dxDateBox("instance").option("value");
+            var lunchEndTime = $("#lunch-interval").dxDateBox("instance").option("value");
+            var newLunchEndTime = new Date(lunchEndTime);
+            newLunchEndTime.setHours(newLunchEndTime.getHours() + 1);
+            var startTimeString = startTime.toLocaleTimeString() 
+            var endTimeString = endTime.toLocaleTimeString()
+            var lunchStartTimeString = lunchStartTime.toLocaleTimeString()
+            var lunchEndTimeString = newLunchEndTime.toLocaleTimeString()
+            // Validate input data here
+           
+            var data = {
+                UserId : @HttpContextAccessor.HttpContext.Session.GetString("UserId"),
+                StartTime: startTimeString,
+                EndTime: endTimeString,
+                LunchStartTime: lunchStartTimeString,
+                LunchEndTime: lunchEndTimeString
+            };
+            console.log(data);
+            $.ajax({
+                type: "POST",
+                url: "/api/UpdateWorkHour/SaveWorkTime",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (response) {
+                   
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    alert("Error saving data: " + xhr.responseText);
+                }
+            });
+        });
     });
 
+
+   
 </script>
