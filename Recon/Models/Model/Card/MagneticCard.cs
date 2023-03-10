@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Recon.Models.Interface.Card;
+using System.ComponentModel.DataAnnotations;
 
-namespace Recon.Models
+namespace Recon.Models.Model.Card
 {
     public class MagneticCard : IMagneticCard
     {
-        
+
         public string CardId { get; set; }
-       
+
         public string UserId { get; set; }
 
         public string CardName { get; set; }

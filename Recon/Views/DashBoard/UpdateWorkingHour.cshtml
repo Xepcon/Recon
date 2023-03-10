@@ -1,0 +1,123 @@
+﻿<style>
+    .dx-scheduler-work-space {
+        border: none;
+    }
+
+</style>
+<p>Working Hours !</p>
+<div>
+    <span> Working Start</span>
+    <div id="working-start-interval"></div>
+</div>
+
+<div>
+    <span> Working End</span>
+    <div id="working-end-interval"></div>
+</div>
+
+<div style="margin-bottom:100px">
+    <span>Lunch</span>
+    <div id="lunch-interval"></div>
+</div>
+
+
+
+
+<div>
+    <div id="scheduler"></div>
+</div>
+
+<button>Save</button>
+<script>
+
+
+    $(() => {
+
+          $('#scheduler').dxScheduler({
+            timeZone: 'Europe/Paris',
+            views: ['day'],
+            currentView: 'day',
+            currentDate: new Date(),
+            startDayHour: 0,
+            endDayHour: 24,
+            toolbar: [],
+           // showToolbar: false,
+            showAllDayPanel: false,
+            height: 500,
+               editing: {
+                allowDragging: false,
+                allowResizing: false,
+                allowDeleting: false,
+                allowUpdating: false,
+                allowAdding: false
+            },
+            showToolbar: false,
+            intervalCount: 24,
+             onAppointmentClick: function(e) {
+        e.component.showAppointmentPopup = function() {}; // override method
+    }
+            
+        });
+        let lunchStartTime = new Date(2023, 2, 9, 12);
+        let lunchEndTime = new Date(2023, 2, 9, 13);
+        let workingStartTime = new Date(2023, 2, 9, 8);
+        let workingEndTime = new Date(2023, 2, 9, 16);
+      
+
+        $('#lunch-interval').dxDateBox({
+            type: "time",
+            value: lunchStartTime,
+            interval: 15,
+            onValueChanged: function (e) {
+                lunchStartTime = e.value;
+                lunchEndTime = new Date(lunchStartTime.getTime() + 1 * 60 * 60 * 1000);
+                updateSchedulerData();
+            }
+        });
+        $('#working-start-interval').dxDateBox({
+            type: "time",
+            value: workingStartTime,
+            interval: 15,
+            onValueChanged: function (e) {
+                workingStartTime = e.value;
+                //morningEndTime = new Date(morningStartTime.getTime() + 4 * 60 * 60 * 1000);
+                updateSchedulerData();
+            }
+        });
+        $('#working-end-interval').dxDateBox({
+            type: "time",
+            value: workingEndTime,
+            interval: 15,
+            onValueChanged: function (e) {
+                workingEndTime = e.value;
+                updateSchedulerData();
+            }
+        });
+
+       
+
+        const updateSchedulerData = () => {
+            const data = [
+                {
+                    startDate: workingStartTime,
+                    endDate: workingEndTime,
+                    text: "Working"
+
+                },
+                 {
+                    startDate: lunchStartTime,
+                    endDate: lunchEndTime,
+                    text: "Lunch",
+                    color: "#00ff00"
+                }
+              
+            ];
+            $('#scheduler').dxScheduler('instance').option('dataSource', data);
+        }
+
+        updateSchedulerData();
+
+
+    });
+
+</script>

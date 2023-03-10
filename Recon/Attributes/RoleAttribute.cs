@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Recon.Models;
+using Recon.Models.Interface.Account;
+using Recon.Models.Model.Account;
 
 public class CustomRoleAttribute : TypeFilterAttribute
 {

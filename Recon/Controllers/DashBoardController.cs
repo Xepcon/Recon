@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Recon.Data;
-using Recon.Models;
+using Recon.Models.Interface.Account;
 using Recon.ViewModel;
 using System.Diagnostics;
 using System.Drawing.Printing;
@@ -19,6 +19,13 @@ namespace Recon.Controllers
             _userService = userService;
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+        }
+
+        public IActionResult UpdateWorkingHour()
+        {
+
+            return View();
+
         }
         public IActionResult Index()
         {

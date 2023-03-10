@@ -1,4 +1,6 @@
-﻿namespace Recon.Models
+﻿using Recon.Models.Model.Account;
+
+namespace Recon.Models.Interface.Account
 {
     public interface IUserService
     {
@@ -9,7 +11,7 @@
         UserEntity GetByName(string name);
         void ChangePassword(int userId, string newPassword);
         void UpdateUser(int userId, UserEntity updatedUser);
-        Boolean IsAuthenticated();
+        bool IsAuthenticated();
         List<Roles> GetRolesForUser(int userId);
         void LogOut();
     }

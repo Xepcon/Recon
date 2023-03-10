@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Recon.Models.Interface.Account;
+using System.ComponentModel.DataAnnotations;
 
-namespace Recon.Models
+namespace Recon.Models.Model.Account
 {
     public class Person : IPerson
     {

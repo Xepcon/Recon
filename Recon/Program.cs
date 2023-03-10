@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Recon.Data;
-using Recon.Models;
+using Recon.Models.Interface.Account;
+using Recon.Models.Model.Account;
 
 var builder = WebApplication.CreateBuilder(args);
 

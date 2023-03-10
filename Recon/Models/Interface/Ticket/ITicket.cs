@@ -1,4 +1,4 @@
-﻿namespace Recon.Models
+﻿namespace Recon.Models.Interface.Ticket
 {
     public interface ITicket
     {

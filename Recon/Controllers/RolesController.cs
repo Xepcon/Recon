@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Recon.Data;
-using Recon.Models;
+using Recon.Models.Model.Account;
 
 namespace Recon.Controllers
 {

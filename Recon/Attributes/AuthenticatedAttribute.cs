@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Recon.Models;
+using Recon.Models.Interface.Account;
 using System;
 
 namespace Recon.Attribute

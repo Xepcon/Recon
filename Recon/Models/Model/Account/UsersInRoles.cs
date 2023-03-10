@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Recon.Models
+namespace Recon.Models.Model.Account
 {
     public class UsersInRoles
     {

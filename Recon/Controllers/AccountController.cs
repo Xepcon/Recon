@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Recon.Data;
 using Recon.Models;
+using Recon.Models.Interface.Account;
+using Recon.Models.Model.Account;
 using Recon.ViewModel;
 using System.Diagnostics;
 using System.Security.Claims;

@@ -1,4 +1,4 @@
-﻿namespace Recon.Models
+﻿namespace Recon.Models.Interface.Account
 {
     public interface IPerson
     {
@@ -6,7 +6,7 @@
         string? FirstName { get; }
         string? LastName { get; }
 
-        Boolean? Phone { get; }
+        bool? Phone { get; }
 
         string? PhoneNumber { get; }
 
@@ -26,6 +26,6 @@
         string? Title { get; }
 
         int? GroupId { get; }
-       
+
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using Recon.Data;
+using Recon.Models.Interface.Account;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Recon.Models
+namespace Recon.Models.Model.Account
 {
     public class UserService : IUserService
     {
@@ -17,8 +18,8 @@ namespace Recon.Models
             _dbContext = dbContext;
         }
 
-      
-        public Boolean IsAuthenticated()
+
+        public bool IsAuthenticated()
         {
             // Check if the UserId session key exists
             var userId = _httpContextAccessor.HttpContext.Session.GetString("UserId");
@@ -39,12 +40,12 @@ namespace Recon.Models
             var user = GetById(userId);
             user.Username = updatedUser.Username;
             user.Email = updatedUser.Email;
-            
+
             _dbContext.SaveChanges();
         }
         public UserEntity Authenticate(string username, string password)
         {
-            var user = _dbContext.Users.SingleOrDefault(x => x.Username == username );
+            var user = _dbContext.Users.SingleOrDefault(x => x.Username == username);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
@@ -63,7 +64,8 @@ namespace Recon.Models
             _httpContextAccessor.HttpContext.Session.Clear();
         }
 
-        public UserEntity GetByName(string name) {
+        public UserEntity GetByName(string name)
+        {
             return _dbContext.Users.FirstOrDefault(x => x.Username == name);
         }
         public UserEntity GetById(int id)
@@ -77,19 +79,44 @@ namespace Recon.Models
             if (_dbContext.Users.Any(x => x.Username == user.Username))
                 throw new ApplicationException("Username '" + user.Username + "' is already taken");
 
-          
+
 
             // hash the password before storing in the database
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
 
-         
+
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
 
             return user;
-            
+
         }
 
+        public List<Roles> GetRoles() {
+            var roles = new List<Roles>();
+
+            // Retrieve the user from the database
+            int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+            if (userId == null) {
+                return roles;
+            }
+            else
+            {
+                var user = GetById(userId);
+
+                if (user != null)
+                {
+                    // Retrieve the roles for the user
+                    roles = _dbContext.UsersInRole
+                        .Where(x => x.userId == user.Id)
+                        .Join(_dbContext.Role, uir => uir.roleId, r => r.Id, (uir, r) => r)
+                        .ToList();
+                }
+
+                return roles;
+            }
+           
+        }
         public List<Roles> GetRolesForUser(int userId)
         {
             var roles = new List<Roles>();
