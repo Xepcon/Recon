@@ -14,5 +14,7 @@ namespace Recon.Models.Interface.Account
         bool IsAuthenticated();
         List<Roles> GetRolesForUser(int userId);
         void LogOut();
+
+        bool IsInRole(string Name);
     }
 }

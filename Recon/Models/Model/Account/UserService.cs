@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using System.Diagnostics;
@@ -18,7 +19,30 @@ namespace Recon.Models.Model.Account
             _dbContext = dbContext;
         }
 
+        public bool IsInRole(string Name)
+        {
+            if (IsAuthenticated())
+            {
+                var userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                var user = GetById(userId);
+                var userRolesWithNames = from ur in _dbContext.UsersInRole
+                                         join r in _dbContext.Role on ur.roleId equals r.Id
+                                         where ur.userId == userId
+                                         select r.Name;
 
+                if (userRolesWithNames.IsNullOrEmpty())
+                {
+                    return false;
+                }
+                else
+                {
+                    return userRolesWithNames.Contains(Name);
+                }
+            }
+            else {
+                return false;
+            }
+        }
         public bool IsAuthenticated()
         {
             // Check if the UserId session key exists
@@ -117,6 +141,8 @@ namespace Recon.Models.Model.Account
             }
            
         }
+
+        
         public List<Roles> GetRolesForUser(int userId)
         {
             var roles = new List<Roles>();

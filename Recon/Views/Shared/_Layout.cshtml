@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Recon.Models.Interface.Account;
+@using Recon.Models.Model.Account
 
 @inject IHttpContextAccessor HttpContextAccessor
+@inject IUserService Auth
 
 <!DOCTYPE html>
 <html lang="en">
@@ -42,6 +45,25 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        
+                          <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                          </li>
+                       
+                        @if (Auth.IsAuthenticated() == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UsersInRoles" asp-action="Index">UserInRoles</a>
+                            </li>
+                        }
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Groups" asp-action="Index">Group</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="GroupMembers" asp-action="Index">GroupMember</a>
                         </li>
                     </ul>
                     

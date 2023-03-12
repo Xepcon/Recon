@@ -49,7 +49,7 @@ namespace Recon.Controllers.api
                 var ent = _dbContext.WorkTimeUsers.Find(data.UserId);
                 _dbContext.WorkTimeUsers.Remove(ent);
                 _dbContext.Add(data);
-                _dbContext.SaveChanges() ;
+                _dbContext.SaveChanges();
             }
             
            

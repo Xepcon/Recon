@@ -118,16 +118,13 @@ namespace Recon.Migrations
 
             modelBuilder.Entity("Recon.Models.Model.Account.UsersInRoles", b =>
                 {
-                    b.Property<int>("userId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("userId"));
-
                     b.Property<int>("roleId")
                         .HasColumnType("int");
 
-                    b.HasKey("userId");
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("roleId", "userId");
 
                     b.ToTable("UsersInRole");
                 });
@@ -169,6 +166,39 @@ namespace Recon.Migrations
                     b.HasKey("CardId", "UserId");
 
                     b.ToTable("magneticCards");
+                });
+
+            modelBuilder.Entity("Recon.Models.Model.Group.Group", b =>
+                {
+                    b.Property<int>("groupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("groupId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("principalId")
+                        .HasColumnType("int");
+
+                    b.HasKey("groupId");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Recon.Models.Model.Group.GroupMember", b =>
+                {
+                    b.Property<int>("groupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("groupId", "userId");
+
+                    b.ToTable("GroupMembers");
                 });
 
             modelBuilder.Entity("Recon.Models.Model.TimeManager.WorkTimeUsers", b =>

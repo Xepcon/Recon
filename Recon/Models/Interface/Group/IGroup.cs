@@ -5,6 +5,8 @@
         string Name { get; }
 
         int groupId { get; }
+
+        int principalId { get; }
         
     }
 }
