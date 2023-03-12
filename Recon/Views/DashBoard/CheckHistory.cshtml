@@ -4,4 +4,123 @@
 @{
 }
 
-History entrance : 
+History entrance :
+
+<div id="range-selector"></div>
+
+
+<div id="chart"></div>
+
+<script>
+
+    var data = [
+        {
+            day: "2022-03-01",
+            start: "08:00:00",
+            end: "12:00:00",
+            color: "#0000FF"
+        },
+        {
+            day: "2022-03-01",
+            start: "13:00:00",
+            end: "16:00:00",
+            color: "#0000FF"
+        },
+        {
+            day: "2022-03-01",
+            start: "12:00:00",
+            end: "13:00:00",
+            color: "#FF0000"
+        },
+        {
+            day: "2022-03-02",
+            start: "08:00:00",
+            end: "12:00:00",
+            color: "#0000FF"
+        },
+        {
+            day: "2022-03-02",
+            start: "12:00:00",
+            end: "13:00:00",
+            color: "#FF0000"
+        },
+        {
+            day: "2022-03-02",
+            start: "13:00:00",
+            end: "16:00:00",
+            color: "#0000FF"
+        },
+    ];
+
+    $(function () {
+        $("#chart").dxChart({
+            dataSource: data,
+            series: [
+                {
+                    type: "rangeBar",
+                    color: "color",
+                    argumentField: "day",
+                    rangeValue1Field: "start",
+                    rangeValue2Field: "end",
+                }
+            ],
+            argumentAxis: {
+                type: "continuous",
+                dataType: "date",
+                label: {
+                    format: "dd/MM/yyyy"
+                }
+            },
+            valueAxis: {
+                type: "datetime",
+                title: "Time",
+                label: {
+                    format: "HH:mm:ss"
+                }
+            },
+            legend: {
+                visible: false
+            },
+            tooltip: {
+                enabled: true,
+                customizeTooltip: function (args) {
+                    return {
+                        text: args.valueText
+                    };
+                }
+            }
+        });
+  
+
+       var rangeSelector = $("#range-selector").dxRangeSelector({
+        margin: {
+            top: 50,
+        },
+        scale: {
+            startValue: new Date(2011, 1, 1),
+            endValue: new Date(2011, 12, 1),
+            minorTickInterval: 'week',
+            tickInterval: 'week',
+            minRange: 'week',
+            maxRange: 'week',
+            minorTick: {
+                visible: false,
+            },
+        },
+        sliderMarker: {
+            format: 'monthAndDay',
+        },
+        value: [new Date(2011, 1, 5), new Date(2011, 1, 12)],
+        title: 'Select a Vacation Period',
+
+            onValueChanged: function (e) {
+                var startDate = e.value[0];
+                var endDate = e.value[1];
+                var days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+              
+        }
+    }).dxRangeSelector("instance");
+
+    });
+</script>

@@ -37,8 +37,8 @@ namespace Recon.Controllers.api
         [Route("SaveWorkTime")]
         public void SaveWorkTime(WorkTimeUsers data )
         {
-            //Debug.WriteLine("CALLED FROM ESP");
-            
+            Debug.WriteLine("ID : "+data.UserId);
+            Debug.WriteLine(data.ToString());
             if (_dbContext.WorkTimeUsers.Find(data.UserId) == null)
             {
                 _dbContext.WorkTimeUsers.Add(data);

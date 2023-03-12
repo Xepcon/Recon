@@ -28,7 +28,11 @@ namespace Recon.Controllers
 
         }
 
-       
+        public IActionResult CheckHistory()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             return View();

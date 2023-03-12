@@ -31,7 +31,7 @@ namespace Recon.Data
             builder.Entity<MagneticCard>().HasKey(entity => new { entity.CardId, entity.UserId });
             builder.Entity<UsersInRoles>().HasKey(entity => new { entity.roleId, entity.userId });
             
-            builder.Entity<WorkTimeUsers>().HasKey(entity => new { entity.UserId });
+           // builder.Entity<WorkTimeUsers>().HasKey(entity => new { entity.UserId });
             builder.Entity<GroupMember>().HasKey(entity => new { entity.groupId,entity.userId });
             builder.Entity<Group>().HasKey(entity => new { entity.groupId});
         }
