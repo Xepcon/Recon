@@ -16,5 +16,7 @@ namespace Recon.Models.Interface.Account
         void LogOut();
 
         bool IsInRole(string Name);
+
+        string getUserName();
     }
 }

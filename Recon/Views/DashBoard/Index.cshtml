@@ -1,5 +1,18 @@
-﻿<p>DASHBOARD !!</p>
+﻿
+@using Recon.Models.Interface.Account;
+@using Recon.Models.Model.Account
 
+@inject IUserService Auth
+
+
+<p>DASHBOARD !!</p>
+
+@if (Auth.IsInRole("Intern"))
+{
+    <a href="@Url.Action("AttendanceSheet", "Dashboard")">
+        attendance sheet
+    </a>
+}
 
 <a href="@Url.Action("UpdateWorkingHour", "Dashboard")">
     CHANGE Hour

@@ -5,7 +5,7 @@
 namespace Recon.Migrations
 {
     /// <inheritdoc />
-    public partial class identityremoveFromWorktime : Migration
+    public partial class InterNameFail4 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

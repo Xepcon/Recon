@@ -12,8 +12,8 @@ using Recon.Data;
 namespace Recon.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    [Migration("20230312155539_UserInRoleUpdates")]
-    partial class UserInRoleUpdates
+    [Migration("20230314000357_attandence")]
+    partial class attandence
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -204,13 +204,33 @@ namespace Recon.Migrations
                     b.ToTable("GroupMembers");
                 });
 
-            modelBuilder.Entity("Recon.Models.Model.TimeManager.WorkTimeUsers", b =>
+            modelBuilder.Entity("Recon.Models.Model.TimeManager.Attendance", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("AttendanceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AttendanceId"));
+
+                    b.Property<string>("AttendanceName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AttendanceId");
+
+                    b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("Recon.Models.Model.TimeManager.WorkTimeUsers", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("EndTime")
                         .IsRequired()

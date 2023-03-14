@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recon.Data;
 
@@ -11,9 +12,11 @@ using Recon.Data;
 namespace Recon.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    partial class DataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230312191626_WorkiN")]
+    partial class WorkiN
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,57 +202,6 @@ namespace Recon.Migrations
                     b.HasKey("groupId", "userId");
 
                     b.ToTable("GroupMembers");
-                });
-
-            modelBuilder.Entity("Recon.Models.Model.TimeManager.Attendance", b =>
-                {
-                    b.Property<int>("AttendanceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AttendanceId"));
-
-                    b.Property<string>("AttendanceName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AttendanceId");
-
-                    b.ToTable("Attendances");
-                });
-
-            modelBuilder.Entity("Recon.Models.Model.TimeManager.AttendanceEntity", b =>
-                {
-                    b.Property<int>("AttendanceId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("AttendanceDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("Hour")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Minutes")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("approved")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("interName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isWeekend")
-                        .HasColumnType("bit");
-
-                    b.HasKey("AttendanceId", "AttendanceDate");
-
-                    b.ToTable("AttendanceEntitys");
                 });
 
             modelBuilder.Entity("Recon.Models.Model.TimeManager.WorkTimeUsers", b =>

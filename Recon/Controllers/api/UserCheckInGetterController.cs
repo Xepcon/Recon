@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recon.Data;
 using Recon.Models.Model.Card;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,24 +19,36 @@ namespace Recon.Controllers.api
             _dbContext = dbContext;
         }
 
-        [HttpGet]
+        [HttpGet("daytime/{id}")]
         
-        public IEnumerable<string> Get()
+        public IActionResult GetTimeTable(string id)
         {
-            return new string[] { "value1", "value2" };
-        }
+            
+            if (id != null)
+            {
+                int Userid = int.Parse(id);
+             
+                    var WrokTimeEntitiy = _dbContext.WorkTimeUsers.Where(x => x.UserId == Userid).FirstOrDefault();
+                    return Ok(WrokTimeEntitiy);
+                
+            }
+            else
+            {
+                return BadRequest("Id null");
+            }
 
+        }
         // GET api/<UserCheckInGetterController>/5
         [HttpGet("{id}")]
       
-        public IActionResult Get(string id)
+        public IActionResult Get(string id, DateTime startDate, DateTime endDate)
         {
             if (id != null)
             {
                 var cardid = _dbContext.magneticCards.Where(x => x.UserId == id).FirstOrDefault();
                 if (cardid != null)
                 {
-                    var res = _dbContext.Checks.Where(x => x.CardId == cardid.CardId);
+                    var res = _dbContext.Checks.Where(x => x.CardId == cardid.CardId && x.Date >= startDate && x.Date <= endDate);
                     if (res != null)
                     {
                         return Ok(res);

@@ -19,6 +19,32 @@ namespace Recon.Models.Model.Account
             _dbContext = dbContext;
         }
 
+        public string getUserName() {
+            if (IsAuthenticated())
+            {
+                var userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                //var user = GetById(userId);
+                var personEntity = _dbContext.Person.Find(userId);
+                if (personEntity == null)
+                {
+                    return null;
+                }
+                else {
+                    if(personEntity.FirstName!=null && personEntity.LastName != null) {
+                        return personEntity.FirstName + " " + personEntity.LastName;
+                    }
+                    return null;
+                    
+                }                
+
+            }
+            else
+            {
+                return null;
+            }
+
+
+        }
         public bool IsInRole(string Name)
         {
             if (IsAuthenticated())

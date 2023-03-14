@@ -1,0 +1,180 @@
+﻿@using Recon.Models.Interface.Account;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@inject IUserService Auth
+
+
+<div id="gridContainer"></div>
+<script>
+    $(function () {
+        $.ajax({
+            url: `@Url.Content("~/api/UpdateAttendance/")${@ViewBag.AttendanceId}`,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                //console.log(data)
+                $("#gridContainer").dxDataGrid({
+                    dataSource: data,
+                    
+                });
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Error: " + errorThrown);
+            }
+        });
+        var data = [];
+        
+        $("#gridContainer").dxDataGrid({
+            dataSource: data,
+            editing: {
+                mode: "cell",
+                allowUpdating: true,                    
+            },
+           
+            paging: false, // disable paging
+            columns: [{
+                dataField: "attendanceDate",
+                dataType: "date",
+                format: "dd/MM/yyyy",
+                caption: "Dátum",
+                allowEditing: false
+            }, {
+                dataField: "hour",
+                dataType: "number",
+                caption: "Óra",
+                validationRules: [
+                    {
+                        type: "custom",
+                        validationCallback: function (options) {
+                            var value = options.value;
+                            return value >= 0 && value <= 23; // check if the value is within the allowed range
+                        },
+                        message: "Az értéknek 0 és 24 között kell lennie." // error message to show when the value is outside the allowed range
+                    }
+                ]
+            }, {
+                dataField: "minutes",
+                dataType: "number",
+                caption: "Perc",
+                validationRules: [
+                    {
+                        type: "custom",
+                        validationCallback: function (options) {
+                            var value = options.value;
+                            return value >= 0 && value <= 59; // check if the value is within the allowed range
+                        },
+                        message: "Az értéknek 0 és 59 között kell lennie." // error message to show when the value is outside the allowed range
+                    }
+                ]
+            }, {
+                dataField: "isWeekend",
+                dataType: "boolean",
+                caption: "Hétvége",
+                allowEditing: false
+            }, {
+                dataField: "interName",
+                caption: "Dolgozó neve",
+                allowEditing: false
+            }, {
+                dataField: "approved",
+                dataType: "boolean",
+                caption: "Jóváhagyott",
+                allowEditing: false
+            }],
+            // add toolbar with Excel export button
+            toolbar: {
+                items: [{
+                    widget: "dxButton",
+                    options: {
+                        text: "Export to Excel",
+                        icon: "exportxlsx",
+                        onClick: function () {
+                            var workbook = new ExcelJS.Workbook();
+                            var worksheet = workbook.addWorksheet("Sheet1");
+
+                            // Export data to worksheet
+                            DevExpress.excelExporter.exportDataGrid({
+                                component: $("#gridContainer").dxDataGrid("instance"),
+                                worksheet: worksheet
+                            }).then(function () {
+                                // Save workbook to file
+                                workbook.xlsx.writeBuffer().then(function (buffer) {
+                                    saveAs(new Blob([buffer], { type: "application/octet-stream" }), `@ViewBag.AttendanceName`+".xlsx");
+                                });
+                            });
+                        }
+                    }
+                }]
+            },
+            onRowUpdating: function (e) {
+                // Get the edited row data
+                
+                var rowData = e.newData;
+                var dateSent;
+                console.log(e.key)
+                if(e.newData.hour!=null){
+                    dateSent = JSON.stringify({
+                        Hour: e.newData.hour,
+                        Minutes: e.key.minutes,
+                        isWeekend: e.key.isWeekend,
+                        interName: e.key.interName,
+                        approved: e.key.approved,
+                        attendanceDate: e.key.attendanceDate
+                    });
+                }else{
+                     dateSent = JSON.stringify({
+                        Hour: e.key.hour,
+                        Minutes: e.newData.minutes,
+                        isWeekend: e.key.isWeekend,
+                        interName: e.key.interName,
+                        approved: e.key.approved,
+                        attendanceDate: e.key.attendanceDate
+                    });
+                }
+                console.log(dateSent)
+               
+                $.ajax({
+                    url: `@Url.Content("~/api/UpdateAttendance/")${@ViewBag.AttendanceId}`,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: dateSent,
+                    success: function() {
+                        console.log("Attendance updated successfully");
+                    },
+                    error: function() {
+                        console.error("Error updating attendance");
+                    }
+                });
+                // Make an API call to update the data on the server
+             
+            },
+            
+            export: {
+                enabled: true,
+                fileName: "data",
+                allowExportSelectedData: false
+            },
+            summary: {
+        totalItems: [{
+            column: "hour",
+            summaryType: "sum",
+            valueFormat: "fixedPoint",
+            displayFormat: "Összesen: {0}"
+        }, {
+            column: "minutes",
+            summaryType: "sum",
+            valueFormat: "fixedPoint",
+            displayFormat: "{0} perc"
+        }]
+    }
+        });
+    });
+
+
+
+
+</script>

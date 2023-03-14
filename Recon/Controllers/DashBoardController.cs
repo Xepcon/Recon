@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.ViewModel;
@@ -31,6 +32,46 @@ namespace Recon.Controllers
         public IActionResult CheckHistory()
         {
             return View();
+        }
+        public IActionResult AttendanceSheet()
+        {
+            if (_userService.IsAuthenticated())
+            {
+                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                var data = _dbContext.Attendances.Where(x => x.userId == userId);
+                ViewBag.data = JsonConvert.SerializeObject(data);
+                return View();
+
+            }
+            else {
+                return RedirectToAction("Login", "Account");
+            }
+          
+        }
+
+        public IActionResult AttendanceSheetEdit(string id)
+        {
+            if (_userService.IsAuthenticated())
+            {
+                ViewBag.AttendanceId = id;
+                
+                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                int attendId = int.Parse(id);
+                var userAttendence = _dbContext.Attendances.Where(x => x.AttendanceId == attendId).FirstOrDefault();
+                ViewBag.AttendanceName = userAttendence.AttendanceName +"_"+ _userService.getUserName();
+                if (userAttendence.userId != userId) {
+                    //Error view 
+                    return View("Error");
+                }
+
+                return View();
+
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
         }
 
         public IActionResult Index()

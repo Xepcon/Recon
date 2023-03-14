@@ -89,7 +89,9 @@
         var lunchEndTime = new Date()
         var workingStartTime = new Date()
         var workingEndTime = new Date()
-       
+
+        console.log(lunchStartTime)
+
         lunchStartTime.setHours(12, 0, 0)
         lunchEndTime.setHours(13, 0, 0)
         workingStartTime.setHours(8, 0, 0)
@@ -174,6 +176,11 @@
        
 
         const updateSchedulerData = () => {
+            console.log(workingStartTime)
+            console.log(workingEndTime)
+            
+            console.log(lunchStartTime)
+            console.log(lunchEndTime)
             const data = [
                 {
                     startDate: workingStartTime,

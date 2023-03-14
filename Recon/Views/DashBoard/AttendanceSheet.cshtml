@@ -1,0 +1,61 @@
+﻿
+
+
+<h1>Attendance Sheet</h1>
+
+<div id="gridContainer"></div>
+
+@section scripts {
+    <script>
+        $(function () {
+            $("#gridContainer").dxDataGrid({
+                dataSource: @Html.Raw(ViewBag.data),
+                columns: [
+                    {
+                        dataField: "AttendanceName",
+                        caption: "Attendance Name"
+                    },
+                    {
+                        dataField: "CreatedAt",
+                        dataType: "date",
+                        caption: "Created At"
+                    },
+                    {
+                        dataField: "userId",
+                        caption: "User ID"
+                    },{
+                        type:'buttons',
+                        buttons:[
+                        {
+                            hint:'Módosítás',
+                            icon:'edit',
+                            onClick(e){
+                                //console.log(e)
+                                console.log(e.row);
+                                console.log(e.row.data.AttendanceId);
+                                window.location.href = `@Url.Content("~/Dashboard/AttendanceSheetEdit/")${e.row.data.AttendanceId}`;
+                            }
+                        },
+                        {
+                            hint:'Megtekintés',
+                            icon:'detailslayout',
+                            onClick(e){
+                                //console.log(e)
+                                console.log(e.row)
+                                console.log(e.row.data.AttendanceId)
+                                window.location.href = "/AttandanceSheetEdit/" + attendanceId;
+                            }
+                        }
+                        ]
+                    }
+                   
+                ],
+                onRowClick: function (e) {
+                    var attendanceId = e.data.AttendanceId;
+                    // Navigate to the Attendance details page using the attendanceId
+                    
+                }
+            });
+        });
+    </script>
+}

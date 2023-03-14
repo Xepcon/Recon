@@ -25,13 +25,15 @@ namespace Recon.Data
         public DbSet<GroupMember> GroupMembers { get; set; }    
 
         public DbSet<Group> Groups { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<AttendanceEntity> AttendanceEntitys { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<MagneticCard>().HasKey(entity => new { entity.CardId, entity.UserId });
             builder.Entity<UsersInRoles>().HasKey(entity => new { entity.roleId, entity.userId });
             
-           // builder.Entity<WorkTimeUsers>().HasKey(entity => new { entity.UserId });
+            builder.Entity<AttendanceEntity>().HasKey(entity => new { entity.AttendanceId,entity.AttendanceDate });
             builder.Entity<GroupMember>().HasKey(entity => new { entity.groupId,entity.userId });
             builder.Entity<Group>().HasKey(entity => new { entity.groupId});
         }
