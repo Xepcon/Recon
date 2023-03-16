@@ -12,7 +12,6 @@ namespace Recon.Models.Model.Account
 
         public string? LastName { get; set; }
 
-        public bool? Phone { get; set; }
 
         public string? PhoneNumber { get; set; }
 
