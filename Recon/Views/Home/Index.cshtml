@@ -1,6 +1,11 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using Microsoft.AspNetCore.Http
+@using Recon.Models.Interface.Group;
+@using Recon.Models.Model.Account
+
+
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IGroupService group
+
 
 
 

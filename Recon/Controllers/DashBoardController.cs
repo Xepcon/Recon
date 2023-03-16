@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Recon.Data;
 using Recon.Models.Interface.Account;
+using Recon.Models.Interface.Group;
 using Recon.Models.Model.Account;
+using Recon.Models.Model.Ticket;
 using Recon.ViewModel;
 using System;
 using System.Diagnostics;
@@ -17,11 +19,13 @@ namespace Recon.Controllers
         private readonly IUserService _userService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly DataDbContext _dbContext;
+        private readonly IGroupService _groupService;
 
-        public DashBoardController(IUserService userService, IHttpContextAccessor httpContextAccessor, DataDbContext dbContext) {
+        public DashBoardController(IUserService userService, IHttpContextAccessor httpContextAccessor, DataDbContext dbContext, IGroupService groupService) {
             _userService = userService;
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+            _groupService = groupService;
         }
 
         public IActionResult UpdateWorkingHour()
@@ -33,6 +37,7 @@ namespace Recon.Controllers
 
         public IActionResult CheckHistory()
         {
+
             return View();
         }
         [HttpGet]
@@ -81,6 +86,34 @@ namespace Recon.Controllers
 
         }
 
+        public IActionResult DayOff() {
+
+            ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
+            return View();
+        }
+        [HttpPost]
+        public IActionResult DayOff(DayOffTicket model)
+        {
+           
+            DayOffTicket dayOffTicket = new DayOffTicket();
+
+            if (_userService.IsAuthenticated()) {
+                dayOffTicket.StartDayOff = model.StartDayOff;
+                dayOffTicket.EndDayOff = model.EndDayOff;
+                dayOffTicket.Description = model.Description;
+                dayOffTicket.Title = model.Title;
+                dayOffTicket.Created = DateTime.Now;
+                dayOffTicket.Updated = DateTime.Now;
+                dayOffTicket.isApproved = false;
+                dayOffTicket.groupId = model.groupId;
+                dayOffTicket.userId = _userService.getUserId();
+                _dbContext.DayOffTicket.Add(dayOffTicket);
+                _dbContext.SaveChanges();
+                return View("Index");
+            }
+            return RedirectToAction("Login", "Account");
+            
+        }
         public IActionResult AttendanceSheet()
         {
             if (_userService.IsAuthenticated())
@@ -122,6 +155,13 @@ namespace Recon.Controllers
 
         }
 
+        public IActionResult TicketHistory() {
+            if (_userService.IsAuthenticated()) {
+                var list = _dbContext.DayOffTicket.Where(x => x.userId == _userService.getUserId());
+                return View(list);
+            }
+            return RedirectToAction("Login", "Account");
+        }
         public IActionResult Index()
         {
             return View();

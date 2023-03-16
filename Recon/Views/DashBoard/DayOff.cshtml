@@ -1,0 +1,62 @@
+﻿
+
+<form action="@Url.Content("~/Dashboard/DayOff/")" method="post">
+    <div id="form-container"></div>
+</form>
+
+
+
+@section scripts {
+    <script>
+        var groupData = @Html.Raw(@ViewBag.UserGroup);
+         console.log(groupData);
+        
+        $(function () {
+            $("#form-container").dxForm({
+                items: [
+
+                    {
+                        dataField: "Title",
+                        editorType: 'dxTextBox',
+                        label: { text: "Name" }
+                    },
+                   {
+                      dataField: "Description",
+                      label: { text: "Description" },
+                      editorType: "dxTextArea"
+                    }, 
+                    {
+                      dataField: "StartDayOff",
+                      label: { text: "Start Day Off" },
+                      editorType: "dxDateBox"
+                    }, 
+                    {
+                      dataField: "EndDayOff",
+                      label: { text: "End Day Off" },
+                      editorType: "dxDateBox"
+                    },
+                    {
+                        dataField: "groupId",
+                        editorType: 'dxLookup',
+                        editorOptions: {
+                            dataSource: groupData,
+                            displayExpr: 'Name',
+                            valueExpr: 'groupId'
+
+                        }
+
+                    },
+                    {
+                        itemType: "button",
+                        buttonOptions: {
+                            text: "Save",
+                            type: "success",
+                            useSubmitBehavior: true,
+                        }
+                    }
+                ],
+                labelLocation: "top"
+            });
+        });
+    </script>
+}

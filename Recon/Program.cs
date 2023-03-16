@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Recon.Data;
 using Recon.Models.Interface.Account;
+using Recon.Models.Interface.Group;
 using Recon.Models.Model.Account;
+using Recon.Models.Model.Group;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("DataDbContextC
 builder.Services.AddDbContext<DataDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-/*builder.Services.AddIdentity<UserEntity, IdentityRole>()
-       .AddEntityFrameworkStores<DataDbContext>()
-       .AddDefaultTokenProviders();*/
+
 
 
 builder.Services.AddSession(options =>
@@ -39,6 +39,7 @@ builder.Services.AddAuthentication(options =>
 */
 // Add services to the container.
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 builder.Services.AddControllersWithViews();
 

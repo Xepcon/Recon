@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Recon.Models.Model.Ticket.DayOffTicket>
+
+<h1>Day Off Tickets</h1>
+<div class="ticket-list">
+@foreach (var ticket in Model)
+{ 
+        <div class="ticket-box" data-id="@ticket.Id" style="background-color: @(ticket.isApproved ? "#4CAF50" : "#FF9800");">
+            <div class="ticket-header">
+                  <h3>@ticket.Title</h3>
+                <span style="color:white">@ticket.Created.ToString("MMMM dd, yyyy")</span>
+            </div>
+             <div class="ticket-body">
+                <p>@ticket.Description</p>
+                <p><strong>Day off:</strong> @ticket.StartDayOff.ToString("MMMM dd, yyyy") - @ticket.EndDayOff.ToString("MMMM dd, yyyy")</p>
+            </div>
+             <div class="ticket-footer">
+                <span>@(ticket.isApproved ? "Approved" : "Pending")</span>
+                <button class="btn" data-id="@ticket.Id">Approve</button>
+            </div>
+       
+        </div>
+}
+</div>
+<script>
+    $(document).ready(function () {
+        $(".btn").click(function () {
+            var ticketId = $(this).data("id");
+            console.log(ticketId);
+           
+             $.ajax({
+                url: `@Url.Content("~/TicketApprov/Approve/")` + ticketId,
+                type: 'POST',
+                success: function () {
+                    // Remove the ticket element from the DOM
+                   $('.ticket-box[data-id="' + ticketId + '"]').remove();
+                },
+                error: function () {
+                    alert('Error approving ticket.');
+                }
+            });
+        });
+    });
+</script>
+

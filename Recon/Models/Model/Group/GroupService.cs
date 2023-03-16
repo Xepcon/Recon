@@ -3,6 +3,7 @@ using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.Group;
 using Recon.Models.Model.Account;
+using System.Text.RegularExpressions;
 
 namespace Recon.Models.Model.Group
 {
@@ -16,12 +17,12 @@ namespace Recon.Models.Model.Group
 
         }
 
-        public List<Person> getGroupMembers(int groupId)
+        public List<IPerson> getGroupMembers(int groupId)
         {
             if (_userService.IsAuthenticated())
             {
 
-                List<Person> people = new List<Person>();
+                List<IPerson> people = new List<IPerson>();
                 var groupMembers = _dbContext.GroupMembers.Where(x => x.groupId == groupId);
                 foreach (var member in groupMembers)
                 {
@@ -38,6 +39,28 @@ namespace Recon.Models.Model.Group
             
         }
 
+        public List<IGroup> getUserGroup()
+        {
+            List<IGroup> userGroups = new List<IGroup>();
+
+            if (_userService.IsAuthenticated())
+            {
+                int userId = _userService.getUserId();
+                var userMemberList = _dbContext.GroupMembers.Where(x => x.userId == userId).ToList();
+
+                foreach (var member in userMemberList)
+                {
+                    var group = _dbContext.Groups.FirstOrDefault(x => x.groupId == member.groupId);
+                    if (group != null)
+                    {
+                        userGroups.Add(new Group { Name = group.Name, groupId = group.groupId, principalId = group.principalId });
+                    }
+                }
+            }
+
+            return userGroups;
+        }
+
         public bool isGroupOwner(int groupId)
         {
             if(_userService.IsAuthenticated()) {
@@ -52,6 +75,17 @@ namespace Recon.Models.Model.Group
             if (_userService.IsAuthenticated()) {
                 int userid = _userService.getUserId();
                 return !_dbContext.GroupMembers.Where(x => x.groupId==groupId & x.userId == userid).IsNullOrEmpty();
+            }
+            return false;
+        }
+
+        public bool isGroupOwner()
+        {
+            if (_userService.IsAuthenticated())
+            {
+                int userid = _userService.getUserId();
+                var res = _dbContext.Groups.Where(x=>x.principalId== userid);
+                return !res.IsNullOrEmpty();
             }
             return false;
         }

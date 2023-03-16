@@ -14,9 +14,7 @@ using Recon.Models.Model.TimeManager;
 namespace Recon.Controllers
 {
     public class AttendancesController : Controller
-    {
-     
-
+    {    
         private readonly DataDbContext _dbContext;
 
         public AttendancesController(DataDbContext dbContext)

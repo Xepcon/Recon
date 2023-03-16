@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.Card;
 using Recon.Models.Model.Group;
+using Recon.Models.Model.Ticket;
 using Recon.Models.Model.TimeManager;
 
 namespace Recon.Data
@@ -27,6 +28,8 @@ namespace Recon.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<AttendanceEntity> AttendanceEntitys { get; set; }
+
+        public DbSet<DayOffTicket> DayOffTicket { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -36,6 +39,7 @@ namespace Recon.Data
             builder.Entity<AttendanceEntity>().HasKey(entity => new { entity.AttendanceId,entity.AttendanceDate });
             builder.Entity<GroupMember>().HasKey(entity => new { entity.groupId,entity.userId });
             builder.Entity<Group>().HasKey(entity => new { entity.groupId});
+            builder.Entity<DayOffTicket>().HasKey(entity => new { entity.Id });
         }
     }
     

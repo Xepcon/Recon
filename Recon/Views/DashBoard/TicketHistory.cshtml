@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Recon.Models.Model.Ticket.DayOffTicket>
+
+@if (Model.Any())
+{
+    <div class="ticket-list">
+        @foreach (var ticket in Model)
+        {
+            <div class="ticket-box" style="background-color: @(ticket.isApproved ? "#4CAF50" : "#FF9800");">
+                <div class="ticket-header">
+                    <h3>@ticket.Title</h3>
+                    <span style="color:white">@ticket.Created.ToString("MMMM dd, yyyy")</span>
+                </div>
+                <div class="ticket-body">
+                    <p>@ticket.Description</p>
+                    <p><strong>Day off:</strong> @ticket.StartDayOff.ToString("MMMM dd, yyyy") - @ticket.EndDayOff.ToString("MMMM dd, yyyy")</p>
+                </div>
+                <div class="ticket-footer">
+                    <span>@(ticket.isApproved ? "Approved" : "Pending")</span>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>You have no day off tickets.</p>
+}
