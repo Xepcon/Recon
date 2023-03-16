@@ -29,7 +29,7 @@
     <!-- DevExtreme libraries -->
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/21.1.5/css/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/21.1.5/css/dx.light.css" />
- 
+    <script src="https://cdn3.devexpress.com/jslib/22.2.4/js/localization/dx.messages.hu.js"></script>
      <link rel="dx-theme" data-theme="generic.light" href="css/dx.light.css" data-active="true">
 </head>
 <body>
@@ -57,9 +57,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Attendances" asp-action="Index">Attendance</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="People" asp-action="Index">Personal</a>
-                        </li>
+                        
                        
                         @if (Auth.IsAuthenticated() == true)
                         {
@@ -117,7 +115,9 @@
             &copy; 2023 - Recon - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    
+    <script>
+        DevExpress.localization.locale(navigator.language);
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

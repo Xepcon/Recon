@@ -1,39 +1,60 @@
-﻿@model Recon.Models.Model.Group.Group
+﻿
+<form action="@Url.Content("~/Groups/Create/")" method="post">
+    <div id="form-container"></div>
+</form>
 
-@{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
-<h1>Create</h1>
 
-<h4>Group</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="principalId" class="control-label"></label>
-                <input asp-for="principalId" class="form-control" />
-                <span asp-validation-for="principalId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+@section scripts {
+    <script>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+          var userData;
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+            $.ajax({
+            url: `@Url.Content("~/api/ListUser")`,
+            type: 'GET',
+            dataType: 'json',
+            async:false,
+            success: function (data) {
+                userData=data
+                console.log(data)
+            },
+            error: function (error) {
+                console.log(error); // This will log any errors to the console
+            }
+        });
+
+        $(function () {            
+            $("#form-container").dxForm({               
+                items: [
+                   
+                    {
+                        dataField: "Name",
+                        label: { text: "Name" }
+                    },
+                    {
+                            dataField: "principalId",
+                            editorType:'dxLookup',
+                            editorOptions:{
+                                dataSource: userData,
+                                displayExpr:'name',
+                                valueExpr:'userId'
+
+                            }
+                           
+                        },
+                    {
+                        itemType: "button",
+                        buttonOptions: {
+                            text: "Save",
+                            type: "success",
+                            useSubmitBehavior: true,
+                        }
+                    }
+                ],
+
+                labelLocation: "top"
+            });
+        });
+    </script>
 }

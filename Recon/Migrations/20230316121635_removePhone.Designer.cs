@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recon.Data;
 
@@ -11,9 +12,11 @@ using Recon.Data;
 namespace Recon.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    partial class DataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230316121635_removePhone")]
+    partial class removePhone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +28,10 @@ namespace Recon.Migrations
             modelBuilder.Entity("Recon.Models.Model.Account.Person", b =>
                 {
                     b.Property<int>("userId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("userId"));
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -252,6 +258,14 @@ namespace Recon.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EndTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LunchEndTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LunchStartTime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

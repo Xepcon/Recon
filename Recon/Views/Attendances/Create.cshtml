@@ -1,44 +1,65 @@
-﻿@model Recon.Models.Model.TimeManager.Attendance
+﻿
+<form action="@Url.Content("~/Attendances/Create/")" method="post">
+    <div id="form-container"></div>
+</form>
 
-@{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
-<h1>Create</h1>
 
-<h4>Attendance</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AttendanceName" class="control-label"></label>
-                <input asp-for="AttendanceName" class="form-control" />
-                <span asp-validation-for="AttendanceName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userId" class="control-label"></label>
-                <input asp-for="userId" class="form-control" />
-                <span asp-validation-for="userId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+@section scripts {
+    <script>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        var userData;
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        $.ajax({
+            url: `@Url.Content("~/api/ListUser")`,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                userData = data
+                console.log(data)
+            },
+            error: function (error) {
+                console.log(error); // This will log any errors to the console
+            }
+        });
+
+
+        $(function () {
+            $("#form-container").dxForm({
+                items: [
+                   
+                    { dataField: "AttendanceName", caption: "Jelenlétív neve" },
+                    
+                    {
+                        dataField: "CreatedAt",
+                        dataType: "date",
+                        editorType: "dxDateBox",
+                        
+                    },
+                    {
+                        dataField: "userId",
+                        editorType: 'dxLookup',
+                        editorOptions: {
+                            dataSource: userData,
+                            displayExpr: 'name',
+                            valueExpr: 'userId'
+
+                        }
+
+                    },
+                    {
+                        itemType: "button",
+                        buttonOptions: {
+                            text: "Save",
+                            type: "success",
+                            useSubmitBehavior: true,
+                        }
+                    }
+                ],
+
+                labelLocation: "top"
+            });
+        });
+    </script>
 }

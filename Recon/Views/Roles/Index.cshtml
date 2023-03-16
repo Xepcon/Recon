@@ -1,36 +1,76 @@
-﻿@model IEnumerable<Recon.Models.Model.Account.Roles>
+﻿<div id="gridContainer"></div>
 
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<script>
+   
 
-<h1>Index</h1>
+    $(function () {
+        var dataSource = @Html.Raw(ViewBag.data);
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        $("#gridContainer").dxDataGrid({
+            dataSource: dataSource,
+            columns: [
+                { dataField: "Id", caption: "Szerepkör azonosítója" },
+                { dataField: "Name", caption: "Szerepkör neve" },
+           
+                {
+                    type: 'buttons',
+                    buttons: [
+                        {
+                            hint: 'Módosítás',
+                            icon: 'edit',
+                            onClick(e) {
+                                window.location.href = `@Url.Content("~/Roles/Edit/")${e.row.data.Id}`;
+                            }
+                        },
+                        {
+                            hint: 'Törlés',
+                            icon: 'remove',
+                            onClick(e) {
+
+                                console.log(e.row)
+                                console.log(e.row.data.AttendanceId)
+                                //Api
+                               
+
+                                const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretné a szerepkört?", "Megerősítés");
+                                confirmation.then((dialogResult) => {
+                                    if (dialogResult === true) {
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "@Url.Content("~/Roles/Delete/")" + e.row.data.Id,
+                                            success: function () {
+                                                location.reload();
+                                            },
+                                            error: function () {
+                                                window.DevExpress.ui.dialog.alert("Hiba történt a szerepkör törlésekor!", "Hiba");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                },
+
+
+            ],
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: 'add',
+                            onClick() {
+                                window.location.href = `@Url.Content("~/Roles/Create/")`;
+                            }
+                        }
+                    }
+
+                ]
+            }
+
+
+
+        });
+    });
+</script>

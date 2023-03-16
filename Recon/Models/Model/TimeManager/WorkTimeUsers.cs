@@ -14,7 +14,6 @@ namespace Recon.Models.Model.TimeManager
 
         public string EndTime { get; set; }
 
-        public string LunchStartTime { get; set; }
-        public string LunchEndTime { get; set; }
+       
     }
 }

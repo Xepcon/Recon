@@ -18,5 +18,9 @@ namespace Recon.Models.Interface.Account
         bool IsInRole(string Name);
 
         string getUserName();
+
+        int getUserId();
+
+
     }
 }

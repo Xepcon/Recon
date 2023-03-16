@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Recon.Data;
 using Recon.Models.Interface.Account;
+using Recon.Models.Model.Account;
 using Recon.ViewModel;
+using System;
 using System.Diagnostics;
 using System.Drawing.Printing;
 
@@ -33,6 +35,52 @@ namespace Recon.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult UpdatePersonalInfo() {
+            if (_userService.IsAuthenticated())
+            {
+                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                var person = _dbContext.Person.Where(x=>x.userId ==userId).FirstOrDefault();
+                Debug.WriteLine(person);
+                Debug.WriteLine("AAAAAAAAA");
+                ViewBag.data = JsonConvert.SerializeObject(person); 
+                if (person == null)
+                {
+                    return View("Error");
+                }
+                return View();
+            }
+            else {
+                return View("Error");
+            }                
+          
+        }
+        [HttpPost]
+        public IActionResult UpdatePersonalInfo(Person model)
+        {                
+            //Debug.WriteLine(model.ToString());
+            Debug.WriteLine(model.FirstName);
+            Debug.WriteLine(model.LastName);
+            if (_userService.IsAuthenticated())
+            {
+                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+              
+                model.userId = userId;
+                if (ModelState.IsValid)
+                {
+                    _dbContext.Update(model);
+                    _dbContext.SaveChanges();
+                    return View("Index");
+                }
+                return View(model);
+            }
+            else
+            {
+                return View("Error");
+            }
+
+        }
+
         public IActionResult AttendanceSheet()
         {
             if (_userService.IsAuthenticated())

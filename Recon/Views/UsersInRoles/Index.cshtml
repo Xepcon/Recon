@@ -1,30 +1,116 @@
-﻿@model IEnumerable<Recon.Models.Model.Account.UsersInRoles>
+﻿<div id="gridContainer"></div>
 
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<script>
+    var userData;
 
-<h1>Index</h1>
+    $.ajax({
+        url: `@Url.Content("~/api/ListUser")`,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            userData = data
+            console.log(data)
+        },
+        error: function (error) {
+            console.log(error); 
+        }
+    });
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    var roleData;
+
+    $.ajax({
+        url: `@Url.Content("~/api/ListRole")`,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            roleData = data
+           console.log(data)
+        },
+        error: function (error) {
+            console.log(error); 
+        }
+    });
+
+    $(function () {
+        var dataSource = @Html.Raw(ViewBag.data);
+
+        $("#gridContainer").dxDataGrid({
+            dataSource: dataSource,
+            columns: [
+              
+                 {
+                    dataField: "roleId",
+                    caption: "Szerepkör",
+                    lookup: {
+                        dataSource: roleData,
+                        valueExpr: "id",
+                        displayExpr: "name",
+                    },
+                },
+                {
+                    dataField: "userId",
+                    caption: "Felhasználó",
+                    lookup: {
+                        dataSource: userData,
+                        valueExpr: "userId",
+                        displayExpr: "name",
+                    },
+                },
+                {
+                    type: 'buttons',
+                    buttons: [
+                       
+                        {
+                            hint: 'Törlés',
+                            icon: 'remove',
+                            onClick(e) {
+
+                                console.log(e.row)
+                                console.log(e.row.data.AttendanceId)
+                                //Api
+
+
+                                const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretné a szerepkört?", "Megerősítés");
+                                confirmation.then((dialogResult) => {
+                                    if (dialogResult === true) {
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "@Url.Content("~/UsersInRoles/Delete?roleid=")"+ e.row.data.roleId+"&userid="+e.row.data.userId,
+                                            success: function () {
+                                                location.reload();
+                                            },
+                                            error: function () {
+                                                window.DevExpress.ui.dialog.alert("Hiba történt a szerepkör törlésekor!", "Hiba");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                },
+
+
+            ],
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: 'add',
+                            onClick() {
+                                window.location.href = `@Url.Content("~/UsersInRoles/Create/")`;
+                            }
+                        }
+                    }
+
+                ]
+            }
+
+
+
+        });
+    });
+</script>

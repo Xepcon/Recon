@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Recon.Data;
 using Recon.Models.Model.Account;
 
@@ -12,152 +15,118 @@ namespace Recon.Controllers
 {
     public class UsersInRolesController : Controller
     {
-        private readonly DataDbContext _context;
+        private readonly DataDbContext _dbContext;
 
-        public UsersInRolesController(DataDbContext context)
+        public UsersInRolesController(DataDbContext dbContext)
         {
-            _context = context;
+            _dbContext = dbContext;
         }
-
-        // GET: UsersInRoles
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-              return _context.UsersInRole != null ? 
-                          View(await _context.UsersInRole.ToListAsync()) :
-                          Problem("Entity set 'DataDbContext.UsersInRole'  is null.");
-        }
-
-        // GET: UsersInRoles/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.UsersInRole == null)
+            if (_dbContext.UsersInRole.ToList() != null)
             {
-                return NotFound();
-            }
+                ViewBag.data = JsonConvert.SerializeObject(_dbContext.UsersInRole.ToList());
 
-            var usersInRoles = await _context.UsersInRole
-                .FirstOrDefaultAsync(m => m.roleId == id);
-            if (usersInRoles == null)
-            {
-                return NotFound();
             }
-
-            return View(usersInRoles);
+            return View();
         }
 
-        // GET: UsersInRoles/Create
-        public IActionResult Create()
+        public IActionResult Error()
         {
             return View();
         }
 
-        // POST: UsersInRoles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("userId,roleId")] UsersInRoles usersInRoles)
+        public IActionResult Create()
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(usersInRoles);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(usersInRoles);
+            return View();
         }
-
-        // GET: UsersInRoles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.UsersInRole == null)
+        public IActionResult Edit(int? roleid, int? userid)
+         {
+            if (roleid == null && userid == null)
             {
-                return NotFound();
-            }
+                return View("Error");
+             }
 
-            var usersInRoles = await _context.UsersInRole.FindAsync(id);
-            if (usersInRoles == null)
-            {
-                return NotFound();
-            }
-            return View(usersInRoles);
-        }
+             var model = _dbContext.UsersInRole.Find(roleid, userid);
+             if (model == null)
+             {
+                 return View("Error");
+             }
+             ViewBag.data = JsonConvert.SerializeObject(model);
+             return View();
+         }
 
-        // POST: UsersInRoles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("userId,roleId")] UsersInRoles usersInRoles)
-        {
-            if (id != usersInRoles.roleId)
-            {
-                return NotFound();
-            }
+         [HttpPost]
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(usersInRoles);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsersInRolesExists(usersInRoles.roleId))
+         public IActionResult Edit(UsersInRoles model)
+         {
+            Debug.WriteLine(model.roleId);
+            Debug.WriteLine(model.userId);
+            Debug.WriteLine("ANADD");
+             if (model.roleId != null && model.userId!=null)
+             {
+                Debug.WriteLine("Good1");
+                if (ModelState.IsValid)
+                 {
+                    Debug.WriteLine("Good2");
+                    var list = _dbContext.UsersInRole.Where(x => x.roleId == model.roleId && x.userId == model.userId);
+                    if (list.IsNullOrEmpty())
                     {
-                        return NotFound();
+                        Debug.WriteLine("Good3");
+                        _dbContext.UsersInRole.Update(model);
+                        _dbContext.SaveChanges();
                     }
-                    else
-                    {
-                        throw;
+                    else {
+                        return View("Error");
                     }
+                     
+                 }
+             }
+             return RedirectToAction("Index");
+
+         }
+         [HttpPost]
+         public IActionResult Create(UsersInRoles model)
+         {
+
+             if (ModelState.IsValid)
+             {
+                 var list = _dbContext.UsersInRole.Where(x=>x.roleId == model.roleId && x.userId == model.userId);
+                if (list.IsNullOrEmpty())
+                {
+                    _dbContext.UsersInRole.Add(model);
+                    _dbContext.SaveChanges();
+                    
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(usersInRoles);
-        }
+                else {
+                    return View("Error");
+                }
+                
+             }
+             return View(model);
+         }
 
-        // GET: UsersInRoles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.UsersInRole == null)
-            {
-                return NotFound();
-            }
+         [HttpPost]
+         public IActionResult Delete(int? roleid, int? userid)
+         {
 
-            var usersInRoles = await _context.UsersInRole
-                .FirstOrDefaultAsync(m => m.roleId == id);
-            if (usersInRoles == null)
-            {
-                return NotFound();
-            }
+             if (roleid == null || userid == null)
+             {
+                 return View("Error");
+             }
 
-            return View(usersInRoles);
-        }
+             var model = _dbContext.UsersInRole.Find(roleid,userid);
+             if (model == null)
+             {
+                 return View("Error");
+             }
 
-        // POST: UsersInRoles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.UsersInRole == null)
-            {
-                return Problem("Entity set 'DataDbContext.UsersInRole'  is null.");
-            }
-            var usersInRoles = await _context.UsersInRole.FindAsync(id);
-            if (usersInRoles != null)
-            {
-                _context.UsersInRole.Remove(usersInRoles);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+             _dbContext.UsersInRole.Remove(model);
+             _dbContext.SaveChanges();
 
-        private bool UsersInRolesExists(int id)
-        {
-          return (_context.UsersInRole?.Any(e => e.roleId == id)).GetValueOrDefault();
-        }
-    }
+             return RedirectToAction("Index");
+         }
+     }
+    
 }

@@ -140,38 +140,53 @@
             acc[date] = linearIntervals;
             return acc;
         }, {});
-        console.log(earliestLatestByDay)
+        
        
 
         const output = [];
-
+       
         Object.keys(earliestLatestByDay).forEach(date => {
+            var counter = 0;
             earliestLatestByDay[date].forEach(interval => {
                 const [startHour, startMinute] = interval.start.split(':');
                 const [endHour, endMinute] = interval.end.split(':');
                 const startDate = new Date(`$2022-02-01 ${startHour}:${startMinute}`);
                 const endDate = new Date(`2022-02-01 ${endHour}:${endMinute}`);
-                console.log(startDate.getHours())
-                if (startDate.getHours() > 11 && endDate.getHours()<14) {
+                console.log(startDate)
+                console.log(endDate)
+                console.log(counter)
+                /*if (startDate.getHours() > 11 && endDate.getHours()<14) {
+                   
                     output.push({
                         date,
                         start: startDate,
                         end: endDate,
                         type: 'lunch'
                     });
-                }else{
-                    output.push({
-                    date,
-                    start: startDate,
-                    end: endDate,
-                    type: 'inoffice'
-                });
-                }
+                }else{*/
+                    if(counter%2==0){
+                        output.push({
+                            date,
+                            start: startDate,
+                            end: endDate,
+                            type: 'inoffice'
+                        });
+                    }else{
+                         output.push({
+                        date,
+                        start: startDate,
+                        end: endDate,
+                        type: 'break'
+                    });
+                    }
+                   
+               // }
+                counter++;
                 
             });
         });
         chartInstance.option('dataSource', output);
-        console.log(output);
+        //console.log(output);
        
     }
 

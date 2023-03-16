@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Recon.Data;
 using Recon.Models.Model.Account;
 
@@ -12,152 +15,93 @@ namespace Recon.Controllers
 {
     public class RolesController : Controller
     {
-        private readonly DataDbContext _context;
+        private readonly DataDbContext _dbContext;
 
-        public RolesController(DataDbContext context)
+        public RolesController(DataDbContext dbContext)
         {
-            _context = context;
+            _dbContext = dbContext;
         }
-
-        // GET: Roles
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-              return _context.Role != null ? 
-                          View(await _context.Role.ToListAsync()) :
-                          Problem("Entity set 'DataDbContext.Role'  is null.");
-        }
-
-        // GET: Roles/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Role == null)
+            if (_dbContext.Role.ToList() != null)
             {
-                return NotFound();
-            }
+                ViewBag.data = JsonConvert.SerializeObject(_dbContext.Role.ToList());
 
-            var roles = await _context.Role
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (roles == null)
-            {
-                return NotFound();
             }
-
-            return View(roles);
+            return View();
         }
 
-        // GET: Roles/Create
+
+        // GET: Groups/Create
         public IActionResult Create()
         {
             return View();
         }
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || _dbContext.Role == null)
+            {
+                return NotFound();
+            }
 
-        // POST: Roles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            var model = _dbContext.Role.Find(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            ViewBag.data = JsonConvert.SerializeObject(model);
+            return View();
+        }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Roles roles)
+
+        public IActionResult Edit(Roles role)
         {
-            if (ModelState.IsValid)
+
+            if (role.Id != null)
             {
-                _context.Add(roles);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _dbContext.Update(role);
+                    _dbContext.SaveChanges();
+                }
             }
-            return View(roles);
+            return RedirectToAction("Index");
+
         }
-
-        // GET: Roles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Role == null)
-            {
-                return NotFound();
-            }
-
-            var roles = await _context.Role.FindAsync(id);
-            if (roles == null)
-            {
-                return NotFound();
-            }
-            return View(roles);
-        }
-
-        // POST: Roles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Roles roles)
+        public IActionResult Create(Roles role)
         {
-            if (id != roles.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(roles);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RolesExists(roles.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(roles);
-        }
-
-        // GET: Roles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Role == null)
-            {
-                return NotFound();
-            }
-
-            var roles = await _context.Role
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (roles == null)
-            {
-                return NotFound();
-            }
-
-            return View(roles);
-        }
-
-        // POST: Roles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Role == null)
-            {
-                return Problem("Entity set 'DataDbContext.Role'  is null.");
-            }
-            var roles = await _context.Role.FindAsync(id);
-            if (roles != null)
-            {
-                _context.Role.Remove(roles);
-            }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (ModelState.IsValid)
+            {
+                _dbContext.Add(role);
+                _dbContext.SaveChanges();
+                //await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View(role);
         }
 
-        private bool RolesExists(int id)
+        [HttpPost]
+        public IActionResult Delete(int? id)
         {
-          return (_context.Role?.Any(e => e.Id == id)).GetValueOrDefault();
+
+            if (id == null || _dbContext.Role == null)
+            {
+                return NotFound();
+            }
+
+            var model = _dbContext.Role.Find(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Role.Remove(model);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("Index");
         }
+
     }
 }

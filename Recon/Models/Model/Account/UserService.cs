@@ -116,7 +116,14 @@ namespace Recon.Models.Model.Account
 
         public UserEntity GetByName(string name)
         {
-            return _dbContext.Users.FirstOrDefault(x => x.Username == name);
+            if (IsAuthenticated())
+            {
+                return _dbContext.Users.FirstOrDefault(x => x.Username == name);
+            }
+            else {
+                return null;
+            }
+            
         }
         public UserEntity GetById(int id)
         {
@@ -187,6 +194,18 @@ namespace Recon.Models.Model.Account
 
             return roles;
         }
+
+        public int getUserId() {
+            if (IsAuthenticated())
+            {
+                var userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                return userId;
+            }
+            else {
+                return -1;
+            }
+        }
+
 
     }
 }

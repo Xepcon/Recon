@@ -1,0 +1,88 @@
+﻿@model Recon.Models.Model.Account.Person
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<form action="@Url.Action("UpdatePersonalInfo")" method="post">
+    
+    <div id="form-container"></div>
+</form>
+
+
+<script>
+    $(function () {
+        var formData = @Html.Raw(ViewBag.data);
+
+        $("#form-container").dxForm({
+            formData: formData,
+            items: [
+               {
+                    dataField: "userId",
+                    label: { text: "Id" },
+                    visible: false,
+                    readOnly: true
+
+                },
+                {
+                    dataField: "FirstName",
+                    label: { text: "First Name" }
+                },
+                {
+                    dataField: "LastName",
+                    label: { text: "Last Name" }
+                },
+                {
+                    dataField: "PhoneNumber",
+                    label: { text: "Phone Number" }
+                },
+                {
+                    dataField: "Address",
+                    label: { text: "Address" }
+                },
+                {
+                    dataField: "City",
+                    label: { text: "City" }
+                },
+                {
+                    dataField: "State",
+                    label: { text: "State" }
+                },
+                {
+                    dataField: "PostalCode",
+                    label: { text: "Postal Code" }
+                },
+                {
+                    dataField: "Country",
+                    label: { text: "Country" }
+                },
+                {
+                    dataField: "age",
+                    label: { text: "Age" }
+                },
+                {
+                    dataField: "Gender",
+                    label: { text: "Gender" }
+                },
+                {
+                    itemType:"button",
+                    buttonOptions:{
+                        text:"Mentés",
+                        useSubmitBehavior:true,
+                       
+
+                    }
+                }
+            ],
+            colCount: 2,
+            labelLocation: "top",
+                
+        });
+
+        
+
+    });
+</script>

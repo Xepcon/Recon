@@ -1,163 +1,98 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Recon.Data;
+using Recon.Models.Model.Account;
 using Recon.Models.Model.Group;
 
 namespace Recon.Controllers
 {
     public class GroupMembersController : Controller
     {
-        private readonly DataDbContext _context;
+        private readonly DataDbContext _dbContext;
 
-        public GroupMembersController(DataDbContext context)
+        public GroupMembersController(DataDbContext dbContext)
         {
-            _context = context;
+            _dbContext = dbContext;
         }
-
-        // GET: GroupMembers
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-              return _context.GroupMembers != null ? 
-                          View(await _context.GroupMembers.ToListAsync()) :
-                          Problem("Entity set 'DataDbContext.GroupMembers'  is null.");
-        }
-
-        // GET: GroupMembers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.GroupMembers == null)
+            if (_dbContext.GroupMembers.ToList() != null)
             {
-                return NotFound();
-            }
+                ViewBag.data = JsonConvert.SerializeObject(_dbContext.GroupMembers.ToList());
 
-            var groupMember = await _context.GroupMembers
-                .FirstOrDefaultAsync(m => m.groupId == id);
-            if (groupMember == null)
-            {
-                return NotFound();
             }
-
-            return View(groupMember);
+            return View();
         }
 
-        // GET: GroupMembers/Create
+
+        // GET: Groups/Create
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: GroupMembers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+                      
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("groupId,userId")] GroupMember groupMember)
+        public IActionResult Create(GroupMember model)
         {
+           
             if (ModelState.IsValid)
             {
-                _context.Add(groupMember);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var list = _dbContext.GroupMembers.Where(x=>x.groupId== model.groupId && x.userId==model.userId).ToList();
+                if (list.IsNullOrEmpty())
+                {
+                    _dbContext.Add(model);
+                    _dbContext.SaveChanges();
+
+                    //await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+                else {
+                    return NotFound();
+                }
             }
-            return View(groupMember);
+            return View(model);
         }
-
-        // GET: GroupMembers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.GroupMembers == null)
-            {
-                return NotFound();
-            }
-
-            var groupMember = await _context.GroupMembers.FindAsync(id);
-            if (groupMember == null)
-            {
-                return NotFound();
-            }
-            return View(groupMember);
-        }
-
-        // POST: GroupMembers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("groupId,userId")] GroupMember groupMember)
+        public IActionResult Delete(int groupid,int userid)
         {
-            if (id != groupMember.groupId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
+            Debug.WriteLine(groupid);
+            Debug.WriteLine(userid);
+            if (groupid != null && userid != null)
             {
                 try
                 {
-                    _context.Update(groupMember);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GroupMemberExists(groupMember.groupId))
+                    var model = _dbContext.GroupMembers.Where(x => x.groupId == groupid & x.userId == userid).FirstOrDefault();
+                    if (model != null)
                     {
-                        return NotFound();
+                        _dbContext.GroupMembers.Remove(model);
+                        _dbContext.SaveChanges();
                     }
                     else
                     {
-                        throw;
+                        return NotFound();
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception e)
+                {
+                    return NotFound();
+                }
+                return RedirectToAction("Index");
             }
-            return View(groupMember);
-        }
-
-        // GET: GroupMembers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.GroupMembers == null)
-            {
+            else {
                 return NotFound();
             }
-
-            var groupMember = await _context.GroupMembers
-                .FirstOrDefaultAsync(m => m.groupId == id);
-            if (groupMember == null)
-            {
-                return NotFound();
-            }
-
-            return View(groupMember);
+          
+           
         }
-
-        // POST: GroupMembers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.GroupMembers == null)
-            {
-                return Problem("Entity set 'DataDbContext.GroupMembers'  is null.");
-            }
-            var groupMember = await _context.GroupMembers.FindAsync(id);
-            if (groupMember != null)
-            {
-                _context.GroupMembers.Remove(groupMember);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool GroupMemberExists(int id)
-        {
-          return (_context.GroupMembers?.Any(e => e.groupId == id)).GetValueOrDefault();
-        }
+      
     }
 }

@@ -14,18 +14,10 @@
     <div id="working-start-interval"></div>
 </div>
 
-<div>
+<div style="margin-bottom:80px">
     <span> Working End</span>
     <div id="working-end-interval"></div>
 </div>
-
-<div style="margin-bottom:100px">
-    <span>Lunch</span>
-    <div id="lunch-interval"></div>
-</div>
-
-
-
 
 <div>
     <div id="scheduler"></div>
@@ -85,15 +77,10 @@
         });
 
         
-        var lunchStartTime = new Date()
-        var lunchEndTime = new Date()
+       
         var workingStartTime = new Date()
         var workingEndTime = new Date()
-
-        console.log(lunchStartTime)
-
-        lunchStartTime.setHours(12, 0, 0)
-        lunchEndTime.setHours(13, 0, 0)
+       
         workingStartTime.setHours(8, 0, 0)
         workingEndTime.setHours(16, 0, 0)
         
@@ -118,41 +105,13 @@
             }else{
                 workingEndTime.setHours(12+endHours, endMinutes, 0)
             }
-            //workingEndTime.setHours(endHours, endMinutes, 0)
-            let launchStart = TimeTable.lunchStartTime.split(":");
-            let startlunchHour = parseInt(launchStart[0]);
-            let startlunchMinutes = parseInt(launchStart[1]);
-            let starLunchAmPm = endTimeParts[2].split(" ")[1];
-            if (starLunchAmPm == "AM") {
-                lunchStartTime.setHours(startlunchHour, startlunchMinutes,0)
-            } else {
-                lunchStartTime.setHours(12+startlunchHour, startlunchMinutes, 0)
-            }
-            //lunchStartTime.setHours(startlunchHour, startlunchMinutes,0)
-            let launchEnd = TimeTable.lunchEndTime.split(":");
-            let endlunchHour = parseInt(launchEnd[0]);
-            let endlunchMinutes = parseInt(launchEnd[1]);
-            let endLunchAmPm = endTimeParts[2].split(" ")[1];
-             if (starLunchAmPm == "AM") {
-                lunchEndTime.setHours(endlunchHour, endlunchMinutes, 0)
-            } else {
-                lunchEndTime.setHours(12+endlunchHour, endlunchMinutes, 0)
-            }
-            //lunchEndTime.setHours(endlunchHour, endlunchMinutes, 0)
+            
+           
             updateSchedulerData();
         }
       
 
-        $('#lunch-interval').dxDateBox({
-            type: "time",
-            value: lunchStartTime,
-            interval: 15,
-            onValueChanged: function (e) {
-                lunchStartTime = e.value;
-                lunchEndTime = new Date(lunchStartTime.getTime() + 1 * 60 * 60 * 1000);
-                updateSchedulerData();
-            }
-        });
+        
         $('#working-start-interval').dxDateBox({
             type: "time",
             value: workingStartTime,
@@ -179,21 +138,15 @@
             console.log(workingStartTime)
             console.log(workingEndTime)
             
-            console.log(lunchStartTime)
-            console.log(lunchEndTime)
+           
             const data = [
                 {
                     startDate: workingStartTime,
                     endDate: workingEndTime,
                     text: "Working"
 
-                },
-                 {
-                    startDate: lunchStartTime,
-                    endDate: lunchEndTime,
-                    text: "Lunch",
-                    color: "#00ff00"
                 }
+              
               
             ];
             $('#scheduler').dxScheduler('instance').option('dataSource', data);
@@ -205,22 +158,18 @@
         $("#save-btn").click(function () {
             var startTime = $("#working-start-interval").dxDateBox("instance").option("value");
             var endTime = $("#working-end-interval").dxDateBox("instance").option("value");
-            var lunchStartTime = $("#lunch-interval").dxDateBox("instance").option("value");
-            var lunchEndTime = $("#lunch-interval").dxDateBox("instance").option("value");
-            var newLunchEndTime = new Date(lunchEndTime);
-            newLunchEndTime.setHours(newLunchEndTime.getHours() + 1);
+          
+          
             var startTimeString = startTime.toLocaleTimeString() 
             var endTimeString = endTime.toLocaleTimeString()
-            var lunchStartTimeString = lunchStartTime.toLocaleTimeString()
-            var lunchEndTimeString = newLunchEndTime.toLocaleTimeString()
+          
             // Validate input data here
            
             var data = {
                 UserId : @HttpContextAccessor.HttpContext.Session.GetString("UserId"),
                 StartTime: startTimeString,
                 EndTime: endTimeString,
-                LunchStartTime: lunchStartTimeString,
-                LunchEndTime: lunchEndTimeString
+             
             };
             console.log(data);
             $.ajax({

@@ -36,10 +36,10 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
         {
-            Debug.Write("CALLED");
+           
             if (ModelState.IsValid)
             {
-                Debug.Write("GOOD");
+                
                 var user = new UserEntity
                 {
                     Username = model.Username,
@@ -49,11 +49,13 @@ namespace Recon.Controllers
               
                 try
                 {
+                    _userService.Create(user);
+                    Debug.WriteLine("USERID :" + user.Id);
                     var Tempororary = new Person();
                     Tempororary.userId = user.Id;
                     _dbContext.Person.Add(Tempororary);
                     _dbContext.SaveChanges();
-                    _userService.Create(user);
+                    
                     return RedirectToAction("Login");
                 }
                 catch (Exception ex)
@@ -79,9 +81,6 @@ namespace Recon.Controllers
             _userService.LogOut();
             return RedirectToAction("Index", "Home");
         }
-
-      
-
 
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
