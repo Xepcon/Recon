@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using Recon.Data;
 using Recon.Models.Interface.Account;
@@ -22,7 +23,7 @@ namespace Recon.Models.Model.Account
         public string getUserName() {
             if (IsAuthenticated())
             {
-                var userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                var userId = getUserId();
                 //var user = GetById(userId);
                 var personEntity = _dbContext.Person.Find(userId);
                 if (personEntity == null)
@@ -49,7 +50,7 @@ namespace Recon.Models.Model.Account
         {
             if (IsAuthenticated())
             {
-                var userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                var userId = getUserId();
                 var user = GetById(userId);
                 var userRolesWithNames = from ur in _dbContext.UsersInRole
                                          join r in _dbContext.Role on ur.roleId equals r.Id
@@ -175,7 +176,27 @@ namespace Recon.Models.Model.Account
            
         }
 
-        
+        public string getFullName(int userid) {
+            var model = _dbContext.Person.Where(x=>x.userId==userid).FirstOrDefault();
+            if (model != null)
+            {
+                return model.FirstName + " " + model.LastName;
+            }
+            return "";
+        }
+
+        public string getFullName()
+        {
+            var model = _dbContext.Person.Where(x => x.userId == getUserId()).FirstOrDefault();
+            if (model != null)
+            {
+                return model.FirstName + " " + model.LastName;
+            }
+            return "";
+        }
+
+
+        //string getFullName();
         public List<Roles> GetRolesForUser(int userId)
         {
             var roles = new List<Roles>();

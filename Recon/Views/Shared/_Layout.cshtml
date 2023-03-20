@@ -77,6 +77,10 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="GroupMembers" asp-action="Index">GroupMember</a>
                         </li>
+                        <li class="nav-item">
+                            
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Attendances" asp-action="ApproveAttendance">ApproveAttendance</a>
+                        </li>
                     </ul>
                     
                 </div>
@@ -85,7 +89,7 @@
                     {
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Dashboard")">
-                            <span class="nav-link text-dark">Hello, @HttpContextAccessor.HttpContext.Session.GetString("Username")!</span>                                                      
+                            <span class="nav-link text-dark">Hello, @Auth.getFullName()</span>                                                      
                             </a>
                         </li>
                        <li class="nav-item">

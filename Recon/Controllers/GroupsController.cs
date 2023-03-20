@@ -76,9 +76,17 @@ namespace Recon.Controllers
             Debug.WriteLine(group.Name);
             if (ModelState.IsValid)
             {
+
                 _dbContext.Add(group);
+                var member = new GroupMember();
+               
+
                 _dbContext.SaveChanges();
-                //await _context.SaveChangesAsync();
+                member.groupId = group.groupId;
+                member.userId = group.principalId;
+                _dbContext.GroupMembers.Add(member);
+                _dbContext.SaveChanges();
+                
                 return RedirectToAction("Index");
             }
             return View(group);

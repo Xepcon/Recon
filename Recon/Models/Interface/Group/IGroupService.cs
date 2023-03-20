@@ -14,5 +14,9 @@ namespace Recon.Models.Interface.Group
         List<IGroup> getUserGroup();
 
         bool isGroupOwner();
+
+        bool isInGroup();
+
+        bool isInGroup(int userid,int groupId);
     }
 }

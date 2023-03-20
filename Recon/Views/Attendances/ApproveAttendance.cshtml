@@ -1,0 +1,85 @@
+﻿
+
+<div id="gridContainer"></div>
+
+<script>
+
+    var userData;
+
+    $.ajax({
+        url: `@Url.Content("~/api/ListUser")`,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            userData = data
+            console.log(data)
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+    $(function () {
+        var dataSource = @Html.Raw(ViewBag.data);
+
+        $("#gridContainer").dxDataGrid({
+            dataSource: dataSource,
+            columns: [
+
+                { dataField: "AttendanceName", caption: "Jelenlétív neve" },
+                { dataField: "CreatedAt", caption: "Léttrehozás dátuma" },
+                {
+                    dataField: "userId",
+                    caption: "Gyakornok neve",
+                    lookup: {
+                        dataSource: userData,
+                        valueExpr: "userId",
+                        displayExpr: "name",
+                    },
+                },
+                {
+                    type: 'buttons',
+                    buttons: [
+
+                        {
+                            hint: 'Lezárás',
+                            icon: 'add',
+                            onClick(e) {
+                                const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan Jóváhagyod az egész hónapi munkát ?", "Megerősítés");
+                                confirmation.then((dialogResult) => {
+                                    if (dialogResult === true) {
+                                        console.log(e.row.data.AttendanceId);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "@Url.Content("~/Attendances/ApproveAtt/")" + e.row.data.AttendanceId,
+                                            success: function () {
+                                                location.reload();
+                                            },
+                                            error: function () {
+                                                window.DevExpress.ui.dialog.alert("Hiba történt a csoport törlésekor!", "Hiba");
+                                            }
+                                        });
+                                        
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            hint: 'Megtekintés',
+                            icon: 'edit',
+                            onClick(e) {
+                                console.log(e.row.data.AttendanceId);
+                                window.location.href = "@Url.Content("~/Attendances/ApproveSheetAttendance/")" + e.row.data.AttendanceId                                                                            
+                            }
+                        }
+                    ]
+                },
+
+
+            ]
+           
+
+
+        });
+    });
+</script>

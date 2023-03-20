@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.Group;
@@ -8,6 +9,7 @@ using System.Diagnostics;
 
 namespace Recon.Controllers
 {
+    [Authenticated]
     public class TicketApprovController : Controller
     {
         private readonly IUserService _userService;
@@ -53,23 +55,22 @@ namespace Recon.Controllers
 
         }
         [HttpPost]
+        
         public IActionResult Approve(int id)
         {
-            if (_userService.IsAuthenticated())
+           
+            if (_groupService.isGroupOwner())
             {
-                if (_groupService.isGroupOwner())
+                if (_dbContext.DayOffTicket.Where(x => x.Id == id).Any())
                 {
-                    if (_dbContext.DayOffTicket.Where(x => x.Id == id).Any())
-                    {
-                        var tmp = _dbContext.DayOffTicket.Find(id);
-                        tmp.isApproved = true;
-                        _dbContext.SaveChanges();
-                    }
-                    return RedirectToAction("Index", "TicketApprov");
+                    var tmp = _dbContext.DayOffTicket.Find(id);
+                    tmp.isApproved = true;
+                    _dbContext.SaveChanges();
                 }
-                return RedirectToAction("Index", "DashBoard");
+                return RedirectToAction("Index", "TicketApprov");
             }
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "DashBoard");
+          
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<Recon.Models.Model.Ticket.DayOffTicket>
+@using Recon.Models.Interface.Account;
+@using Recon.Models.Model.Account
 
+@inject IUserService Auth
 <h1>Day Off Tickets</h1>
 <div class="ticket-list">
 @foreach (var ticket in Model)
@@ -12,12 +15,14 @@
              <div class="ticket-body">
                 <p>@ticket.Description</p>
                 <p><strong>Day off:</strong> @ticket.StartDayOff.ToString("MMMM dd, yyyy") - @ticket.EndDayOff.ToString("MMMM dd, yyyy")</p>
+                <span>@Auth.getFullName(ticket.userId)</span>
             </div>
              <div class="ticket-footer">
+
                 <span>@(ticket.isApproved ? "Approved" : "Pending")</span>
                 <button class="btn" data-id="@ticket.Id">Approve</button>
             </div>
-       
+            
         </div>
 }
 </div>
@@ -26,18 +31,22 @@
         $(".btn").click(function () {
             var ticketId = $(this).data("id");
             console.log(ticketId);
-           
-             $.ajax({
-                url: `@Url.Content("~/TicketApprov/Approve/")` + ticketId,
-                type: 'POST',
-                success: function () {
-                    // Remove the ticket element from the DOM
-                   $('.ticket-box[data-id="' + ticketId + '"]').remove();
-                },
-                error: function () {
-                    alert('Error approving ticket.');
+            const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan jóváhagyod a szabadságot ?", "Megerősítés");
+            confirmation.then((dialogResult) => {
+                if (dialogResult === true) {
+                    $.ajax({
+                        url: `@Url.Content("~/TicketApprov/Approve/")` + ticketId,
+                        type: 'POST',
+                        success: function () {
+                            // Remove the ticket element from the DOM
+                            $('.ticket-box[data-id="' + ticketId + '"]').remove();
+                        },
+                        error: function () {
+                            alert('Error approving ticket.');
+                        }
+                    });
                 }
-            });
+            });           
         });
     });
 </script>

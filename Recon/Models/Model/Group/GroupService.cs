@@ -12,8 +12,8 @@ namespace Recon.Models.Model.Group
         private readonly DataDbContext _dbContext;
         private readonly IUserService _userService;
         public GroupService(DataDbContext dbContext, IUserService userService) {
-            _dbContext= dbContext;
-            _userService= userService;
+            _dbContext = dbContext;
+            _userService = userService;
 
         }
 
@@ -34,11 +34,17 @@ namespace Recon.Models.Model.Group
                 }
                 return people;
 
-            }           
+            }
             return null;
-            
+
         }
 
+        public bool isInGroup(int userid, int groupId){
+            return _dbContext.GroupMembers.Where(x => x.userId == userid && x.groupId == groupId).Any() ;
+        }
+        public bool isInGroup() {
+            return _dbContext.GroupMembers.Where(x=>x.userId==_userService.getUserId()).Any();
+        }
         public List<IGroup> getUserGroup()
         {
             List<IGroup> userGroups = new List<IGroup>();

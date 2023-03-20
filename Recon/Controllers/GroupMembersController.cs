@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Recon.Data;
+using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.Group;
 
@@ -17,10 +18,12 @@ namespace Recon.Controllers
     public class GroupMembersController : Controller
     {
         private readonly DataDbContext _dbContext;
+        private readonly IUserService _userService;
 
-        public GroupMembersController(DataDbContext dbContext)
+        public GroupMembersController(DataDbContext dbContext,IUserService userService)
         {
             _dbContext = dbContext;
+            _userService = userService;
         }
         public IActionResult Index()
         {
@@ -45,13 +48,19 @@ namespace Recon.Controllers
            
             if (ModelState.IsValid)
             {
+                //Check if user intern only one group allowed 
+                if (_userService.GetRolesForUser(model.userId).Where(x=>x.Name=="Intern").Any()){
+                    return RedirectToAction("Index");
+                }
+                
                 var list = _dbContext.GroupMembers.Where(x=>x.groupId== model.groupId && x.userId==model.userId).ToList();
+
                 if (list.IsNullOrEmpty())
                 {
                     _dbContext.Add(model);
                     _dbContext.SaveChanges();
 
-                    //await _context.SaveChangesAsync();
+                    
                     return RedirectToAction("Index");
                 }
                 else {

@@ -13,5 +13,8 @@ namespace Recon.Models.Model.TimeManager
 
         public int userId { get; set; }
 
+        public bool isClosed { get; set; }
+
+        public int groupId { get; set; }
     }
 }

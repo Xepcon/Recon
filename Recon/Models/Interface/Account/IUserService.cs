@@ -21,6 +21,9 @@ namespace Recon.Models.Interface.Account
 
         int getUserId();
 
+        string getFullName(int userid);
+
+        string getFullName();
 
     }
 }

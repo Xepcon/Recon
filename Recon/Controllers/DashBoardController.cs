@@ -114,11 +114,12 @@ namespace Recon.Controllers
             return RedirectToAction("Login", "Account");
             
         }
+        [CustomRole("Intern")]
         public IActionResult AttendanceSheet()
         {
             if (_userService.IsAuthenticated())
             {
-                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+                int userId = _userService.getUserId();
                 var data = _dbContext.Attendances.Where(x => x.userId == userId);
                 ViewBag.data = JsonConvert.SerializeObject(data);
                 return View();
@@ -130,15 +131,21 @@ namespace Recon.Controllers
           
         }
 
+        [CustomRole("Intern")]
         public IActionResult AttendanceSheetEdit(string id)
         {
             if (_userService.IsAuthenticated())
             {
                 ViewBag.AttendanceId = id;
-                
-                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
+
+                int userId = _userService.getUserId();
                 int attendId = int.Parse(id);
                 var userAttendence = _dbContext.Attendances.Where(x => x.AttendanceId == attendId).FirstOrDefault();
+                if (userAttendence.isClosed == true)            
+                    ViewBag.IsClosed = "false";
+                else
+                     ViewBag.IsClosed = "true";
+
                 ViewBag.AttendanceName = userAttendence.AttendanceName +"_"+ _userService.getUserName();
                 if (userAttendence.userId != userId) {
                     //Error view 
@@ -183,7 +190,7 @@ namespace Recon.Controllers
         {
             Debug.WriteLine("CALLED UPDATE PASS");
 
-
+            //repois.updatePW(model);
             Debug.WriteLine(model.ToString());
             if (model != null)
             {

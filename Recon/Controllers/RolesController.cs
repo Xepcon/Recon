@@ -10,41 +10,36 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Recon.Data;
 using Recon.Models.Model.Account;
+using Recon.Models.Repository;
 
 namespace Recon.Controllers
 {
     public class RolesController : Controller
     {
-        private readonly DataDbContext _dbContext;
+        private readonly IRolesRepository _rolesRepository;
 
-        public RolesController(DataDbContext dbContext)
+        public RolesController(IRolesRepository rolesRepository)
         {
-            _dbContext = dbContext;
+            _rolesRepository = rolesRepository;
         }
         public IActionResult Index()
         {
-            if (_dbContext.Role.ToList() != null)
-            {
-                ViewBag.data = JsonConvert.SerializeObject(_dbContext.Role.ToList());
-
-            }
+            ViewBag.data = JsonConvert.SerializeObject(_rolesRepository.GetAllRoles());
             return View();
         }
 
-
-        // GET: Groups/Create
         public IActionResult Create()
         {
             return View();
         }
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null || _dbContext.Role == null)
+            if ( _rolesRepository.GetRoleById(id) == null)
             {
                 return NotFound();
             }
 
-            var model = _dbContext.Role.Find(id);
+            var model = _rolesRepository.GetRoleById(id);
             if (model == null)
             {
                 return NotFound();
@@ -56,15 +51,11 @@ namespace Recon.Controllers
 
         public IActionResult Edit(Roles role)
         {
-
-            if (role.Id != null)
+         
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    _dbContext.Update(role);
-                    _dbContext.SaveChanges();
-                }
-            }
+                _rolesRepository.UpdateRole(role);                                        
+            }           
             return RedirectToAction("Index");
 
         }
@@ -74,31 +65,29 @@ namespace Recon.Controllers
             
             if (ModelState.IsValid)
             {
-                _dbContext.Add(role);
-                _dbContext.SaveChanges();
-                //await _context.SaveChangesAsync();
+                _rolesRepository.AddRole(role);
+                              
                 return RedirectToAction("Index");
             }
             return View(role);
         }
 
         [HttpPost]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
 
-            if (id == null || _dbContext.Role == null)
+            if (_rolesRepository.GetRoleById(id) == null)
             {
                 return NotFound();
             }
 
-            var model = _dbContext.Role.Find(id);
+            var model = _rolesRepository.GetRoleById(id);
             if (model == null)
             {
                 return NotFound();
             }
 
-            _dbContext.Role.Remove(model);
-            _dbContext.SaveChanges();
+            _rolesRepository.DeleteRole(id);
 
             return RedirectToAction("Index");
         }

@@ -144,7 +144,7 @@
        
 
         const output = [];
-       
+        var workedHours = 0;
         Object.keys(earliestLatestByDay).forEach(date => {
             var counter = 0;
             earliestLatestByDay[date].forEach(interval => {
@@ -165,6 +165,7 @@
                     });
                 }else{*/
                     if(counter%2==0){
+                    workedHours += (endDate.getTime() - startDate.getTime() /  3600000 )
                         output.push({
                             date,
                             start: startDate,
@@ -185,6 +186,7 @@
                 
             });
         });
+        console.log(workedHours);
         chartInstance.option('dataSource', output);
         //console.log(output);
        
@@ -218,7 +220,7 @@
         },
         scale: {
             startValue: new Date(2022, 1, 1),
-            endValue: new Date(2022, 12, 1),
+            endValue: new Date(2022, 8, 1),
             minorTickInterval: 'week',
             tickInterval: 'week',
             minRange: 'week',

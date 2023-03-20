@@ -7,6 +7,7 @@ using Recon.Models.Interface.Account;
 using Recon.Models.Interface.Group;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.Group;
+using Recon.Models.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,8 +39,11 @@ builder.Services.AddAuthentication(options =>
    });
 */
 // Add services to the container.
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IUsersInRolesRepository, UsersInRolesRepository>();
+builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 
 builder.Services.AddControllersWithViews();
 

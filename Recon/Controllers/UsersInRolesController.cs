@@ -8,19 +8,120 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Model.Account;
+using Recon.Models.Repository;
 
 namespace Recon.Controllers
 {
+    [Authenticated]
     public class UsersInRolesController : Controller
     {
-        private readonly DataDbContext _dbContext;
-
-        public UsersInRolesController(DataDbContext dbContext)
+        //private readonly DataDbContext _dbContext;
+        private readonly IUsersInRolesRepository _usersInRolesRepository;
+        public UsersInRolesController(IUsersInRolesRepository usersInRolesRepository)
         {
-            _dbContext = dbContext;
+            _usersInRolesRepository = usersInRolesRepository;
+            //_dbContext = dbContext;
         }
+
+        public IActionResult Index()
+        {
+            var usersInRoles = _usersInRolesRepository.GetAll();
+            ViewBag.data = JsonConvert.SerializeObject(usersInRoles);
+            return View();
+        }
+
+        public IActionResult Error()
+        {
+            return View();
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        public IActionResult Edit(int? roleId, int? userId)
+        {
+            if (roleId == null || userId == null)
+            {
+                return View("Error");
+            }
+
+            var usersInRoles = _usersInRolesRepository.GetById(roleId.Value, userId.Value);
+            if (usersInRoles == null)
+            {
+                return View("Error");
+            }
+
+            ViewBag.data = JsonConvert.SerializeObject(usersInRoles);
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Edit(UsersInRoles usersInRoles)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUsersInRoles = _usersInRolesRepository.GetById(usersInRoles.roleId, usersInRoles.userId);
+                if (existingUsersInRoles == null)
+                {
+                    return View("Error");
+                }
+
+                existingUsersInRoles.roleId = usersInRoles.roleId;
+                existingUsersInRoles.userId = usersInRoles.userId;
+
+                _usersInRolesRepository.Update(existingUsersInRoles);
+
+                return RedirectToAction("Index");
+            }
+
+            return View(usersInRoles);
+        }
+
+        [HttpPost]
+        public IActionResult Create(UsersInRoles usersInRoles)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUsersInRoles = _usersInRolesRepository.GetById(usersInRoles.roleId, usersInRoles.userId);
+                if (existingUsersInRoles != null)
+                {
+                    return View("Error");
+                }
+
+                _usersInRolesRepository.Add(usersInRoles);
+
+                return RedirectToAction("Index");
+            }
+
+            return View(usersInRoles);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int? roleId, int? userId)
+        {
+            if (roleId == null || userId == null)
+            {
+                return View("Error");
+            }
+
+            var existingUsersInRoles = _usersInRolesRepository.GetById(roleId.Value, userId.Value);
+            if (existingUsersInRoles == null)
+            {
+                return View("Error");
+            }
+
+            _usersInRolesRepository.Delete(roleId.Value, userId.Value);
+
+            return RedirectToAction("Index");
+        }
+
+
+        /*
         public IActionResult Index()
         {
             if (_dbContext.UsersInRole.ToList() != null)
@@ -60,19 +161,17 @@ namespace Recon.Controllers
 
          public IActionResult Edit(UsersInRoles model)
          {
-            Debug.WriteLine(model.roleId);
-            Debug.WriteLine(model.userId);
-            Debug.WriteLine("ANADD");
+
              if (model.roleId != null && model.userId!=null)
              {
-                Debug.WriteLine("Good1");
+               
                 if (ModelState.IsValid)
                  {
-                    Debug.WriteLine("Good2");
+                    
                     var list = _dbContext.UsersInRole.Where(x => x.roleId == model.roleId && x.userId == model.userId);
                     if (list.IsNullOrEmpty())
                     {
-                        Debug.WriteLine("Good3");
+                       
                         _dbContext.UsersInRole.Update(model);
                         _dbContext.SaveChanges();
                     }
@@ -126,7 +225,7 @@ namespace Recon.Controllers
              _dbContext.SaveChanges();
 
              return RedirectToAction("Index");
-         }
-     }
+         }*/
+    }
     
 }
