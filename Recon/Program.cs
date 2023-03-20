@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Interface.Group;
+using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
-using Recon.Models.Model.Group;
+using Recon.Models.Model.GroupLib;
 using Recon.Models.Repository;
 
 var builder = WebApplication.CreateBuilder(args);

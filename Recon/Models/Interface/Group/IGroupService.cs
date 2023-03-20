@@ -1,22 +1,32 @@
 ﻿using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
 
-namespace Recon.Models.Interface.Group
+using Recon.Models.Model.GroupLib;
+
+namespace Recon.Models.Interface.GroupLib
 {
     public interface IGroupService
     {
-        List<IPerson> getGroupMembers(int groupId);
+        List<IPerson> GetGroupMembers(int groupId);
 
-        bool isGroupOwner(int groupId);
+        bool IsGroupOwner(int groupId);
 
-        bool isInGroup(int groupId);
+        bool IsInGroup(int groupId);
 
         List<IGroup> getUserGroup();
 
-        bool isGroupOwner();
+        bool IsGroupOwner();
 
-        bool isInGroup();
+        bool IsInGroup();
 
-        bool isInGroup(int userid,int groupId);
+        bool IsInGroup(int userid,int groupId);
+
+        IEnumerable<Group> GetAllGroups();
+        Group GetGroupById(int id);
+        void AddGroup(Group group);
+        void UpdateGroup(Group group);
+        void DeleteGroup(int id);
+
+        void CreateGroup(Group group);
     }
 }

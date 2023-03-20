@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Interface.Group;
+using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.Ticket;
 using Recon.ViewModel;
@@ -106,7 +106,7 @@ namespace Recon.Controllers
                 dayOffTicket.Updated = DateTime.Now;
                 dayOffTicket.isApproved = false;
                 dayOffTicket.groupId = model.groupId;
-                dayOffTicket.userId = _userService.getUserId();
+                dayOffTicket.userId = _userService.GetUserId();
                 _dbContext.DayOffTicket.Add(dayOffTicket);
                 _dbContext.SaveChanges();
                 return View("Index");
@@ -119,7 +119,7 @@ namespace Recon.Controllers
         {
             if (_userService.IsAuthenticated())
             {
-                int userId = _userService.getUserId();
+                int userId = _userService.GetUserId();
                 var data = _dbContext.Attendances.Where(x => x.userId == userId);
                 ViewBag.data = JsonConvert.SerializeObject(data);
                 return View();
@@ -138,7 +138,7 @@ namespace Recon.Controllers
             {
                 ViewBag.AttendanceId = id;
 
-                int userId = _userService.getUserId();
+                int userId = _userService.GetUserId();
                 int attendId = int.Parse(id);
                 var userAttendence = _dbContext.Attendances.Where(x => x.AttendanceId == attendId).FirstOrDefault();
                 if (userAttendence.isClosed == true)            
@@ -146,7 +146,7 @@ namespace Recon.Controllers
                 else
                      ViewBag.IsClosed = "true";
 
-                ViewBag.AttendanceName = userAttendence.AttendanceName +"_"+ _userService.getUserName();
+                ViewBag.AttendanceName = userAttendence.AttendanceName +"_"+ _userService.GetUserName();
                 if (userAttendence.userId != userId) {
                     //Error view 
                     return View("Error");
@@ -164,7 +164,7 @@ namespace Recon.Controllers
 
         public IActionResult TicketHistory() {
             if (_userService.IsAuthenticated()) {
-                var list = _dbContext.DayOffTicket.Where(x => x.userId == _userService.getUserId());
+                var list = _dbContext.DayOffTicket.Where(x => x.userId == _userService.GetUserId());
                 return View(list);
             }
             return RedirectToAction("Login", "Account");

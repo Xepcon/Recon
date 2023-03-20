@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
-using Recon.Models.Model.Group;
+using Recon.Models.Model.GroupLib;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

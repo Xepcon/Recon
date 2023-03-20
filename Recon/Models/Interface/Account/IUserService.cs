@@ -17,13 +17,13 @@ namespace Recon.Models.Interface.Account
 
         bool IsInRole(string Name);
 
-        string getUserName();
+        string GetUserName();
 
-        int getUserId();
+        int GetUserId();
 
-        string getFullName(int userid);
+        string GetFullName(int userid);
 
-        string getFullName();
+        string GetFullName();
 
     }
 }

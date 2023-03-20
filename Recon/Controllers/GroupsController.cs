@@ -8,29 +8,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Recon.Data;
+using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
-using Recon.Models.Model.Group;
+using Recon.Models.Model.GroupLib;
 
 namespace Recon.Controllers
 {
     public class GroupsController : Controller
     {
-        private readonly DataDbContext _dbContext;
+        private readonly IGroupService _groupservice;
 
-        public GroupsController(DataDbContext dbContext)
+        public GroupsController(IGroupService groupservice)
         {
-            _dbContext = dbContext;
+            _groupservice = groupservice;
         }
 
         // GET: Groups
         public IActionResult Index()
         {
-            if (_dbContext.Groups.ToList() != null)
-            {
-                ViewBag.data = JsonConvert.SerializeObject(_dbContext.Groups.ToList());
-
-            }
-            return View();
+           
+             ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllGroups());
+             return View();
         }
 
        
@@ -39,14 +37,14 @@ namespace Recon.Controllers
         {
             return View();
         }
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null || _dbContext.Groups == null)
+            if (_groupservice.GetGroupById(id)==null)
             {
                 return NotFound();
             }
 
-            var group = _dbContext.Groups.Find(id);
+            var group = _groupservice.GetGroupById(id);
             if (group == null)
             {
                 return NotFound();
@@ -63,8 +61,7 @@ namespace Recon.Controllers
             if (group.groupId != null) {
                 if (ModelState.IsValid)
                 {
-                    _dbContext.Update(group);
-                    _dbContext.SaveChanges();
+                    _groupservice.UpdateGroup(group);
                 }
             }
             return RedirectToAction("Index");
@@ -76,39 +73,23 @@ namespace Recon.Controllers
             Debug.WriteLine(group.Name);
             if (ModelState.IsValid)
             {
+                _groupservice.CreateGroup(group);
 
-                _dbContext.Add(group);
-                var member = new GroupMember();
-               
-
-                _dbContext.SaveChanges();
-                member.groupId = group.groupId;
-                member.userId = group.principalId;
-                _dbContext.GroupMembers.Add(member);
-                _dbContext.SaveChanges();
-                
                 return RedirectToAction("Index");
             }
             return View(group);
         }
 
         [HttpPost]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
             
-            if (id == null || _dbContext.Groups == null)
+            if (_groupservice.GetGroupById(id) == null)
             {
                 return NotFound();
             }
-
-            var group = _dbContext.Groups.Find(id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            _dbContext.Groups.Remove(group);
-            _dbContext.SaveChanges();
+            _groupservice.DeleteGroup(id);
+                 
 
             return RedirectToAction("Index");
         }

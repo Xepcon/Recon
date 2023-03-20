@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Interface.Group;
+using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Ticket;
 using System.Diagnostics;
 
@@ -27,9 +27,9 @@ namespace Recon.Controllers
         {
             if (_userService.IsAuthenticated())
             {
-                if (_groupService.isGroupOwner())
+                if (_groupService.IsGroupOwner())
                 {
-                    IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.getUserId());
+                    IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
 
                     List<DayOffTicket> res = new List<DayOffTicket>();
 
@@ -59,7 +59,7 @@ namespace Recon.Controllers
         public IActionResult Approve(int id)
         {
            
-            if (_groupService.isGroupOwner())
+            if (_groupService.IsGroupOwner())
             {
                 if (_dbContext.DayOffTicket.Where(x => x.Id == id).Any())
                 {

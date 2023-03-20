@@ -1,4 +1,4 @@
-﻿namespace Recon.Models.Interface.Group
+﻿namespace Recon.Models.Interface.GroupLib
 {
     public interface IGroup
     {

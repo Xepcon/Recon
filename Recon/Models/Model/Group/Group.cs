@@ -1,7 +1,7 @@
-﻿using Recon.Models.Interface.Group;
+﻿using Recon.Models.Interface.GroupLib;
 using System.ComponentModel.DataAnnotations;
 
-namespace Recon.Models.Model.Group
+namespace Recon.Models.Model.GroupLib
 {
     public class Group : IGroup
     {

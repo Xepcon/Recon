@@ -1,4 +1,4 @@
-﻿namespace Recon.Models.Model.Account
+﻿namespace Recon.ViewModel
 {
     public class ApiPersonViewModel
     {

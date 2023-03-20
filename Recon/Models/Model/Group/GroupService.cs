@@ -1,11 +1,10 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Interface.Group;
+using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
-using System.Text.RegularExpressions;
 
-namespace Recon.Models.Model.Group
+namespace Recon.Models.Model.GroupLib
 {
     public class GroupService : IGroupService
     {
@@ -17,7 +16,7 @@ namespace Recon.Models.Model.Group
 
         }
 
-        public List<IPerson> getGroupMembers(int groupId)
+        public List<IPerson> GetGroupMembers(int groupId)
         {
             if (_userService.IsAuthenticated())
             {
@@ -39,11 +38,11 @@ namespace Recon.Models.Model.Group
 
         }
 
-        public bool isInGroup(int userid, int groupId){
+        public bool IsInGroup(int userid, int groupId){
             return _dbContext.GroupMembers.Where(x => x.userId == userid && x.groupId == groupId).Any() ;
         }
-        public bool isInGroup() {
-            return _dbContext.GroupMembers.Where(x=>x.userId==_userService.getUserId()).Any();
+        public bool IsInGroup() {
+            return _dbContext.GroupMembers.Where(x=>x.userId==_userService.GetUserId()).Any();
         }
         public List<IGroup> getUserGroup()
         {
@@ -51,7 +50,7 @@ namespace Recon.Models.Model.Group
 
             if (_userService.IsAuthenticated())
             {
-                int userId = _userService.getUserId();
+                int userId = _userService.GetUserId();
                 var userMemberList = _dbContext.GroupMembers.Where(x => x.userId == userId).ToList();
 
                 foreach (var member in userMemberList)
@@ -67,33 +66,78 @@ namespace Recon.Models.Model.Group
             return userGroups;
         }
 
-        public bool isGroupOwner(int groupId)
+        public bool IsGroupOwner(int groupId)
         {
             if(_userService.IsAuthenticated()) {
-                int userid = _userService.getUserId();
+                int userid = _userService.GetUserId();
                 return !_dbContext.Groups.Where(x => x.groupId == groupId && x.principalId == userid).IsNullOrEmpty();
             }
             return false;
         }
 
-        public bool isInGroup(int groupId)
+        public bool IsInGroup(int groupId)
         {
             if (_userService.IsAuthenticated()) {
-                int userid = _userService.getUserId();
+                int userid = _userService.GetUserId();
                 return !_dbContext.GroupMembers.Where(x => x.groupId==groupId & x.userId == userid).IsNullOrEmpty();
             }
             return false;
         }
 
-        public bool isGroupOwner()
+        public bool IsGroupOwner()
         {
             if (_userService.IsAuthenticated())
             {
-                int userid = _userService.getUserId();
+                int userid = _userService.GetUserId();
                 var res = _dbContext.Groups.Where(x=>x.principalId== userid);
                 return !res.IsNullOrEmpty();
             }
             return false;
+        }
+
+        public IEnumerable<Group> GetAllGroups()
+        {
+            return _dbContext.Groups;
+        }
+
+        public Group GetGroupById(int id)
+        {
+            return _dbContext.Groups.Find(id);
+        }
+
+        public void AddGroup(Group group)
+        {
+            _dbContext.Groups.Add(group);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateGroup(Group group)
+        {
+            _dbContext.Groups.Update(group);
+            _dbContext.SaveChanges();
+        }
+
+        public void DeleteGroup(int id)
+        {
+            var model = _dbContext.Groups.Find(id);
+            if (model != null)
+            {
+                _dbContext.Groups.Remove(model);
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void CreateGroup(Group group) {
+
+            _dbContext.Add(group);
+            var member = new GroupMember();
+
+
+            _dbContext.SaveChanges();
+            member.groupId = group.groupId;
+            member.userId = group.principalId;
+            _dbContext.GroupMembers.Add(member);
+            _dbContext.SaveChanges();
         }
     }
 }

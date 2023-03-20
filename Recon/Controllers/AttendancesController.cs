@@ -11,8 +11,8 @@ using Newtonsoft.Json;
 using NuGet.Packaging;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Interface.Group;
-using Recon.Models.Model.Group;
+using Recon.Models.Interface.GroupLib;
+using Recon.Models.Model.GroupLib;
 using Recon.Models.Model.Ticket;
 using Recon.Models.Model.TimeManager;
 
@@ -87,7 +87,7 @@ namespace Recon.Controllers
                 var user = _dbContext.Person.Where(x => x.userId == attendance.userId).FirstOrDefault();
                 if (user != null)
                 {
-                    if (_groupService.isInGroup()) {
+                    if (_groupService.IsInGroup()) {
                         int numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).Count();
                         Debug.WriteLine(numOfGroups);
                         if (numOfGroups == 1) {
@@ -128,10 +128,10 @@ namespace Recon.Controllers
         public IActionResult ApproveAttendance() {
             if (_userService.IsAuthenticated()) 
             {
-                if (_groupService.isGroupOwner()) 
+                if (_groupService.IsGroupOwner()) 
                 {
                     
-                    IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.getUserId());
+                    IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
 
                     List<Attendance> res = new List<Attendance>();
 
@@ -161,7 +161,7 @@ namespace Recon.Controllers
                 try
                 {
                     var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
-                    if(!_groupService.isInGroup(_userService.getUserId(),model.groupId) || !_groupService.isGroupOwner()){
+                    if(!_groupService.IsInGroup(_userService.GetUserId(),model.groupId) || !_groupService.IsGroupOwner()){
                         return NotFound();
                     }
                     if (model != null)

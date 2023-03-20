@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.Card;
-using Recon.Models.Model.Group;
+using Recon.Models.Model.GroupLib;
 using Recon.Models.Model.Ticket;
 using Recon.Models.Model.TimeManager;
 

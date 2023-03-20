@@ -20,10 +20,10 @@ namespace Recon.Models.Model.Account
             _dbContext = dbContext;
         }
 
-        public string getUserName() {
+        public string GetUserName() {
             if (IsAuthenticated())
             {
-                var userId = getUserId();
+                var userId = GetUserId();
                 //var user = GetById(userId);
                 var personEntity = _dbContext.Person.Find(userId);
                 if (personEntity == null)
@@ -50,7 +50,7 @@ namespace Recon.Models.Model.Account
         {
             if (IsAuthenticated())
             {
-                var userId = getUserId();
+                var userId = GetUserId();
                 var user = GetById(userId);
                 var userRolesWithNames = from ur in _dbContext.UsersInRole
                                          join r in _dbContext.Role on ur.roleId equals r.Id
@@ -176,7 +176,7 @@ namespace Recon.Models.Model.Account
            
         }
 
-        public string getFullName(int userid) {
+        public string GetFullName(int userid) {
             var model = _dbContext.Person.Where(x=>x.userId==userid).FirstOrDefault();
             if (model != null)
             {
@@ -185,9 +185,9 @@ namespace Recon.Models.Model.Account
             return "";
         }
 
-        public string getFullName()
+        public string GetFullName()
         {
-            var model = _dbContext.Person.Where(x => x.userId == getUserId()).FirstOrDefault();
+            var model = _dbContext.Person.Where(x => x.userId == GetUserId()).FirstOrDefault();
             if (model != null)
             {
                 return model.FirstName + " " + model.LastName;
@@ -196,7 +196,7 @@ namespace Recon.Models.Model.Account
         }
 
 
-        //string getFullName();
+        //string GetFullName();
         public List<Roles> GetRolesForUser(int userId)
         {
             var roles = new List<Roles>();
@@ -216,7 +216,7 @@ namespace Recon.Models.Model.Account
             return roles;
         }
 
-        public int getUserId() {
+        public int GetUserId() {
             if (IsAuthenticated())
             {
                 var userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
