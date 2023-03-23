@@ -28,5 +28,13 @@ namespace Recon.Models.Interface.GroupLib
         void DeleteGroup(int id);
 
         void CreateGroup(Group group);
+
+        IEnumerable<GroupMember> GetAllMembers();
+
+        GroupMember GetMembersById(int groupid, int userid);
+        bool AddMembers(GroupMember model);        
+        void DeleteMembers(int groupid, int userid);
+
+
     }
 }

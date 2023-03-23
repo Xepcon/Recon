@@ -8,30 +8,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
+using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
 
 namespace Recon.Controllers
 {
+    [Authenticated]
     public class GroupMembersController : Controller
     {
-        private readonly DataDbContext _dbContext;
-        private readonly IUserService _userService;
+        private readonly IGroupService _groupservice;
+      
 
-        public GroupMembersController(DataDbContext dbContext,IUserService userService)
+        public GroupMembersController(IGroupService groupservice)
         {
-            _dbContext = dbContext;
-            _userService = userService;
+           _groupservice= groupservice;
         }
         public IActionResult Index()
         {
-            if (_dbContext.GroupMembers.ToList() != null)
-            {
-                ViewBag.data = JsonConvert.SerializeObject(_dbContext.GroupMembers.ToList());
-
-            }
+            
+            ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllMembers());            
             return View();
         }
 
@@ -48,19 +47,9 @@ namespace Recon.Controllers
            
             if (ModelState.IsValid)
             {
-                //Check if user intern only one group allowed 
-                if (_userService.GetRolesForUser(model.userId).Where(x=>x.Name=="Intern").Any()){
-                    return RedirectToAction("Index");
-                }
-                
-                var list = _dbContext.GroupMembers.Where(x=>x.groupId== model.groupId && x.userId==model.userId).ToList();
-
-                if (list.IsNullOrEmpty())
+                bool succes = _groupservice.AddMembers(model);
+                if(succes)
                 {
-                    _dbContext.Add(model);
-                    _dbContext.SaveChanges();
-
-                    
                     return RedirectToAction("Index");
                 }
                 else {
@@ -73,22 +62,13 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Delete(int groupid,int userid)
         {
-            Debug.WriteLine(groupid);
-            Debug.WriteLine(userid);
+           
             if (groupid != null && userid != null)
             {
                 try
                 {
-                    var model = _dbContext.GroupMembers.Where(x => x.groupId == groupid & x.userId == userid).FirstOrDefault();
-                    if (model != null)
-                    {
-                        _dbContext.GroupMembers.Remove(model);
-                        _dbContext.SaveChanges();
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                    _groupservice.DeleteMembers(groupid,userid);    
+                    
                 }
                 catch (Exception e)
                 {

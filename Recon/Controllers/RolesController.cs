@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Model.Account;
 using Recon.Models.Repository;
 
 namespace Recon.Controllers
 {
+    [Authenticated]
     public class RolesController : Controller
     {
         private readonly IRolesRepository _rolesRepository;

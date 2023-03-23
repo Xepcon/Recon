@@ -4,6 +4,7 @@ using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using Recon.Data;
 using Recon.Models.Interface.Account;
+using Recon.ViewModel;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
@@ -196,7 +197,7 @@ namespace Recon.Models.Model.Account
         }
 
 
-        //string GetFullName();
+       
         public List<Roles> GetRolesForUser(int userId)
         {
             var roles = new List<Roles>();
@@ -227,6 +228,39 @@ namespace Recon.Models.Model.Account
             }
         }
 
+        public void Register(RegisterViewModel model) {
+                UserEntity user = new UserEntity
+                {
+                    Username = model.Username,
+                    PasswordHash = model.Password,
+                    Email = model.Email,
+                };
+
+           
+                Create(user);
+                
+                var tempororaryPersonId = new Person();
+                tempororaryPersonId.userId = user.Id;
+                _dbContext.Person.Add(tempororaryPersonId);
+                _dbContext.SaveChanges();
+                
+               
+           
+
+
+        }
+        public Person UserGetPersonalInfo(int userId) {
+            return _dbContext.Person.Where(x => x.userId == userId).FirstOrDefault();
+        }
+
+        public void UserUpdatePersonalInfo(Person model)
+        {
+            if (model != null)
+            {
+                _dbContext.Person.Update(model);
+                _dbContext.SaveChanges();
+            }
+        }
 
     }
 }

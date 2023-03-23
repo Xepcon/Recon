@@ -1,16 +1,118 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Recon.Models.Interface.Account;
 @using Recon.Models.Interface.GroupLib;
 @using Recon.Models.Model.Account
 
 
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IGroupService group
+@inject IUserService Auth
+
+
+@if (Auth.IsAuthenticated())
+{
+    <div class="dashboard-container">
+        @if (Auth.IsInRole("HR") || Auth.IsInRole("Admin"))
+        {
+            <a class="dashboard-link" asp-area="" asp-controller="Roles" asp-action="Index">    
+                <div class="dashboard-item">            
+                    <h3>Szerepkörök</h3>      
+                    <p>Szerepkörök léttrehozása, módosítása</p>
+                </div>
+            </a>
+
+            <a class="dashboard-link" asp-area="" asp-controller="UsersInRoles" asp-action="Index">
+                 <div class="dashboard-item">            
+                    <h3>Szerepkörök felhasználóhoz rendelés</h3>      
+                    <p>Felhasználókat lehet szerepekhez rendelni</p>
+                </div>
+            </a>                                                                    
+            <a class="dashboard-link" asp-area="" asp-controller="Groups" asp-action="Index">
+                <div class="dashboard-item">
+                    <h3>Munkacsoportok</h3>
+                    <p>Munkacsoportok léttrehozása, törlése, szerkesztése</p>
+                </div>
+            </a>
+        }        
+        @if(group.IsGroupOwner()){
+            <a class="dashboard-link" asp-area="" asp-controller="GroupMembers" asp-action="Index">
+                <div class="dashboard-item">
+                    <h3>Felhasználók a munkacsoportokban</h3>
+                    <p>Felhasználókat lehet munkacsoportokhoz rendelni</p>
+                </div>
+            </a>
+            <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="ApproveAttendance">
+                <div class="dashboard-item">
+                    <h3>Jelenlétiív engedélyezés</h3>
+                    <p>Gyakornokok jelenléti ívének engedélyezése</p>
+                </div>
+            </a>
+            <a class="dashboard-link" asp-area="" asp-controller="TicketApprov" asp-action="Index">
+                <div class="dashboard-item">
+                    <h3>Szabadságolások</h3>
+                    <p>Beadott szabadságok engedélyezése</p>
+                </div>
+            </a>
+            <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="Index">
+                <div class="dashboard-item">
+                    <h3>Jelentétiív</h3>
+                    <p>Új jelentléti ív léttrehozása</p>
+                </div>
+            </a>
+        }
+        
+
+    </div>
+}
+else
+{
+    <div class="image-container">
+        <img src="img/authenticateyourself.svg" style="width: 600px; height: 600px;" />
+        
+    </div>
+    <h3 style="text-align:center"> Log In please</h3>
+}
 
 
 
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<style>
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top:100px;
+    }
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 50px;
+    }
 
+    .dashboard-item {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 900;
+        background-color: #6C63FF;
+        color:#FFFFFF;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        text-align: center;
+        width: 250px;
+        height:250px;
+        text-align: center; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* center vertically */
+        align-items: center; /* center horizontally */
+        border: 1px solid black;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .dashboard-item:hover {
+       transform:scale(1.1);
+      
+    }
+</style>

@@ -34,59 +34,15 @@ namespace Recon.Controllers
             return View();
 
         }
-
+        
         public IActionResult CheckHistory()
         {
 
             return View();
         }
-        [HttpGet]
-        public IActionResult UpdatePersonalInfo() {
-            if (_userService.IsAuthenticated())
-            {
-                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
-                var person = _dbContext.Person.Where(x=>x.userId ==userId).FirstOrDefault();
-                Debug.WriteLine(person);
-                Debug.WriteLine("AAAAAAAAA");
-                ViewBag.data = JsonConvert.SerializeObject(person); 
-                if (person == null)
-                {
-                    return View("Error");
-                }
-                return View();
-            }
-            else {
-                return View("Error");
-            }                
-          
-        }
-        [HttpPost]
-        public IActionResult UpdatePersonalInfo(Person model)
-        {                
-            //Debug.WriteLine(model.ToString());
-            Debug.WriteLine(model.FirstName);
-            Debug.WriteLine(model.LastName);
-            if (_userService.IsAuthenticated())
-            {
-                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
-              
-                model.userId = userId;
-                if (ModelState.IsValid)
-                {
-                    _dbContext.Update(model);
-                    _dbContext.SaveChanges();
-                    return View("Index");
-                }
-                return View(model);
-            }
-            else
-            {
-                return View("Error");
-            }
+       
 
-        }
-
-        public IActionResult DayOff() {
+        /*public IActionResult DayOff() {
 
             ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
             return View();
@@ -113,7 +69,7 @@ namespace Recon.Controllers
             }
             return RedirectToAction("Login", "Account");
             
-        }
+        }*/
         [CustomRole("Intern")]
         public IActionResult AttendanceSheet()
         {
@@ -162,13 +118,7 @@ namespace Recon.Controllers
 
         }
 
-        public IActionResult TicketHistory() {
-            if (_userService.IsAuthenticated()) {
-                var list = _dbContext.DayOffTicket.Where(x => x.userId == _userService.GetUserId());
-                return View(list);
-            }
-            return RedirectToAction("Login", "Account");
-        }
+      
         public IActionResult Index()
         {
             return View();
@@ -178,44 +128,6 @@ namespace Recon.Controllers
         {
             return View();
         }
-        [HttpGet]
-        public IActionResult UpdatePassword() { 
-
-            return View();
-            
-        }
-
-        [HttpPost]
-        public IActionResult UpdatePassword(ChangePasswordViewModel model)
-        {
-            Debug.WriteLine("CALLED UPDATE PASS");
-
-            //repois.updatePW(model);
-            Debug.WriteLine(model.ToString());
-            if (model != null)
-            {
-                int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
-                var user = _userService.GetById(userId);
-
-
-                if (userId != null)
-                {
-
-                    if (!BCrypt.Net.BCrypt.Verify(model.OldPassword, user.PasswordHash))
-                    {
-                        ModelState.AddModelError("OldPassword", "Old password is incorrect");
-                        return View(model);
-                    }
-
-                    _userService.ChangePassword(userId, model.NewPassword);
-                    _userService.LogOut();
-
-                    // redirect the user to the login page
-                    return RedirectToAction("Login", "Account");
-                }
-            }
-
-            return View();
-        }
+        
     }
 }

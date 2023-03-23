@@ -139,5 +139,47 @@ namespace Recon.Models.Model.GroupLib
             _dbContext.GroupMembers.Add(member);
             _dbContext.SaveChanges();
         }
+
+        public IEnumerable<GroupMember> GetAllMembers()
+        {
+            return _dbContext.GroupMembers;
+        }
+
+        public GroupMember GetMembersById(int groupid, int userid)
+        {
+            return _dbContext.GroupMembers.Where(x => x.groupId == groupid && x.userId == userid).FirstOrDefault();
+        }
+
+        public bool AddMembers(GroupMember model)
+        {
+            //Check if user intern only one group allowed 
+            if (_userService.GetRolesForUser(model.userId).Where(x => x.Name == "Intern").Any())
+            {
+                return false;
+            }
+
+            var list = _dbContext.GroupMembers.Where(x => x.groupId == model.groupId && x.userId == model.userId).ToList();
+
+            if (list.IsNullOrEmpty())
+            {
+                _dbContext.Add(model);
+                _dbContext.SaveChanges();
+
+                return true;
+            }
+            return false;
+        }
+
+       
+
+        public void DeleteMembers(int groupid, int userid)
+        {
+            var model = _dbContext.GroupMembers.Where(x => x.groupId == groupid & x.userId == userid).FirstOrDefault();
+            if (model != null)
+            {
+                _dbContext.GroupMembers.Remove(model);
+                _dbContext.SaveChanges();
+            }
+        }
     }
 }

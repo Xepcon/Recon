@@ -18,7 +18,8 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 60px;
 }
 
 a {
@@ -81,3 +82,7 @@ a {
         font-weight: bold;
         color: "#4CAF50";
     }
+
+.dx-button {
+    background-color: #6C63FF !important;
+}

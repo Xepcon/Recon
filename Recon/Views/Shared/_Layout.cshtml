@@ -1,9 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json;
 @using Recon.Models.Interface.Account;
 @using Recon.Models.Model.Account
+@using Recon.Utility;
 
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IUserService Auth
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,20 +23,28 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme/22.2.4/js/dx.all.js"></script>
+   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.9.1/dx.aspnet.data.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.1.1/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
-   
+
+
 
     <!-- DevExtreme libraries -->
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/21.1.5/css/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/21.1.5/css/dx.light.css" />
     <script src="https://cdn3.devexpress.com/jslib/22.2.4/js/localization/dx.messages.hu.js"></script>
      <link rel="dx-theme" data-theme="generic.light" href="css/dx.light.css" data-active="true">
+     <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
 </head>
-<body>
+<body>    
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -44,52 +56,20 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Kezdőlap</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        
-                          <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
-                          </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Attendances" asp-action="Index">Attendance</a>
-                        </li>
-                        
+                      
+                      
                        
-                        @if (Auth.IsAuthenticated() == true)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="UsersInRoles" asp-action="Index">UserInRoles</a>
-                            </li>
-                        }
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Groups" asp-action="Index">Group</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TicketApprov" asp-action="Index">Ticket Approved</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="GroupMembers" asp-action="Index">GroupMember</a>
-                        </li>
-                        <li class="nav-item">
-                            
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Attendances" asp-action="ApproveAttendance">ApproveAttendance</a>
-                        </li>
                     </ul>
                     
                 </div>
                 <ul class="navbar-nav">
-                    @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
+                    @if (Auth.IsAuthenticated())
                     {
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Dashboard")">
-                            <span class="nav-link text-dark">Hello, @Auth.GetFullName()</span>                                                      
+                            <span class="nav-link text-dark">Szia, @Auth.GetFullName()</span>                                                      
                             </a>
                         </li>
                        <li class="nav-item">
@@ -101,10 +81,10 @@
                     else
                     {
                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Bejelentkezés</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Regisztráció</a>
                         </li>
                     }
                    
@@ -120,12 +100,45 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Recon - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+           
         </div>
     </footer>
     <script>
         DevExpress.localization.locale(navigator.language);
     </script>
+    @if (ViewBag.ToastMessages != null)
+    {
+        <script>        
+        $(function () {
+            var messages = @Html.Raw(JsonConvert.SerializeObject(ViewBag.ToastMessages));
+            for (var i = 0; i < messages.length; i++) {
+                var message = messages[i];
+                var type = "info";
+                if(message.type == 0){
+                    type="error"
+                }
+                if(message.type == 1){
+                    type="info"
+                }
+                if(message.type == 2){
+                    type="succes"
+                }
+                if (message.type == 3) {
+                    type = "warning"
+                }
+                console.log(i);
+                console.log(message.time)
+                DevExpress.ui.notify(message.message, type, {
+                    displayTime: message.time,
+                    position: {
+                        my: "top",
+                        at: "top-" + i * 200
+                    }
+                });
+            }
+        });                       
+    </script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

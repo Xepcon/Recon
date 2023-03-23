@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NuGet.Packaging;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
@@ -18,6 +19,7 @@ using Recon.Models.Model.TimeManager;
 
 namespace Recon.Controllers
 {
+    [Authenticated]
     public class AttendancesController : Controller
     {    
         private readonly DataDbContext _dbContext;

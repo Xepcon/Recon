@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models;
 using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
+using Recon.Utility;
 using Recon.ViewModel;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -15,14 +19,49 @@ namespace Recon.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly DataDbContext _dbContext;
-
-        public AccountController(IUserService userService, IHttpContextAccessor httpContextAccessor, DataDbContext dbContext)
+        
+        public AccountController(IUserService userService )
         {
-            _userService = userService;
-            _httpContextAccessor = httpContextAccessor;
-            _dbContext = dbContext;
+            _userService = userService;            
+        }
+
+        [Authenticated]
+        [HttpGet]
+        public IActionResult UpdatePassword()
+        {
+
+            return View();
+
+        }
+        [Authenticated]
+        [HttpPost]
+        public IActionResult UpdatePassword(ChangePasswordViewModel model)
+        {
+            
+            if (model != null)
+            {
+                int userId = _userService.GetUserId();
+                var user = _userService.GetById(userId);
+
+
+                if (userId != null)
+                {
+
+                    if (!BCrypt.Net.BCrypt.Verify(model.OldPassword, user.PasswordHash))
+                    {
+                        ModelState.AddModelError("OldPassword", "Old password is incorrect");
+                        return View(model);
+                    }
+
+                    _userService.ChangePassword(userId, model.NewPassword);
+                    _userService.LogOut();
+
+                    // redirect the user to the login page
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+
+            return View();
         }
 
         [HttpGet]
@@ -35,34 +74,12 @@ namespace Recon.Controllers
 
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
-        {
-           
+        {           
             if (ModelState.IsValid)
             {
-                
-                var user = new UserEntity
-                {
-                    Username = model.Username,
-                    PasswordHash = model.Password,
-                    Email = model.Email,                                    
-                };
-              
-                try
-                {
-                    _userService.Create(user);
-                    Debug.WriteLine("USERID :" + user.Id);
-                    var Tempororary = new Person();
-                    Tempororary.userId = user.Id;
-                    _dbContext.Person.Add(Tempororary);
-                    _dbContext.SaveChanges();
-                    
-                    return RedirectToAction("Login");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred while registering the user.");
-                    return View(model);
-                }
+                 _userService.Register(model);                
+                return RedirectToAction("Login");
+                              
             }
 
             return View(model);
@@ -71,16 +88,27 @@ namespace Recon.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-          
+            ViewBag.ToastMessages = new List<ToastMessages>();
+            ToastMessages toast = new ToastMessages
+            {
+                message = "This is a test message",
+                type = TypeToast.INFO,
+                time = 10000
+            };
+            ToastMessages toast2 = new ToastMessages
+            {
+                message = "This is a test message2",
+                type = TypeToast.SUCCES,
+                time = 5000
+            };
+            ViewBag.ToastMessages.Add(toast);
+            ViewBag.ToastMessages.Add(toast2);
+            
             return View();
         }
 
       
-        public IActionResult Logout()
-        {
-            _userService.LogOut();
-            return RedirectToAction("Index", "Home");
-        }
+       
 
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
@@ -90,9 +118,7 @@ namespace Recon.Controllers
                 var user = _userService.Authenticate(model.Username, model.Password);
 
                 if (user != null)
-                {
-                  
-                        
+                {                                         
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -104,7 +130,45 @@ namespace Recon.Controllers
 
             return View(model);
         }
+        [Authenticated]
+        [HttpGet]
+        public IActionResult UpdatePersonalInfo()
+        {        
+            var person = _userService.UserGetPersonalInfo(_userService.GetUserId());              
+            ViewBag.data = JsonConvert.SerializeObject(person);
+            if (person == null)
+            {
+                return View("Error");
+            }
+            return View();            
+        }
+        [Authenticated]
+        [HttpPost]
+        public IActionResult UpdatePersonalInfo(Person model)
+        {
+         
+            if (_userService.IsAuthenticated())
+            {
+                int userId = _userService.GetUserId();
+                model.userId = userId;
+               
+                if (ModelState.IsValid)
+                {
+                    _userService.UserUpdatePersonalInfo(model);                    
+                    return RedirectToAction("Index","Dashboard");
+                }
+                return View(model);
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
 
-
+        public IActionResult Logout()
+        {
+            _userService.LogOut();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

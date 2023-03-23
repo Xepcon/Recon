@@ -1,0 +1,95 @@
+﻿
+<form id="formDayOff" action="@Url.Content("~/TicketApprov/DayOff/")" method="post">
+    <div id="form-container"></div>
+</form>
+
+@section scripts {
+    <script>
+        var groupData = @Html.Raw(@ViewBag.UserGroup);
+        console.log(groupData);
+
+        $(function () {
+            $("#form-container").dxForm({
+                items: [
+                    {
+                        dataField: "Title",
+                        editorType: 'dxTextBox',
+                        label: { text: "Name" }
+                    },
+                    {
+                        dataField: "Description",
+                        label: { text: "Description" },
+                        editorType: "dxTextArea"
+                    },
+                    {
+                        dataField: "StartDayOff",
+                        label: { text: "Start Day Off" },
+                        editorType: "dxDateBox",
+                        editorOptions: {
+                            validationRules: [{
+                                type: "date",
+                                message: "Please enter a valid date"
+                            }]
+                        }
+                    },
+                    {
+                        dataField: "EndDayOff",
+                        label: { text: "End Day Off" },
+                        editorType: "dxDateBox",
+                        editorOptions: {
+                            validationRules: [{
+                                type: "date",
+                                message: "Please enter a valid date"
+                            }]
+                        }
+                    },
+                    {
+                        dataField: "groupId",
+                        editorType: 'dxLookup',
+                        editorOptions: {
+                            dataSource: groupData,
+                            displayExpr: 'Name',
+                            valueExpr: 'groupId'
+
+                        }
+
+                    },
+                    {
+                        itemType: "button",
+                        buttonOptions: {
+                            text: "Save",
+                            type: "success",
+                            onClick(e){
+                                console.log("AAAAAAAAAA");
+                                
+                                //e.preventDefault(); // prevent the default button behavior
+                                const form = $("#formDayOff").get(0);
+                                const formInstance = $("#form-container").dxForm("instance");
+            
+                                // Get the StartDayOff value
+                                const startDayOffValue = formInstance.getEditor("StartDayOff").option("value");
+            
+                                // Get the EndDayOff value
+                                const endDayOffValue = formInstance.getEditor("EndDayOff").option("value");
+
+                                if(startDayOffValue>endDayOffValue){
+                                    DevExpress.ui.notify("Rossz intervallumot adtál meg ", "error", 4000);
+                                    return;
+                                }
+                                console.log("Start Day Off:", startDayOffValue);
+                                console.log("End Day Off:", endDayOffValue);
+                                console.log(form);
+                                form.submit(); // submit the form
+                            }
+                            
+                        }
+                    }
+                ],
+                validationGroup: "dayOffForm",
+                labelLocation: "top"
+            });
+
+          
+        });
+    </script>
+}
