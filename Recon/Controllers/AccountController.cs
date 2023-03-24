@@ -87,23 +87,7 @@ namespace Recon.Controllers
 
         [HttpGet]
         public IActionResult Login()
-        {
-            ViewBag.ToastMessages = new List<ToastMessages>();
-            ToastMessages toast = new ToastMessages
-            {
-                message = "This is a test message",
-                type = TypeToast.INFO,
-                time = 10000
-            };
-            ToastMessages toast2 = new ToastMessages
-            {
-                message = "This is a test message2",
-                type = TypeToast.SUCCES,
-                time = 5000
-            };
-            ViewBag.ToastMessages.Add(toast);
-            ViewBag.ToastMessages.Add(toast2);
-            
+        {          
             return View();
         }
 
@@ -123,7 +107,7 @@ namespace Recon.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid username or password.");
+                    ModelState.AddModelError("", "Helytelen felhasználónév vagy jelszó");
                     return View(model);
                 }
             }
@@ -145,24 +129,16 @@ namespace Recon.Controllers
         [Authenticated]
         [HttpPost]
         public IActionResult UpdatePersonalInfo(Person model)
-        {
-         
-            if (_userService.IsAuthenticated())
-            {
-                int userId = _userService.GetUserId();
-                model.userId = userId;
+        {                   
+            int userId = _userService.GetUserId();
+            model.userId = userId;
                
-                if (ModelState.IsValid)
-                {
-                    _userService.UserUpdatePersonalInfo(model);                    
-                    return RedirectToAction("Index","Dashboard");
-                }
-                return View(model);
-            }
-            else
+            if (ModelState.IsValid)
             {
-                return View("Error");
+                _userService.UserUpdatePersonalInfo(model);                    
+                return RedirectToAction("Index","Dashboard");
             }
+            return View(model);           
         }
 
         public IActionResult Logout()

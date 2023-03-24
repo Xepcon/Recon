@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using NuGet.Packaging;
 using Recon.Attribute;
@@ -16,6 +17,7 @@ using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.GroupLib;
 using Recon.Models.Model.Ticket;
 using Recon.Models.Model.TimeManager;
+using Recon.Utility;
 
 namespace Recon.Controllers
 {
@@ -33,6 +35,7 @@ namespace Recon.Controllers
         }
         public IActionResult Index()
         {
+           
             if (_dbContext.Attendances.ToList() != null)
             {
                 ViewBag.data = JsonConvert.SerializeObject(_dbContext.Attendances.ToList());
@@ -44,7 +47,7 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Delete(int? id)
         {
-           
+            ViewBag.ToastMessages = new List<ToastMessages>();
             if (id != null )
             {
                 try
@@ -57,18 +60,24 @@ namespace Recon.Controllers
                     }
                     else
                     {
-                        return NotFound();
+                     
+                        return View("CustomNotFoundView");
                     }
                 }
                 catch (Exception e)
                 {
-                    return NotFound();
+                    return View("CustomNotFoundView");
                 }
+               
+               
+                
                 return RedirectToAction("Index");
             }
             else
             {
-                return NotFound();
+
+
+                return View("CustomNotFoundView");
             }
 
 
@@ -83,75 +92,121 @@ namespace Recon.Controllers
         
         public IActionResult Create( Attendance attendance)
         {
+            ViewBag.ToastMessages = new List<ToastMessages>();
+            
             if (ModelState.IsValid)
             {
 
                 var user = _dbContext.Person.Where(x => x.userId == attendance.userId).FirstOrDefault();
                 if (user != null)
                 {
-                    if (_groupService.IsInGroup()) {
-                        int numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).Count();
-                        Debug.WriteLine(numOfGroups);
-                        if (numOfGroups == 1) {
-                            attendance.groupId = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).FirstOrDefault().groupId;                            
-                        }
-                        else
-                        {
-                            return View("Error");
-                        }
-                    }
-                    
-                    _dbContext.Add(attendance);
-                    _dbContext.SaveChanges();
-                    for (int i = 1; i <= DateTime.DaysInMonth(attendance.CreatedAt.Year, attendance.CreatedAt.Month); i++)
-                    {
-                        AttendanceEntity tmp = new AttendanceEntity();
-                        tmp.AttendanceId = attendance.AttendanceId;
-                        Debug.WriteLine(attendance.AttendanceId);
-                        tmp.Hour = null;
 
-                        tmp.AttendanceDate = new DateTime(attendance.CreatedAt.Year, attendance.CreatedAt.Month, i);
-                        tmp.isWeekend = tmp.AttendanceDate.DayOfWeek == DayOfWeek.Saturday || tmp.AttendanceDate.DayOfWeek == DayOfWeek.Sunday;
-                        tmp.approved = false;
-                        tmp.Minutes = null;
-                        tmp.interName = user.FirstName + " " + user.LastName;
-                        _dbContext.AttendanceEntitys.Add(tmp);
+                    if (_userService.GetRolesForUser(attendance.userId).Any(r => r.Name == "Intern"))
+                    {
+                        if (_groupService.IsInGroup())
+                        {
+                            int numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).Count();
+                            Debug.WriteLine(numOfGroups);
+                            if (numOfGroups == 1)
+                            {
+                                attendance.groupId = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).FirstOrDefault().groupId;
+                            }
+                            else
+                            {
+                               
+                                ViewBag.ToastMessages.Add(new ToastMessages
+                                {
+                                    message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó több munkacsoportba is tartozik",
+                                    type = TypeToast.ERROR,
+
+                                });
+                                return View();
+                            }
+                        }
+
+                        _dbContext.Add(attendance);
+                        _dbContext.SaveChanges();
+                        for (int i = 1; i <= DateTime.DaysInMonth(attendance.CreatedAt.Year, attendance.CreatedAt.Month); i++)
+                        {
+                            AttendanceEntity tmp = new AttendanceEntity();
+                            tmp.AttendanceId = attendance.AttendanceId;
+                            Debug.WriteLine(attendance.AttendanceId);
+                            tmp.Hour = null;
+
+                            tmp.AttendanceDate = new DateTime(attendance.CreatedAt.Year, attendance.CreatedAt.Month, i);
+                            tmp.isWeekend = tmp.AttendanceDate.DayOfWeek == DayOfWeek.Saturday || tmp.AttendanceDate.DayOfWeek == DayOfWeek.Sunday;
+                            tmp.approved = false;
+                            tmp.Minutes = null;
+                            tmp.interName = user.FirstName + " " + user.LastName;
+                            _dbContext.AttendanceEntitys.Add(tmp);
+                        }
+                       
+                        ViewBag.ToastMessages.Add(new ToastMessages
+                        {
+                            message = "Sikeresen léttrehoztad a jelenlétiívet",
+                            type = TypeToast.SUCCES,
+
+                        });
+                        _dbContext.SaveChanges();
+                        return View();
                     }
-                    _dbContext.SaveChanges();
-                    return RedirectToAction(nameof(Index));
+                    else {
+                        
+                        ViewBag.ToastMessages.Add(new ToastMessages
+                        {
+                            message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó nem diák",
+                            type = TypeToast.ERROR,
+
+                        });
+                        return View();
+                    }
                 }
                 else {
-                    return BadRequest("No user");
+                    
+                    ViewBag.ToastMessages.Add(new ToastMessages
+                    {
+                        message = "A felhasználó nem található",
+                        type = TypeToast.ERROR,
+
+                    });
+                    return View();
                 }
             }
+           
+            ViewBag.ToastMessages.Add(new ToastMessages
+            {
+                message = "Hibás adatokat adtál meg ",
+                type = TypeToast.INFO,
+
+            });
+          
             return View(attendance);
         }
 
         public IActionResult ApproveAttendance() {
-            if (_userService.IsAuthenticated()) 
+           
+            if (_groupService.IsGroupOwner()) 
             {
-                if (_groupService.IsGroupOwner()) 
-                {
                     
-                    IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
+                IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
 
-                    List<Attendance> res = new List<Attendance>();
+                List<Attendance> res = new List<Attendance>();
 
-                    foreach (var item in userGroupsPrincipal)
+                foreach (var item in userGroupsPrincipal)
+                {
+                    if (_dbContext.Attendances.Where(x => x.groupId == item.groupId).Any())
                     {
-                        if (_dbContext.Attendances.Where(x => x.groupId == item.groupId).Any())
-                        {
 
-                            res.AddRange(_dbContext.Attendances.Where(x => x.groupId == item.groupId && x.isClosed == false).ToList());
-                        }
+                        res.AddRange(_dbContext.Attendances.Where(x => x.groupId == item.groupId && x.isClosed == false).ToList());
                     }
-                    ViewBag.data= JsonConvert.SerializeObject(res);
-                    Debug.WriteLine(res.Count);
-                    return View();
                 }
-                return View("Error");
+                ViewBag.data= JsonConvert.SerializeObject(res);
+                Debug.WriteLine(res.Count);
+                return View();
             }
-            return RedirectToAction("Login", "Account");
+            return View("AccessDenied");
+            
+           
         }
 
         [HttpPost]
@@ -164,7 +219,7 @@ namespace Recon.Controllers
                 {
                     var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
                     if(!_groupService.IsInGroup(_userService.GetUserId(),model.groupId) || !_groupService.IsGroupOwner()){
-                        return NotFound();
+                        return View("CustomNotFoundView");
                     }
                     if (model != null)
                     {
@@ -178,26 +233,46 @@ namespace Recon.Controllers
                     }
                     else
                     {
-                        return NotFound();
+                        return View("CustomNotFoundView");
                     }
                 }
                 catch (Exception e)
                 {
-                    return NotFound();
+                    return View("CustomNotFoundView");
                 }
                 return RedirectToAction("ApproveAttendance");
             }
             else
             {
-                return NotFound();
+                return View("CustomNotFoundView");
             }
         }
 
         public IActionResult ApproveSheetAttendance(int id) {
+            if (_groupService.IsGroupOwner())
+            {
+                var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
+                if (model != null)
+                {
+                    ViewBag.AttendanceId = id;
+
+                    return View();
+                }
+                return View("AccessDenied");
+            }
+            return View("CustomNotFoundView");
+
+
+        }
+
+        [CustomRole("Intern")]
+        public IActionResult AttendanceSheet()
+        {
             if (_userService.IsAuthenticated())
             {
-                ViewBag.AttendanceId = id;              
-           
+                int userId = _userService.GetUserId();
+                var data = _dbContext.Attendances.Where(x => x.userId == userId);
+                ViewBag.data = JsonConvert.SerializeObject(data);
                 return View();
 
             }
@@ -205,6 +280,35 @@ namespace Recon.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+
+        }
+
+        [CustomRole("Intern")]
+        public IActionResult AttendanceSheetEdit(string id)
+        {
+            
+            ViewBag.AttendanceId = id;
+
+            int userId = _userService.GetUserId();
+            int attendId = int.Parse(id);
+            var userAttendence = _dbContext.Attendances.Where(x => x.AttendanceId == attendId).FirstOrDefault();
+            if (userAttendence.isClosed == true)
+                ViewBag.IsClosed = "false";
+            else
+                ViewBag.IsClosed = "true";
+
+            ViewBag.AttendanceName = userAttendence.AttendanceName + "_" + _userService.GetUserName();
+            if (userAttendence.userId != userId)
+            {
+                //Error view 
+                return View("Error");
+            }
+
+            return View();
+
+            
+            
+
         }
     }
 }

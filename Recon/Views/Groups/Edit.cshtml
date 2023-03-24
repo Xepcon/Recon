@@ -35,12 +35,16 @@
                             label: { text: "Group ID" },
                             editorOptions: {
                                 readOnly: true
+                            },
+                            label: {
+                                text: "Munkacsoport azonosító"
                             }
                             
                         },
                         {
                             dataField: "Name",
-                            label: { text: "Name" }
+                            label: { text: "Munkacsoport" }
+
                         },
                         {
                             dataField: "principalId",
@@ -50,7 +54,8 @@
                                 displayExpr:'name',
                                 valueExpr:'userId'
 
-                            }
+                            },
+                            label: { text: "Felettes" }
                            
                         },
                         {

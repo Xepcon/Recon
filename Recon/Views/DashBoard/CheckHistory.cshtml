@@ -3,7 +3,28 @@
 *@
 @{
 }
+<style>
+    .hour-container {
+        display: inline-block;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        width: 200px;
+        height: 100px;
+        margin-right: 10px;
+        text-align: center;
+        
+        background-color: #6C63FF;
+    }
 
+    .hour-item {
+        
+        color: white;
+        padding-top:15px;
+    }
+
+    .hour-value-body {
+        padding: 10px;
+    }
+</style>
 
 @using Microsoft.AspNetCore.Http
 
@@ -12,8 +33,24 @@
 <div style="height:260px"id="range-selector"></div>
 
 
-<div style="margin-top:50px" id="chart"></div>
+<div style="margin-top:50px; margin-bottom:100px!important;" id="chart"></div>
 
+<div class="hour-container">      
+    <div class="hour-item">            
+        <h4>Ledolgozott órák</h4>  
+        <div class="hour-value-body">
+            <p id="worked-label">42 óra 22 perc</p>
+        </div>
+    </div>       
+</div>
+<div class="hour-container">      
+    <div class="hour-item">            
+        <h4>Szünetek</h4>  
+        <div class="hour-value-body">
+            <p id="break-label">42 óra 22 perc</p>
+        </div>
+    </div>       
+</div>
 
 <script>
 
@@ -28,7 +65,7 @@
             },
         },
         title: {
-            text: 'Weekly report',
+            text: 'Heti kimutatás ',
         },
         valueAxis: {
             type: 'continuous',
@@ -51,7 +88,7 @@
 
         },
         legend: {
-            title: 'Working Hour',
+            title: 'Ledogozott órák',
             verticalAlignment: 'bottom',
             horizontalAlignment: 'center',
         },
@@ -144,6 +181,10 @@
 
         const output = [];
         var workedHours = 0;
+        var workedMinutes = 0;
+
+        var BreakHours = 0;
+        var BreakMinutes = 0;
         Object.keys(earliestLatestByDay).forEach(date => {
             var counter = 0;
             earliestLatestByDay[date].forEach(interval => {
@@ -164,19 +205,23 @@
                     });
                 }else{*/
                     if(counter%2==0){
-                    workedHours += (endDate.getTime() - startDate.getTime() /  3600000 )
+                    
+                    workedHours += (endHour - startHour )
+                    workedMinutes += (endMinute - startMinute)
                         output.push({
                             date,
                             start: startDate,
                             end: endDate,
-                            type: 'inoffice'
+                            type: 'Irodában'
                         });
                     }else{
+                    BreakHours += (endHour - startHour)
+                    BreakMinutes += (endMinute - startMinute)
                          output.push({
                         date,
                         start: startDate,
                         end: endDate,
-                        type: 'break'
+                        type: 'Szünet'
                     });
                     }
                    
@@ -185,7 +230,29 @@
                 
             });
         });
-        console.log(workedHours);
+        
+        /*console.log(workedHours);
+        console.log(workedMinutes);
+
+        console.log(BreakHours);
+        console.log(BreakMinutes);*/
+        console.log(BreakHours)
+        if (BreakMinutes < 0) {
+            console.log("IF"+BreakHours)
+            let mod = Math.ceil((BreakMinutes / 60));
+            console.log("MODD"+mod)
+            
+            console.log("IF2" + BreakHours)
+            if (mod == 0) {
+                BreakHours = BreakHours - 1;
+                console.log(BreakHours)
+                BreakMinutes += 60
+            }
+        }
+
+
+        $("#worked-label").text(workedHours+" óra "+workedMinutes+" perc");
+        $("#break-label").text(BreakHours + " óra " + BreakMinutes + " perc");
         chartInstance.option('dataSource', output);
         //console.log(output);
        
@@ -219,7 +286,7 @@
         },
         scale: {
             startValue: new Date(2022, 1, 1),
-            endValue: new Date(2022, 8, 1),
+            endValue: new Date(2022, 12, 1),
             minorTickInterval: 'week',
             tickInterval: 'week',
             minRange: 'week',
@@ -231,8 +298,8 @@
         sliderMarker: {
             format: 'monthAndDay',
         },
-        value: [new Date(2022, 1, 5), new Date(2022, 1, 12)],
-        title: 'Select a week period',
+        value: [new Date(2022, 1, 28), new Date(2022, 2, 7)],
+        title: 'Válasz ki egy intervallumot',
 
             onValueChanged: function (e) {
                 var startDate = e.value[0];
@@ -254,5 +321,19 @@
         }
     }).dxRangeSelector("instance");
 
+    });
+    $(document).ready(function () {
+        var startDate = new Date(2022, 1, 28);
+        var endDate = new Date(2022, 2, 7);
+        var days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+        $.ajax({
+            url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
+            method: "GET",
+            success: function (data) {
+                IntervalCalculate(data)
+            },
+            error: function (error) {
+            }
+        });
     });
 </script>

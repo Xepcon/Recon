@@ -4,51 +4,30 @@
 @inject IUserService Auth
 
 <div class="dashboard-container">
-        @if (Auth.IsInRole("Intern"))
-    {
-         <div class="dashboard-item">
-            <h3>Attendance Sheet</h3>
-            <a class="dashboard-link" href="@Url.Action("AttendanceSheet", "Dashboard")">
-                View Attendance Sheet
-            </a>
-        </div>
-        }
+    <a class="dashboard-link" href="@Url.Action("UpdateWorkingHour", "Dashboard")">
     <div class="dashboard-item">
-        <h3> Dayoff</h3>
-        <a class="dashboard-link" href="@Url.Action("DayOff", "TicketApprov")">
-           Dayoff
-        </a>
+        <h3>Munkaidő</h3>
+       
+            Munkaidő fríssitése
+       
     </div>
+    </a>
+    <a class="dashboard-link" href="@Url.Action("UpdatePassword", "Account")">
     <div class="dashboard-item">
-        <h3> TicketHistory</h3>
-        <a class="dashboard-link" href="@Url.Action("TicketHistory", "TicketApprov")">
-            TicketHistory
-        </a>
+        <h3> Jelszó </h3>
+        
+            Jelszó módosítás
+        
     </div>
+    </a>
+    <a class="dashboard-link" href="@Url.Action("UpdatePersonalInfo", "Account")">
     <div class="dashboard-item">
-        <h3>Working Hours</h3>
-        <a class="dashboard-link" href="@Url.Action("UpdateWorkingHour", "Dashboard")">
-            Update Working Hours
-        </a>
+        <h3>Adatok</h3>
+       
+           Személyes adatok
+        
     </div>
-    <div class="dashboard-item">
-        <h3>Password</h3>
-        <a class="dashboard-link" href="@Url.Action("UpdatePassword", "Account")">
-            Change Password
-        </a>
-    </div>
-    <div class="dashboard-item">
-        <h3>Work History</h3>
-        <a class="dashboard-link" href="@Url.Action("CheckHistory", "Dashboard")">
-            View Work History
-        </a>
-    </div>
-    <div class="dashboard-item">
-        <h3>Personal Info</h3>
-        <a class="dashboard-link" href="@Url.Action("UpdatePersonalInfo", "Account")">
-            Update Personal Info
-        </a>
-    </div>
+    </a>
 </div>
 
 <style>

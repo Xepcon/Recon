@@ -14,6 +14,7 @@ using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
+using Recon.Utility;
 
 namespace Recon.Controllers
 {
@@ -44,16 +45,28 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Create(GroupMember model)
         {
-           
+            ViewBag.ToastMessages = new List<ToastMessages>();
             if (ModelState.IsValid)
             {
                 bool succes = _groupservice.AddMembers(model);
                 if(succes)
                 {
-                    return RedirectToAction("Index");
+                    ViewBag.ToastMessages.Add(new ToastMessages
+                    {
+                        message = "Sikeres hozzárendelted a felhasználót a munkacsoporthoz ",
+                        type = TypeToast.SUCCES,
+
+                    });
+                    return View();
                 }
                 else {
-                    return NotFound();
+                    ViewBag.ToastMessages.Add(new ToastMessages
+                    {
+                        message = "Nem sikerült hozzárendelni a felhasználót a munkacsoporthoz",
+                        type = TypeToast.ERROR,
+
+                    });
+                    return View();
                 }
             }
             return View(model);
@@ -72,12 +85,12 @@ namespace Recon.Controllers
                 }
                 catch (Exception e)
                 {
-                    return NotFound();
+                    return View("CustomNotFoundView");
                 }
                 return RedirectToAction("Index");
             }
             else {
-                return NotFound();
+                return View("CustomNotFoundView");
             }
           
            

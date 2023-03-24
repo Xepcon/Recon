@@ -33,14 +33,26 @@
                     <p>Munkacsoportok léttrehozása, törlése, szerkesztése</p>
                 </div>
             </a>
-        }        
-        @if(group.IsGroupOwner()){
+        }
+        @if (group.IsGroupOwner() || Auth.IsInRole("Admin"))
+        {
             <a class="dashboard-link" asp-area="" asp-controller="GroupMembers" asp-action="Index">
                 <div class="dashboard-item">
                     <h3>Felhasználók a munkacsoportokban</h3>
                     <p>Felhasználókat lehet munkacsoportokhoz rendelni</p>
                 </div>
+            </a> 
+            <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="Index">
+                <div class="dashboard-item">
+                    <h3>Jelentétiív</h3>
+                    <p>Új jelentléti ív léttrehozása</p>
+                </div>
             </a>
+
+        }
+        @if (group.IsGroupOwner() )
+        {
+           
             <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="ApproveAttendance">
                 <div class="dashboard-item">
                     <h3>Jelenlétiív engedélyezés</h3>
@@ -53,15 +65,41 @@
                     <p>Beadott szabadságok engedélyezése</p>
                 </div>
             </a>
-            <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="Index">
+            
+        }
+        @if (Auth.IsInRole("Intern"))
+        {
+            <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="AttendanceSheet">
                 <div class="dashboard-item">
-                    <h3>Jelentétiív</h3>
-                    <p>Új jelentléti ív léttrehozása</p>
+                    <h3>Jelentétiívek</h3>
+                    <p>Jelenlétívkitöltése</p>
+                </div>
+            </a>
+         
+        }
+       
+          
+        @if (!Auth.IsInRole("Intern"))
+        {
+            <a class="dashboard-link" asp-area="" asp-controller="Dashboard" asp-action="CheckHistory">
+                <div class="dashboard-item">
+                <h3>Munkaidő kimutatás</h3>
+                <p>Ledolgozott órák megnézése</p>
+            </div>
+            </a>
+            <a class="dashboard-link" asp-area="" asp-controller="TicketApprov" asp-action="DayOff">
+                <div class="dashboard-item">
+                    <h3>Szabadság</h3>
+                    <p>Szabadság kérvény beadása</p>
+                </div>
+            </a>
+            <a class="dashboard-link" asp-area="" asp-controller="TicketApprov" asp-action="TicketHistory">
+                <div class="dashboard-item">
+                    <h3>Kérvények</h3>
+                    <p>Kérvények megtekintése</p>
                 </div>
             </a>
         }
-        
-
     </div>
 }
 else
@@ -70,7 +108,7 @@ else
         <img src="img/authenticateyourself.svg" style="width: 600px; height: 600px;" />
         
     </div>
-    <h3 style="text-align:center"> Log In please</h3>
+    <h3 style="text-align:center"> Jelentkezz be</h3>
 }
 
 

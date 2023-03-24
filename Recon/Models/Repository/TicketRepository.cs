@@ -33,16 +33,7 @@ namespace Recon.Models.Repository
 
         public void CreateTicket(DayOffTicket model)
         {
-            /*DayOffTicket dayOffTicket = new DayOffTicket();            
-            dayOffTicket.StartDayOff = model.StartDayOff;
-            dayOffTicket.EndDayOff = model.EndDayOff;
-            dayOffTicket.Description = model.Description;
-            dayOffTicket.Title = model.Title;
-            dayOffTicket.Created = DateTime.Now;
-            dayOffTicket.Updated = DateTime.Now;
-            dayOffTicket.isApproved = false;
-            dayOffTicket.groupId = model.groupId;
-            dayOffTicket.userId = _userService.GetUserId();*/
+            
             _dbContext.DayOffTicket.Add(model);
             _dbContext.SaveChanges();
                 

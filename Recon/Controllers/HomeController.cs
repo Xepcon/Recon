@@ -23,22 +23,12 @@ namespace Recon.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.ToastMessages = new List<ToastMessages>();
-            ToastMessages toast = new ToastMessages
-            {
-                message = "This is a test message",
-                type = TypeToast.ERROR,
-                time = 3000
-            };
-            ToastMessages toast2 = new ToastMessages
-            {
-                message = "This is a test message2",
-                type = TypeToast.INFO,
-                time = 3000
-            };
-            ViewBag.ToastMessages.Add(toast);
-            ViewBag.ToastMessages.Add(toast2);
+            
             return View();
+        }
+
+        public IActionResult test() {
+            return View("CustomNotFoundView");
         }
 
        

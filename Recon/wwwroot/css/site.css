@@ -20,7 +20,10 @@ html {
 body {
     font-family: 'Roboto', sans-serif;
     margin-bottom: 60px;
+    font-weight:800;
+
 }
+
 
 a {
     color: inherit;
@@ -85,4 +88,57 @@ a {
 
 .dx-button {
     background-color: #6C63FF !important;
+    color: white !important;
+    border-color: #6C63FF !important;
+    border: 1px solid #6C63FF !important;
+}
+.dx-icon {
+    
+    color: white !important;
+}
+
+.dx-button-text {
+    color: white !important;
+}
+
+#toast-container > .notificitaion-toast-recon {
+    width: 600px !important;
+    border-radius: 40px;
+}
+
+
+
+.toast-info {
+    background-color: #6C63FF!important;
+}
+
+/*
+    Shape in footer 
+*/
+.custom-shape-divider-bottom-1679662860 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1679662860 svg {
+    position: relative;
+    display: block;
+    width: calc(118% + 1.3px);
+    height: 140px;
+}
+
+.custom-shape-divider-bottom-1679662860 .shape-fill {
+    fill: #6C63FF;
+}
+/*
+    End shape in footer 
+*/
+
+.dx-widget dx-button dx-button-mode-contained dx-button-normal dx-button-has-icon dx-revert-button {
+    border-color: black !important;
 }

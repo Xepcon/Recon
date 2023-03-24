@@ -14,16 +14,16 @@
                     {
                         dataField: "Title",
                         editorType: 'dxTextBox',
-                        label: { text: "Name" }
+                        label: { text: "Cím" }
                     },
                     {
                         dataField: "Description",
-                        label: { text: "Description" },
+                        label: { text: "Leírás" },
                         editorType: "dxTextArea"
                     },
                     {
                         dataField: "StartDayOff",
-                        label: { text: "Start Day Off" },
+                        label: { text: "Szabadság első napja" },
                         editorType: "dxDateBox",
                         editorOptions: {
                             validationRules: [{
@@ -34,7 +34,7 @@
                     },
                     {
                         dataField: "EndDayOff",
-                        label: { text: "End Day Off" },
+                        label: { text: "Szabadság utolsó napja" },
                         editorType: "dxDateBox",
                         editorOptions: {
                             validationRules: [{
@@ -51,16 +51,16 @@
                             displayExpr: 'Name',
                             valueExpr: 'groupId'
 
-                        }
-
+                        },
+                         label: { text: "Munkacsoport" },
                     },
                     {
                         itemType: "button",
                         buttonOptions: {
-                            text: "Save",
+                            text: "Mentés",
                             type: "success",
                             onClick(e){
-                                console.log("AAAAAAAAAA");
+                               
                                 
                                 //e.preventDefault(); // prevent the default button behavior
                                 const form = $("#formDayOff").get(0);

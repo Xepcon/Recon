@@ -35,6 +35,6 @@ namespace Recon.Models.Interface.GroupLib
         bool AddMembers(GroupMember model);        
         void DeleteMembers(int groupid, int userid);
 
-
+        List<int> GetGroupIdByPrincipalId(int principalid);
     }
 }

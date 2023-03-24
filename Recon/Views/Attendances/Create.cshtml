@@ -11,7 +11,7 @@
         var userData;
 
         $.ajax({
-            url: `@Url.Content("~/api/ListUser")`,
+            url: '@Url.Content("~/ListUserForPrincipal")',
             type: 'GET',
             dataType: 'json',
             async: false,
@@ -29,13 +29,18 @@
             $("#form-container").dxForm({
                 items: [
                    
-                    { dataField: "AttendanceName", caption: "Jelenlétív neve" },
+                    { dataField: "AttendanceName", label: {
+                            text: "Jelenlétív neve"
+                        } },
                     
                     {
                         dataField: "CreatedAt",
                         dataType: "date",
                         editorType: "dxDateBox",
-                        
+                        caption: "Jelenlétív neve",
+                        label: {
+                            text: "Létrehozás dátuma"
+                        }
                     },
                     {
                         dataField: "userId",
@@ -45,6 +50,9 @@
                             displayExpr: 'name',
                             valueExpr: 'userId'
 
+                        },
+                        label: {
+                            text: "Gyakornok neve"
                         }
 
                     },

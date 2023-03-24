@@ -16,6 +16,7 @@ using Recon.Models.Repository;
 namespace Recon.Controllers
 {
     [Authenticated]
+    [CustomRole("Admin","Hr")]
     public class UsersInRolesController : Controller
     {
         

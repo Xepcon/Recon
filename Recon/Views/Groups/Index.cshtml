@@ -23,12 +23,12 @@
         $("#gridContainer").dxDataGrid({
             dataSource: dataSource,
             columns: [
-                { dataField: "groupId", caption: "Group ID" },
-                { dataField: "Name", caption: "Name" },
+                { dataField: "groupId", caption: "Munkacsoport azonosító" },
+                { dataField: "Name", caption: "Munkacsoport" },
                 //{ dataField: "principalId", caption: "Principal ID" }, 
                 {
                     dataField: "principalId",
-                    caption: "Principal",
+                    caption: "Felettes",
                     lookup: {
                         dataSource: userData,
                         valueExpr: "userId",

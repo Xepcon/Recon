@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1 style="text-align:center!important;">Személyes információ</h1>
 
 <form action="@Url.Action("UpdatePersonalInfo")" method="post">
     
@@ -29,50 +29,50 @@
                 },
                 {
                     dataField: "FirstName",
-                    label: { text: "First Name" }
+                    label: { text: "Keresztnév" }
                 },
                 {
                     dataField: "LastName",
-                    label: { text: "Last Name" }
+                    label: { text: "Vezetéknév" }
                 },
                 {
                     dataField: "PhoneNumber",
-                    label: { text: "Phone Number" }
+                    label: { text: "Telefonszám" }
                 },
                 {
                     dataField: "Address",
-                    label: { text: "Address" }
+                    label: { text: "Cím" }
                 },
                 {
                     dataField: "City",
-                    label: { text: "City" }
+                    label: { text: "Település" }
                 },
                 {
                     dataField: "State",
-                    label: { text: "State" }
+                    label: { text: "Megye" }
                 },
                 {
                     dataField: "PostalCode",
-                    label: { text: "Postal Code" }
+                    label: { text: "Irányítószám" }
                 },
                 {
                     dataField: "Country",
-                    label: { text: "Country" }
+                    label: { text: "Ország" }
                 },
                 {
                     dataField: "age",
-                    label: { text: "Age" }
+                    label: { text: "Életkor" }
                 },
                 {
                     dataField: "Gender",
-                    label: { text: "Gender" }
+                    label: { text: "Nem" }
                 },
                 {
                     itemType:"button",
                     buttonOptions:{
                         text:"Mentés",
                         useSubmitBehavior:true,
-                       
+                        width:"150px",
 
                     }
                 }

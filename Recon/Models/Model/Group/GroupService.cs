@@ -181,5 +181,17 @@ namespace Recon.Models.Model.GroupLib
                 _dbContext.SaveChanges();
             }
         }
+        public List<int> GetGroupIdByPrincipalId(int principalid) {
+            var result =  _dbContext.Groups.Where(x=>x.principalId == principalid).ToList();
+            if (result != null)
+            {
+                List<int> groupIds = result.Select(x => x.groupId).ToList();
+                return groupIds;
+            }
+            else
+            {
+                return new List<int>();
+            }
+        }
     }
 }

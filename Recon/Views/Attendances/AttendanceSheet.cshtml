@@ -13,16 +13,16 @@
                 columns: [
                     {
                         dataField: "AttendanceName",
-                        caption: "Attendance Name"
+                        caption: "Jelenlétív neve"
                     },
                     {
                         dataField: "CreatedAt",
                         dataType: "date",
-                        caption: "Created At"
+                        caption: "Jelenlétív dátuma"
                     },
                     {
                         dataField: "userId",
-                        caption: "User ID"
+                        caption: "Felhasználó azónosítója"
                     },{
                         type:'buttons',
                         buttons:[
@@ -33,7 +33,7 @@
                                 //console.log(e)
                                 console.log(e.row);
                                 console.log(e.row.data.AttendanceId);
-                                window.location.href = `@Url.Content("~/Dashboard/AttendanceSheetEdit/")${e.row.data.AttendanceId}`;
+                                window.location.href = `@Url.Content("~/Attendances/AttendanceSheetEdit/")${e.row.data.AttendanceId}`;
                             }
                         },
                         {

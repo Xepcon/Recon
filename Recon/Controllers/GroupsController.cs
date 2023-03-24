@@ -43,13 +43,13 @@ namespace Recon.Controllers
         {
             if (_groupservice.GetGroupById(id)==null)
             {
-                return NotFound();
+                return View("CustomNotFoundView");
             }
 
             var group = _groupservice.GetGroupById(id);
             if (group == null)
             {
-                return NotFound();
+                return View("CustomNotFoundView");
             }
             ViewBag.data = JsonConvert.SerializeObject(group);
             return View();
