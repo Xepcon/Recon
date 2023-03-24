@@ -58,17 +58,14 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1  order-0">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Kezdőlap</a>
                         </li>
-                      
-                      
-                       
                     </ul>
                     
                 </div>
-                <ul class="navbar-nav">
+                <ul class="navbar-nav navbar-collapse collapse navbar-nav flex-grow-1 justify-content-end text-end order-1 ">
                     @if (Auth.IsAuthenticated())
                     {
                         <li class="nav-item">

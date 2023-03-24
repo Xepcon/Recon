@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
+using Recon.Models.Model.GroupLib;
 using Recon.ViewModel;
 using System.Diagnostics;
 
@@ -78,6 +79,46 @@ namespace Recon.Controllers.api
                 return Unauthorized();
             }
             
+        }
+
+        [HttpGet]
+        [Route("/ListGroupMembersForPrincipal")]
+        public ActionResult<List<ApiPersonViewModel>> getGroupMembers()
+        {
+
+            if (!_userService.IsAuthenticated())
+            {
+                return Unauthorized();
+            }
+            if (_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr"))
+            {
+               
+                
+                var data = _dbContext.Person
+                    .Select(p => new ApiPersonViewModel { Name = $"{p.FirstName} {p.LastName}", UserId = p.userId })
+                    .ToList();
+               
+                return data;
+
+            }
+            if (_groupService.IsGroupOwner())
+            {
+
+                List<int> groupids = _groupService.GetGroupIdByPrincipalId(_userService.GetUserId());
+                var members = _dbContext.GroupMembers.Where(x => groupids.Contains(x.groupId)).Select(x => x.userId);
+
+                var data = _dbContext.Person
+                      .Where(p => members.Contains(p.userId))
+                      .Select(p => new ApiPersonViewModel { Name = $"{p.FirstName} {p.LastName}", UserId = p.userId })
+                      .ToList();
+              
+                return data;
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
 
     }

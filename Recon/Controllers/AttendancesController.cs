@@ -310,5 +310,10 @@ namespace Recon.Controllers
             
 
         }
+        public IActionResult Riport()
+        {
+
+            return View();
+        }
     }
 }

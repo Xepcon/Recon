@@ -48,6 +48,12 @@
                     <p>Új jelentléti ív léttrehozása</p>
                 </div>
             </a>
+            <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="Riport">
+                <div class="dashboard-item">
+                    <h3>Riportok</h3>
+                    <p>Dolgozói munkaidő riportok</p>
+                </div>
+            </a>
 
         }
         @if (group.IsGroupOwner() )
@@ -105,7 +111,7 @@
 else
 {
     <div class="image-container">
-        <img src="img/authenticateyourself.svg" style="width: 600px; height: 600px;" />
+        <img src="img/authenticateyourself.svg" style="width: 400px; height: 400px;" />
         
     </div>
     <h3 style="text-align:center"> Jelentkezz be</h3>

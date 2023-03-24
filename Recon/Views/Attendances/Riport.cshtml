@@ -3,6 +3,9 @@
 *@
 @{
 }
+@using Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor HttpContextAccessor
 <style>
     .hour-container {
         display: inline-block;
@@ -11,14 +14,12 @@
         height: 100px;
         margin-right: 10px;
         text-align: center;
-        
         background-color: #6C63FF;
     }
 
     .hour-item {
-        
         color: white;
-        padding-top:15px;
+        padding-top: 15px;
     }
 
     .hour-value-body {
@@ -26,37 +27,82 @@
     }
 </style>
 
-@using Microsoft.AspNetCore.Http
 
-@inject IHttpContextAccessor HttpContextAccessor
+<div id="person-selector"></div>
 
-<div style="height:260px"id="range-selector"></div>
+<div style="height:260px" id="range-selector"></div>
 
 
 <div style="margin-top:50px; margin-bottom:100px!important;" id="chart"></div>
 
-<div class="hour-container">      
-    <div class="hour-item">            
-        <h4>Ledolgozott órák</h4>  
+<div class="hour-container">
+    <div class="hour-item">
+        <h4>Ledolgozott órák</h4>
         <div class="hour-value-body">
             <p id="worked-label">42 óra 22 perc</p>
         </div>
-    </div>       
+    </div>
 </div>
-<div class="hour-container">      
-    <div class="hour-item">            
-        <h4>Szünetek</h4>  
+<div class="hour-container">
+    <div class="hour-item">
+        <h4>Szünetek</h4>
         <div class="hour-value-body">
             <p id="break-label">42 óra 22 perc</p>
         </div>
-    </div>       
+    </div>
 </div>
 
 <script>
+    var personsDataSource;
+    var selectedPerson = @HttpContextAccessor.HttpContext.Session.GetString("UserId");
+    var GlobalstartDate;
+    var GlobalendDate;
+    var userid = selectedPerson;
+    $.ajax({
+        url: '@Url.Content("~/ListGroupMembersForPrincipal")',
+        method: "GET",
+        async: false,
+        success: function (data) {
+            console.log(data);
+            personsDataSource = new DevExpress.data.DataSource({
+                store: data,
+                key: "userId",
+                paginate: true,
+                pageSize: 10
+            });
 
-       
+            $('#person-selector').dxSelectBox({
+                dataSource: personsDataSource,
+                displayExpr: 'name',
+                valueExpr: 'userId',
+                onValueChanged: function (e) {
+                    console.log(e.value)
+                    selectedPerson = e.value;
+                    userid = selectedPerson;
+                   
+                    $.ajax({
+                        url: "/api/UserCheckInGetter/" + userid + "?startDate=" + GlobalstartDate.toISOString() + "&endDate=" + GlobalendDate.toISOString(),
+                        method: "GET",
+                        success: function (data) {
+
+                            IntervalCalculate(data)
+
+                        },
+                        error: function (error) {
+
+                        }
+                    });
+                }
+            });
+        },
+        error: function (error) {
+            // handle errors here
+        }
+    });
+
+
     $('#chart').dxChart({
-        
+
         rotated: true,
         argumentAxis: {
             categories: ['Week days'],
@@ -65,7 +111,7 @@
             },
         },
         title: {
-            text: 'Heti kimutatás ',
+            text: 'Kimutatás ',
         },
         valueAxis: {
             type: 'continuous',
@@ -95,12 +141,12 @@
     });
 
     const chartInstance = $('#chart').dxChart('instance');
-    
-    var daytime;  
 
-    function IntervalCalculate(data){
-        
-        
+    var daytime;
+
+    function IntervalCalculate(data) {
+
+
         const groupedData = data.reduce((acc, cur) => {
             const date = new Date(cur.date).toLocaleDateString();
             const time = new Date(cur.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -118,7 +164,7 @@
 
             return acc;
         }, {});
-      
+
         const intervalsByDay = Object.entries(groupedData).reduce((acc, [date, times]) => {
             const intervals = times.map((time, i) => {
                 const start = new Date(`${date} ${time.start}`);
@@ -133,8 +179,8 @@
 
             return acc;
         }, {});
-      
-        
+
+
 
         const earliestLatestByDay = Object.entries(intervalsByDay).reduce((acc, [date, intervals]) => {
             var times = intervals.reduce((times, interval) => {
@@ -142,23 +188,23 @@
                 return times;
             }, []);
 
-        
+
             const uniqueTimes = [...new Set(times)];
-            
+
             uniqueTimes.sort();
-            
-            
+
+
             const linearIntervals = [];
-           
+
             for (let i = 0; i < uniqueTimes.length - 1; i++) {
-                
+
                 const [month, day, year] = date.split('/');
                 const paddedMonth = month.padStart(2, '0');
                 const paddedDay = day.padStart(2, '0');
-               
+
                 const start = new Date(`${year}-${paddedMonth}-${paddedDay}T${uniqueTimes[i]}`);
                 const end = new Date(`${year}-${paddedMonth}-${paddedDay}T${uniqueTimes[i + 1]}`);
-                
+
                 linearIntervals.push({
                     start: start.toLocaleTimeString([], {
                         hour: '2-digit',
@@ -171,13 +217,13 @@
                         hour12: false
                     })
                 });
-            }     
-            
+            }
+
             acc[date] = linearIntervals;
             return acc;
         }, {});
-        
-       
+
+
 
         const output = [];
         var workedHours = 0;
@@ -195,137 +241,129 @@
                 console.log(startDate)
                 console.log(endDate)
                 console.log(counter)
-                /*if (startDate.getHours() > 11 && endDate.getHours()<14) {
-                   
+                
+                if (counter % 2 == 0) {
+
+                    workedHours += (endHour - startHour)
+                    workedMinutes += (endMinute - startMinute)
                     output.push({
                         date,
                         start: startDate,
                         end: endDate,
-                        type: 'lunch'
+                        type: 'Irodában'
                     });
-                }else{*/
-                    if(counter%2==0){
-                    
-                    workedHours += (endHour - startHour )
-                    workedMinutes += (endMinute - startMinute)
-                        output.push({
-                            date,
-                            start: startDate,
-                            end: endDate,
-                            type: 'Irodában'
-                        });
-                    }else{
+                } else {
                     BreakHours += (endHour - startHour)
                     BreakMinutes += (endMinute - startMinute)
-                         output.push({
+                    output.push({
                         date,
                         start: startDate,
                         end: endDate,
                         type: 'Szünet'
                     });
-                    }
-                   
-               // }
+                }
+
+                // }
                 counter++;
-                
+
             });
         });
-        
-        /*console.log(workedHours);
-        console.log(workedMinutes);
 
-        console.log(BreakHours);
-        console.log(BreakMinutes);*/
+      
         console.log(BreakHours)
         if (BreakMinutes < 0) {
-            console.log("IF"+BreakHours)
+            console.log("IF" + BreakHours)
             let mod = Math.ceil((BreakMinutes / 60));
-            console.log("MODD"+mod)
-            
+            console.log("MODD" + mod)
+
             console.log("IF2" + BreakHours)
             if (mod == 0) {
                 BreakHours = BreakHours - 1;
                 console.log(BreakHours)
                 BreakMinutes += 60
-            }else{
-                
+            } else {
+
             }
         }
 
 
-        $("#worked-label").text(workedHours+" óra "+workedMinutes+" perc");
+        $("#worked-label").text(workedHours + " óra " + workedMinutes + " perc");
         $("#break-label").text(BreakHours + " óra " + BreakMinutes + " perc");
         chartInstance.option('dataSource', output);
         //console.log(output);
-       
+
     }
 
-   
 
-    var userid = @HttpContextAccessor.HttpContext.Session.GetString("UserId");
-  
-   
-     $.ajax({
+
+    
+
+
+    $.ajax({
         url: "/api/UserCheckInGetter/daytime/" + userid,
         method: "GET",
         success: function (data) {
             //console.log('Daytime API data:', data);
             daytime = data
-            
+
         },
         error: function (error) {
             // handle errors here
         }
     });
 
-  
 
-    $(function () {               
 
-       var rangeSelector = $("#range-selector").dxRangeSelector({
-        margin: {
-            top: 50,
-        },
-        scale: {
-            startValue: new Date(2022, 1, 1),
-            endValue: new Date(2022, 12, 1),
-            minorTickInterval: 'week',
-            tickInterval: 'week',
-            minRange: 'week',
-            maxRange: 'week',
-            minorTick: {
-                visible: false,
+    $(function () {
+
+        var rangeSelector = $("#range-selector").dxRangeSelector({
+            margin: {
+                top: 50,
             },
-        },
-        sliderMarker: {
-            format: 'monthAndDay',
-        },
-        value: [new Date(2022, 1, 28), new Date(2022, 2, 7)],
-        title: 'Válasz ki egy intervallumot',
+            scale: {
+                startValue: new Date(2022, 1, 1),
+                endValue: new Date(2022, 12, 1),
+                minorTickInterval: 'day',
+                tickInterval: 'week',
+                minRange: 'day',
+                maxRange: 'month',
+                minorTick: {
+                    visible: false,
+                },
+            },
+            sliderMarker: {
+                format: 'monthAndDay',
+            },
+            value: [new Date(2022, 1, 28), new Date(2022, 2, 7)],
+            title: 'Válasz ki egy intervallumot',
 
             onValueChanged: function (e) {
+                console.log(userid)
+                GlobalendDate = e.value[1]
+                GlobalstartDate = e.value[0]
                 var startDate = e.value[0];
                 var endDate = e.value[1];
                 var days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
                 $.ajax({
                     url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
                     method: "GET",
-                    success: function(data) {
-                       
+                    success: function (data) {
+
                         IntervalCalculate(data)
-                      
+
                     },
-                    error: function(error) {
-                       
+                    error: function (error) {
+
                     }
                 });
-              
-        }
-    }).dxRangeSelector("instance");
+
+            }
+        }).dxRangeSelector("instance");
 
     });
-
     $(document).ready(function () {
+        GlobalendDate =  new Date(2022, 2, 7);
+        GlobalstartDate = new Date(2022, 1, 28);
         var startDate = new Date(2022, 1, 28);
         var endDate = new Date(2022, 2, 7);
         var days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
