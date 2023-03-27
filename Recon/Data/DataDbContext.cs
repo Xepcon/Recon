@@ -8,7 +8,7 @@ using Recon.Models.Model.TimeManager;
 
 namespace Recon.Data
 {
-    public class DataDbContext : DbContext
+    public class DataDbContext : DbContext, IDataDbContext
     {
         public DataDbContext(DbContextOptions<DataDbContext> options) : base(options) { }
 
@@ -40,6 +40,11 @@ namespace Recon.Data
             builder.Entity<GroupMember>().HasKey(entity => new { entity.groupId,entity.userId });
             builder.Entity<Group>().HasKey(entity => new { entity.groupId});
             builder.Entity<DayOffTicket>().HasKey(entity => new { entity.Id });
+        }
+
+        public int SaveChanges()
+        {
+            return base.SaveChanges();
         }
     }
     

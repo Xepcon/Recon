@@ -12,6 +12,7 @@ using Recon.Data;
 using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
+using Recon.Utility;
 
 namespace Recon.Controllers
 {
@@ -22,13 +23,14 @@ namespace Recon.Controllers
 
         public GroupsController(IGroupService groupservice)
         {
+           
             _groupservice = groupservice;
         }
 
         // GET: Groups
         public IActionResult Index()
         {
-           
+          
              ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllGroups());
              return View();
         }
@@ -59,12 +61,14 @@ namespace Recon.Controllers
    
         public IActionResult Edit(Group group)
         {
-          
+            ViewBag.ToastMessages = new List<ToastMessages>();
             if (group.groupId != null) {
                 if (ModelState.IsValid)
                 {
                     _groupservice.UpdateGroup(group);
+                                    
                 }
+              
             }
             return RedirectToAction("Index");
            
@@ -72,13 +76,26 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Create( Group group)
         {
-            Debug.WriteLine(group.Name);
+            ViewBag.ToastMessages = new List<ToastMessages>();
             if (ModelState.IsValid)
             {
                 _groupservice.CreateGroup(group);
 
-                return RedirectToAction("Index");
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = $"Sikeres Létrehoztad a munkacsoportot <b>{group.Name}</b> néven ",
+                    type = TypeToast.SUCCES,
+
+                });
+                
+                return View();
             }
+            ViewBag.ToastMessages.Add(new ToastMessages
+            {
+                message = $"Sikeretelen a munkacsoport léttrehozása  ",
+                type = TypeToast.ERROR,
+
+            });
             return View(group);
         }
 

@@ -13,9 +13,9 @@ namespace Recon.Models.Model.Account
 {
     public class UserService : IUserService
     {
-        private readonly DataDbContext _dbContext;
+        private readonly IDataDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserService(DataDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        public UserService(IDataDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
@@ -178,20 +178,27 @@ namespace Recon.Models.Model.Account
         }
 
         public string GetFullName(int userid) {
-            var model = _dbContext.Person.Where(x=>x.userId==userid).FirstOrDefault();
-            if (model != null)
+            if (IsAuthenticated())
             {
-                return model.FirstName + " " + model.LastName;
+                var model = _dbContext.Person.Where(x => x.userId == userid).FirstOrDefault();
+                if (model != null)
+                {
+                    return model.FirstName + " " + model.LastName;
+                }
             }
             return "";
         }
 
         public string GetFullName()
         {
-            var model = _dbContext.Person.Where(x => x.userId == GetUserId()).FirstOrDefault();
-            if (model != null)
+            if (IsAuthenticated())
             {
-                return model.FirstName + " " + model.LastName;
+                var model = _dbContext.Person.Where(x => x.userId == GetUserId()).FirstOrDefault();
+                if (model != null)
+                {
+                    return model.FirstName + " " + model.LastName;
+                }
+                
             }
             return "";
         }

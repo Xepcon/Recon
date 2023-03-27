@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DataDbContextConnection") ?? throw new InvalidOperationException("Connection string 'DataDbContextConnection' not found.");
 
+
+
 builder.Services.AddDbContext<DataDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -25,21 +27,9 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-/*
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-   .AddCookie(options =>
-   {
-       options.LoginPath = "/Account/Login";
-       options.LogoutPath = "/Account/Logout";
-   });
-*/
-// Add services to the container.
 
+// Add services to the container.
+builder.Services.AddScoped<IDataDbContext, DataDbContext>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IUsersInRolesRepository, UsersInRolesRepository>();
