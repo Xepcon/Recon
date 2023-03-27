@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
@@ -14,6 +15,7 @@ using System.Drawing.Printing;
 
 namespace Recon.Controllers
 {
+    [Authenticated]
     public class DashBoardController : Controller
     {
         private readonly IUserService _userService;
@@ -42,34 +44,7 @@ namespace Recon.Controllers
         }
        
 
-        /*public IActionResult DayOff() {
-
-            ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
-            return View();
-        }
-        [HttpPost]
-        public IActionResult DayOff(DayOffTicket model)
-        {
-           
-            DayOffTicket dayOffTicket = new DayOffTicket();
-
-            if (_userService.IsAuthenticated()) {
-                dayOffTicket.StartDayOff = model.StartDayOff;
-                dayOffTicket.EndDayOff = model.EndDayOff;
-                dayOffTicket.Description = model.Description;
-                dayOffTicket.Title = model.Title;
-                dayOffTicket.Created = DateTime.Now;
-                dayOffTicket.Updated = DateTime.Now;
-                dayOffTicket.isApproved = false;
-                dayOffTicket.groupId = model.groupId;
-                dayOffTicket.userId = _userService.GetUserId();
-                _dbContext.DayOffTicket.Add(dayOffTicket);
-                _dbContext.SaveChanges();
-                return View("Index");
-            }
-            return RedirectToAction("Login", "Account");
-            
-        }*/
+     
         [CustomRole("Intern")]
         public IActionResult AttendanceSheet()
         {

@@ -35,159 +35,172 @@ namespace Recon.Controllers
         }
         public IActionResult Index()
         {
-           
-            if (_dbContext.Attendances.ToList() != null)
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
-                ViewBag.data = JsonConvert.SerializeObject(_dbContext.Attendances.ToList());
+                if (_dbContext.Attendances.ToList() != null)
+                {
+                    ViewBag.data = JsonConvert.SerializeObject(_dbContext.Attendances.ToList());
 
+                }
+
+                return View();
             }
-            return View();
+            return View("AccessDenied");
         }
 
         [HttpPost]
         public IActionResult Delete(int? id)
         {
-            ViewBag.ToastMessages = new List<ToastMessages>();
-            if (id != null )
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
-                try
+                ViewBag.ToastMessages = new List<ToastMessages>();
+                if (id != null )
                 {
-                    var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
-                    if (model != null)
+                    try
                     {
-                        _dbContext.Attendances.Remove(model);
-                        _dbContext.SaveChanges();
-                    }
-                    else
-                    {
+                        var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
+                        if (model != null)
+                        {
+                            _dbContext.Attendances.Remove(model);
+                            _dbContext.SaveChanges();
+                        }
+                        else
+                        {
                      
+                            return View("CustomNotFoundView");
+                        }
+                    }
+                    catch (Exception e)
+                    {
                         return View("CustomNotFoundView");
                     }
-                }
-                catch (Exception e)
-                {
-                    return View("CustomNotFoundView");
-                }
                
                
                 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+
+
+                    return View("CustomNotFoundView");
+                }
             }
-            else
-            {
-
-
-                return View("CustomNotFoundView");
-            }
-
+            return View("AccessDenied");
 
         }
         // GET: Attendances/Create
         public IActionResult Create()
         {
-            return View();
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
+            {
+                return View();
+            }
+            return View("AccessDenied");
         }
        
         [HttpPost]
         
         public IActionResult Create( Attendance attendance)
         {
-            ViewBag.ToastMessages = new List<ToastMessages>();
-            
-            if (ModelState.IsValid)
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
-
-                var user = _dbContext.Person.Where(x => x.userId == attendance.userId).FirstOrDefault();
-                if (user != null)
+                ViewBag.ToastMessages = new List<ToastMessages>();
+            
+                if (ModelState.IsValid)
                 {
 
-                    if (_userService.GetRolesForUser(attendance.userId).Any(r => r.Name == "Intern"))
+                    var user = _dbContext.Person.Where(x => x.userId == attendance.userId).FirstOrDefault();
+                    if (user != null)
                     {
-                        if (_groupService.IsInGroup())
+
+                        if (_userService.GetRolesForUser(attendance.userId).Any(r => r.Name == "Intern"))
                         {
-                            int numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).Count();
-                            Debug.WriteLine(numOfGroups);
-                            if (numOfGroups == 1)
+                            if (_groupService.IsInGroup())
                             {
-                                attendance.groupId = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).FirstOrDefault().groupId;
-                            }
-                            else
-                            {
-                               
-                                ViewBag.ToastMessages.Add(new ToastMessages
+                                int numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).Count();
+                                Debug.WriteLine(numOfGroups);
+                                if (numOfGroups == 1)
                                 {
-                                    message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó több munkacsoportba is tartozik",
-                                    type = TypeToast.ERROR,
+                                    attendance.groupId = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).FirstOrDefault().groupId;
+                                }
+                                else
+                                {
+                               
+                                    ViewBag.ToastMessages.Add(new ToastMessages
+                                    {
+                                        message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó több munkacsoportba is tartozik",
+                                        type = TypeToast.ERROR,
 
-                                });
-                                return View();
+                                    });
+                                    return View();
+                                }
                             }
-                        }
 
-                        _dbContext.Add(attendance);
-                        _dbContext.SaveChanges();
-                        for (int i = 1; i <= DateTime.DaysInMonth(attendance.CreatedAt.Year, attendance.CreatedAt.Month); i++)
-                        {
-                            AttendanceEntity tmp = new AttendanceEntity();
-                            tmp.AttendanceId = attendance.AttendanceId;
-                            Debug.WriteLine(attendance.AttendanceId);
-                            tmp.Hour = null;
+                            _dbContext.Add(attendance);
+                            _dbContext.SaveChanges();
+                            for (int i = 1; i <= DateTime.DaysInMonth(attendance.CreatedAt.Year, attendance.CreatedAt.Month); i++)
+                            {
+                                AttendanceEntity tmp = new AttendanceEntity();
+                                tmp.AttendanceId = attendance.AttendanceId;
+                                Debug.WriteLine(attendance.AttendanceId);
+                                tmp.Hour = null;
 
-                            tmp.AttendanceDate = new DateTime(attendance.CreatedAt.Year, attendance.CreatedAt.Month, i);
-                            tmp.isWeekend = tmp.AttendanceDate.DayOfWeek == DayOfWeek.Saturday || tmp.AttendanceDate.DayOfWeek == DayOfWeek.Sunday;
-                            tmp.approved = false;
-                            tmp.Minutes = null;
-                            tmp.interName = user.FirstName + " " + user.LastName;
-                            _dbContext.AttendanceEntitys.Add(tmp);
-                        }
+                                tmp.AttendanceDate = new DateTime(attendance.CreatedAt.Year, attendance.CreatedAt.Month, i);
+                                tmp.isWeekend = tmp.AttendanceDate.DayOfWeek == DayOfWeek.Saturday || tmp.AttendanceDate.DayOfWeek == DayOfWeek.Sunday;
+                                tmp.approved = false;
+                                tmp.Minutes = null;
+                                tmp.interName = user.FirstName + " " + user.LastName;
+                                _dbContext.AttendanceEntitys.Add(tmp);
+                            }
                        
-                        ViewBag.ToastMessages.Add(new ToastMessages
-                        {
-                            message = "Sikeresen léttrehoztad a jelenlétiívet",
-                            type = TypeToast.SUCCES,
+                            ViewBag.ToastMessages.Add(new ToastMessages
+                            {
+                                message = "Sikeresen léttrehoztad a jelenlétiívet",
+                                type = TypeToast.SUCCES,
 
-                        });
-                        _dbContext.SaveChanges();
-                        return View();
+                            });
+                            _dbContext.SaveChanges();
+                            return View();
+                        }
+                        else {
+                        
+                            ViewBag.ToastMessages.Add(new ToastMessages
+                            {
+                                message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó nem diák",
+                                type = TypeToast.ERROR,
+
+                            });
+                            return View();
+                        }
                     }
                     else {
-                        
+                    
                         ViewBag.ToastMessages.Add(new ToastMessages
                         {
-                            message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó nem diák",
+                            message = "A felhasználó nem található",
                             type = TypeToast.ERROR,
 
                         });
                         return View();
                     }
                 }
-                else {
-                    
-                    ViewBag.ToastMessages.Add(new ToastMessages
-                    {
-                        message = "A felhasználó nem található",
-                        type = TypeToast.ERROR,
-
-                    });
-                    return View();
-                }
-            }
            
-            ViewBag.ToastMessages.Add(new ToastMessages
-            {
-                message = "Hibás adatokat adtál meg ",
-                type = TypeToast.INFO,
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = "Hibás adatokat adtál meg ",
+                    type = TypeToast.INFO,
 
-            });
+                });
           
-            return View(attendance);
+                return View(attendance);
+            }
+            return View("AccessDenied");
         }
 
         public IActionResult ApproveAttendance() {
-           
-            if (_groupService.IsGroupOwner()) 
-            {
-                    
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
+            { 
                 IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
 
                 List<Attendance> res = new List<Attendance>();
@@ -203,53 +216,58 @@ namespace Recon.Controllers
                 ViewBag.data= JsonConvert.SerializeObject(res);
                 Debug.WriteLine(res.Count);
                 return View();
+                
             }
             return View("AccessDenied");
-            
-           
+
         }
 
         [HttpPost]
 
         public IActionResult ApproveAtt(int id)
         {
-            if (id != null)
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
-                try
+                if (id != null)
                 {
-                    var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
-                    if(!_groupService.IsInGroup(_userService.GetUserId(),model.groupId) || !_groupService.IsGroupOwner()){
-                        return View("CustomNotFoundView");
-                    }
-                    if (model != null)
+                    try
                     {
-                        model.isClosed = true;
-                        var selectedmodel = _dbContext.AttendanceEntitys.Where(x => x.AttendanceId == id).ToList();
-                        foreach (var item in selectedmodel)
+                        var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
+                        if (!_groupService.IsInGroup(_userService.GetUserId(), model.groupId) || !_groupService.IsGroupOwner())
                         {
-                            item.approved = true;
+                            return View("CustomNotFoundView");
                         }
-                        _dbContext.SaveChanges();
+                        if (model != null)
+                        {
+                            model.isClosed = true;
+                            var selectedmodel = _dbContext.AttendanceEntitys.Where(x => x.AttendanceId == id).ToList();
+                            foreach (var item in selectedmodel)
+                            {
+                                item.approved = true;
+                            }
+                            _dbContext.SaveChanges();
+                        }
+                        else
+                        {
+                            return View("CustomNotFoundView");
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
                         return View("CustomNotFoundView");
                     }
+                    return RedirectToAction("ApproveAttendance");
                 }
-                catch (Exception e)
+                else
                 {
                     return View("CustomNotFoundView");
                 }
-                return RedirectToAction("ApproveAttendance");
             }
-            else
-            {
-                return View("CustomNotFoundView");
-            }
+            return View("AccessDenied");
         }
 
         public IActionResult ApproveSheetAttendance(int id) {
-            if (_groupService.IsGroupOwner())
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
                 var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
                 if (model != null)
@@ -258,9 +276,9 @@ namespace Recon.Controllers
 
                     return View();
                 }
-                return View("AccessDenied");
+                return View("CustomNotFoundView");
             }
-            return View("CustomNotFoundView");
+            return View("AccessDenied");
 
 
         }
@@ -312,8 +330,11 @@ namespace Recon.Controllers
         }
         public IActionResult Riport()
         {
-
-            return View();
+            if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
+            {
+                return View();
+            }
+            return View("AccessDenied");
         }
     }
 }

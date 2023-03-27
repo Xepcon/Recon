@@ -6,6 +6,8 @@ namespace Recon.Models.Interface.Account
     public interface IUserService
     {
         UserEntity Authenticate(string username, string password);
+
+        Task<UserEntity> AuthenticateAsync(string username, string password);
         UserEntity GetById(int id);
         UserEntity Create(UserEntity user);
         void Register(RegisterViewModel user);

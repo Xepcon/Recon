@@ -95,6 +95,22 @@ namespace Recon.Models.Model.Account
 
             _dbContext.SaveChanges();
         }
+
+        public async Task<UserEntity> AuthenticateAsync(string username, string password)
+        {
+            var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Username == username);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            {
+                
+                return null;
+            }
+
+            _httpContextAccessor.HttpContext.Session.SetString("UserId", user.Id.ToString());
+            _httpContextAccessor.HttpContext.Session.SetString("Username", user.Username);
+           
+            return user;
+        }
         public UserEntity Authenticate(string username, string password)
         {
             var user = _dbContext.Users.SingleOrDefault(x => x.Username == username);

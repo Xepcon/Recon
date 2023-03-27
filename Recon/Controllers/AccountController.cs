@@ -91,10 +91,29 @@ namespace Recon.Controllers
             return View();
         }
 
-      
-       
 
         [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userService.AuthenticateAsync(model.Username, model.Password);
+
+                if (user != null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Helytelen felhasználónév vagy jelszó");
+                    return View(model);
+                }
+            }
+
+            return View(model);
+        }
+
+        /*[HttpPost]
         public IActionResult Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -113,31 +132,47 @@ namespace Recon.Controllers
             }
 
             return View(model);
-        }
+        }*/
         [Authenticated]
         [HttpGet]
         public IActionResult UpdatePersonalInfo()
-        {        
+        {
+           
             var person = _userService.UserGetPersonalInfo(_userService.GetUserId());              
             ViewBag.data = JsonConvert.SerializeObject(person);
             if (person == null)
             {
-                return View("Error");
+               
+                return View();
             }
+           
             return View();            
         }
         [Authenticated]
         [HttpPost]
         public IActionResult UpdatePersonalInfo(Person model)
-        {                   
+        {
+            ViewBag.ToastMessages = new List<ToastMessages>();
             int userId = _userService.GetUserId();
             model.userId = userId;
                
             if (ModelState.IsValid)
             {
-                _userService.UserUpdatePersonalInfo(model);                    
-                return RedirectToAction("Index","Dashboard");
+                _userService.UserUpdatePersonalInfo(model);
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = $"Sikeres módosítottad a személyes adataitad ",
+                    type = TypeToast.SUCCES,
+
+                });
+                return View(model);
             }
+            ViewBag.ToastMessages.Add(new ToastMessages
+            {
+                message = "Sikeretelen volt a módosítás ",
+                type = TypeToast.ERROR,
+
+            });
             return View(model);           
         }
 
