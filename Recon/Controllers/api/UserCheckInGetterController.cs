@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Recon.Attribute;
 using Recon.Data;
+using Recon.Models.Interface.Account;
 using Recon.Models.Model.Card;
 using System.Diagnostics;
 
@@ -9,21 +11,27 @@ namespace Recon.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
+   
     public class UserCheckInGetterController : ControllerBase
     {
         private readonly DataDbContext _dbContext;
+        private readonly IUserService _userService;
         // GET: api/<UserCheckInGetterController>
-        
-        public UserCheckInGetterController(DataDbContext dbContext)
+
+        public UserCheckInGetterController(DataDbContext dbContext, IUserService userService)
         {
             _dbContext = dbContext;
+            _userService = userService; 
         }
 
         [HttpGet("daytime/{id}")]
         
         public IActionResult GetTimeTable(string id)
         {
-            
+            if (!_userService.IsAuthenticated())
+            {
+                return Unauthorized();
+            }
             if (id != null)
             {
                 int Userid = int.Parse(id);
@@ -43,6 +51,10 @@ namespace Recon.Controllers.api
       
         public IActionResult Get(string id, DateTime startDate, DateTime endDate)
         {
+            if (!_userService.IsAuthenticated())
+            {
+                return Unauthorized();
+            }
             if (id != null)
             {
                 var cardid = _dbContext.magneticCards.Where(x => x.UserId == id).FirstOrDefault();

@@ -1,7 +1,9 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Recon.Attribute;
 using Recon.Data;
+using Recon.Models.Interface.Account;
 using Recon.Models.Model.TimeManager;
 using System.Diagnostics;
 
@@ -10,20 +12,27 @@ namespace Recon.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
+   
     public class UpdateAttendanceController : ControllerBase
     {
         private readonly DataDbContext _dbContext;
-     
+        private readonly IUserService _userService;
 
-        public UpdateAttendanceController(DataDbContext dbContext)
+        public UpdateAttendanceController(DataDbContext dbContext, IUserService userService )
         {
             _dbContext = dbContext;
+            _userService = userService;
         }
 
         [HttpGet("{id}")]
 
         public IActionResult Get(string id) {
-            
+
+            if (!_userService.IsAuthenticated())
+            {
+                return Unauthorized();
+            }
+
             if (id != null)
             {
                 int intId = int.Parse(id);
@@ -45,6 +54,10 @@ namespace Recon.Controllers.api
         [HttpPut("{id}")]        
         public IActionResult UpdateAttendance(int id, AttendanceEntity updatedAttendance)
         {
+            if (!_userService.IsAuthenticated())
+            {
+                return Unauthorized();
+            }
             Debug.WriteLine("CALLED FUKIN PUT");
             // Find the attendance record with the specified id
             Attendance attendance = _dbContext.Attendances.Find(id);

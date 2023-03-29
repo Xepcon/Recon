@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
@@ -11,6 +12,7 @@ namespace Recon.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class ListGroupController : ControllerBase
     {
         // GET: api/<ListUserController>

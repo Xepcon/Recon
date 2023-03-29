@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Recon.Attribute;
 using Recon.Data;
+using Recon.Models.Interface.Account;
 using Recon.Models.Model.Card;
 using Recon.Models.Model.TimeManager;
 using System.Diagnostics;
@@ -8,12 +10,15 @@ namespace Recon.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
+  
     public class UpdateWorkHourController : ControllerBase
     {
         private readonly DataDbContext _dbContext;
-        public UpdateWorkHourController(DataDbContext dbContext)
+        private readonly IUserService _userService;
+        public UpdateWorkHourController(DataDbContext dbContext, IUserService userService)
         {
             _dbContext = dbContext;
+            _userService = userService;
         }
 
        
@@ -21,7 +26,10 @@ namespace Recon.Controllers.api
         [Route("getWorkTime")]
         public WorkTimeUsers getWorkTime(string userid)
         {
-            
+            if (!_userService.IsAuthenticated())
+            {
+                return null;
+            }
             int user = int.Parse(userid);
 
             if(_dbContext.WorkTimeUsers.Find(user)!= null)
@@ -37,9 +45,13 @@ namespace Recon.Controllers.api
         [Route("SaveWorkTime")]
         public void SaveWorkTime(WorkTimeUsers data )
         {
+           //_userService.IsAuthenticated())
+            
+             
+            
             Debug.WriteLine("ID : "+data.UserId);
             Debug.WriteLine(data.ToString());
-            if (_dbContext.WorkTimeUsers.Find(data.UserId) == null)
+            if (_dbContext.WorkTimeUsers.Find(data.UserId) == null && _userService.IsAuthenticated())
             {
                 _dbContext.WorkTimeUsers.Add(data);
                 _dbContext.SaveChanges();
