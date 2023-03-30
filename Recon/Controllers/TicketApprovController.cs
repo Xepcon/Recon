@@ -7,6 +7,7 @@ using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Ticket;
 using Recon.Models.Repository;
+using Recon.Utility;
 using System.Diagnostics;
 
 namespace Recon.Controllers
@@ -70,18 +71,35 @@ namespace Recon.Controllers
 
         public IActionResult DayOff()
         {
-
             ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
             return View();
         }
-        [Authenticated]
+        
         [HttpPost]
         public IActionResult DayOff(DayOffTicket model)
         {
+            ViewBag.ToastMessages = new List<ToastMessages>();
+            ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
             model.userId = _userService.GetUserId();
-            _ticketRepository.CreateTicket(model);
-            return RedirectToAction("Index","Dashboard");
-           
+            if (ModelState.IsValid){
+                _ticketRepository.CreateTicket(model);
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = "Sikeresen léttrehoztad a szabadsági kérelmedet",
+                    type = TypeToast.SUCCES,
+
+                });
+                return View("DayOff", ViewBag);
+            }
+            ViewBag.ToastMessages.Add(new ToastMessages
+            {
+                message = "Sikeretelen volt a szabadsági kérelmed léttrehozása",
+                type = TypeToast.ERROR,
+
+            });
+            return View("DayOff"); 
+
+
         }
 
     }

@@ -75,7 +75,7 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Delete(int groupid,int userid)
         {
-           
+            
             if (groupid != null && userid != null)
             {
                 try

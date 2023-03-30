@@ -49,10 +49,9 @@ namespace Tests
                 new Group { groupId = 3, Name = "Group 3" }
             };
             _dbContext.Groups.AddRange(groups);
-            int db = _dbContext.Groups.Count();
-            int res = _dbContext.SaveChanges();
-            Console.WriteLine(res);
-            Console.WriteLine(db);
+            _dbContext.Groups.Count();
+            _dbContext.SaveChanges();
+         
 
             // Set up the mock IUserService object to return true for IsAuthenticated method
             ((MockUserService)_userService).IsAuthenticatedResult = true;

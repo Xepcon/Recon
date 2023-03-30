@@ -6,6 +6,11 @@
 }
 
 @inject IUserService Auth
+<style>
+    .weekend-row {
+        background-color: #b30000; /* change to the desired color */
+    }
+</style>
 
 
 <div id="gridContainer"></div>
@@ -35,6 +40,8 @@
                 allowUpdating: true,                    
             },
            
+           
+          
             paging: false, // disable paging
             columns: [{
                 dataField: "attendanceDate",

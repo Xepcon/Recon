@@ -38,6 +38,16 @@
 
         $("#gridContainer").dxDataGrid({
             dataSource: dataSource,
+             paging: { enabled: true },
+            paging: {
+                pageSize: 10,
+                pageIndex: 1    // Shows the second page
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [2, 5, 10, 15, 20, 50],
+                showNavigationButtons: true
+            },
             columns: [
                 
                  {

@@ -43,10 +43,7 @@ namespace Recon.Controllers
         }
         public IActionResult Edit(int id)
         {
-            if (_groupservice.GetGroupById(id)==null)
-            {
-                return View("CustomNotFoundView");
-            }
+           
 
             var group = _groupservice.GetGroupById(id);
             if (group == null)

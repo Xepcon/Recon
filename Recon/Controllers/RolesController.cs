@@ -12,6 +12,7 @@ using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Model.Account;
 using Recon.Models.Repository;
+using Recon.Utility;
 
 namespace Recon.Controllers
 {
@@ -64,12 +65,19 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Create(Roles role)
         {
-            
+            ViewBag.ToastMessages = new List<ToastMessages>();
+
             if (ModelState.IsValid)
             {
                 _rolesRepository.AddRole(role);
-                              
-                return RedirectToAction("Index");
+
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = $"Sikeresen léttrehoztad a {role.Name} szerepet",
+                    type = TypeToast.SUCCES,
+
+                });
+                return View(role);
             }
             return View(role);
         }

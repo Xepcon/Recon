@@ -1,5 +1,5 @@
 ﻿
-<form id="formDayOff" action="@Url.Content("~/TicketApprov/DayOff/")" method="post">
+<form id="formDayOff" action="@Url.Content("~/TicketApprov/DayOff")" method="post">
     <div id="form-container"></div>
 </form>
 
@@ -13,7 +13,7 @@
                 items: [
                     {
                         dataField: "Title",
-                        editorType: 'dxTextBox',
+                        editorType: 'dxTextBox',                                              
                         label: { text: "Cím" }
                     },
                     {
@@ -72,6 +72,7 @@
                                 // Get the EndDayOff value
                                 const endDayOffValue = formInstance.getEditor("EndDayOff").option("value");
 
+                                
                                 if(startDayOffValue>endDayOffValue){
                                     DevExpress.ui.notify("Rossz intervallumot adtál meg ", "error", 4000);
                                     return;
@@ -85,6 +86,9 @@
                         }
                     }
                 ],
+                editorOptions: {
+                    required: true // set all form fields as required by default
+                },
                 validationGroup: "dayOffForm",
                 labelLocation: "top"
             });

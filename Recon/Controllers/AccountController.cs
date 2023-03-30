@@ -37,7 +37,7 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult UpdatePassword(ChangePasswordViewModel model)
         {
-            
+            ViewBag.ToastMessages = new List<ToastMessages>();
             if (model != null)
             {
                 int userId = _userService.GetUserId();
@@ -49,15 +49,28 @@ namespace Recon.Controllers
 
                     if (!BCrypt.Net.BCrypt.Verify(model.OldPassword, user.PasswordHash))
                     {
-                        ModelState.AddModelError("OldPassword", "Old password is incorrect");
+                        //ModelState.AddModelError("OldPassword", "Old password is incorrect");
+                        ViewBag.ToastMessages.Add(new ToastMessages
+                        {
+                            message = "Sikertelen volt a jelszó változtatás a jelenlegi jelszó helytelen",
+                            type = TypeToast.ERROR,
+
+                        });
                         return View(model);
                     }
 
                     _userService.ChangePassword(userId, model.NewPassword);
-                    _userService.LogOut();
 
+                    ViewBag.ToastMessages.Add(new ToastMessages
+                    {
+                        message = "Sikeresen megváltoztattad a jelszavad",
+                        type = TypeToast.SUCCES,
+
+                    });
+                    //_userService.LogOut();
+                    return View(model);
                     // redirect the user to the login page
-                    return RedirectToAction("Login", "Account");
+                    //return RedirectToAction("Login", "Account");
                 }
             }
 
