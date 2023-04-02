@@ -53,11 +53,21 @@
 </div>
 
 <script>
+    function hideChart(){
+        $("#chart").hide();
+        $(".hour-container").hide();
+    }
+
+    function ShowChart(){
+        $("#chart").show();
+        $(".hour-container").show();
+    }
     var personsDataSource;
-    var selectedPerson = @HttpContextAccessor.HttpContext.Session.GetString("UserId");
+    var selectedPerson //= @HttpContextAccessor.HttpContext.Session.GetString("UserId");
     var GlobalstartDate;
     var GlobalendDate;
-    var userid = selectedPerson;
+    var visible=false;
+    var userid //= selectedPerson;
     $.ajax({
         url: '@Url.Content("~/ListGroupMembersForPrincipal")',
         method: "GET",
@@ -84,12 +94,12 @@
                         url: "/api/UserCheckInGetter/" + userid + "?startDate=" + GlobalstartDate.toISOString() + "&endDate=" + GlobalendDate.toISOString(),
                         method: "GET",
                         success: function (data) {
-
+                            ShowChart();
                             IntervalCalculate(data)
 
                         },
                         error: function (error) {
-
+                            hideChart();
                         }
                     });
                 }
@@ -119,6 +129,7 @@
             max: new Date(2022, 3, 2, 0),
             tickInterval: { minutes: 30 }
         },
+        
         commonSeriesSettings: {
             argumentField: 'date',
             type: 'rangeBar',
@@ -298,7 +309,7 @@
 
     
 
-
+    /*
     $.ajax({
         url: "/api/UserCheckInGetter/daytime/" + userid,
         method: "GET",
@@ -310,7 +321,7 @@
         error: function (error) {
             // handle errors here
         }
-    });
+    });*/
 
 
 
@@ -344,18 +355,21 @@
                 var startDate = e.value[0];
                 var endDate = e.value[1];
                 var days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-                $.ajax({
-                    url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
-                    method: "GET",
-                    success: function (data) {
-
-                        IntervalCalculate(data)
-
-                    },
-                    error: function (error) {
-
-                    }
-                });
+                if (userid != undefined) {
+                    $.ajax({
+                        url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
+                        method: "GET",
+                        success: function (data) {
+                            ShowChart();
+                            IntervalCalculate(data)
+                        },
+                        error: function (error) {
+                            hideChart();
+                        }
+                    });
+                } else {
+                    hideChart();
+                }
 
             }
         }).dxRangeSelector("instance");
@@ -367,14 +381,20 @@
         var startDate = new Date(2022, 1, 28);
         var endDate = new Date(2022, 2, 7);
         var days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-        $.ajax({
-            url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
-            method: "GET",
-            success: function (data) {
-                IntervalCalculate(data)
-            },
-            error: function (error) {
-            }
-        });
+        if(userid!=undefined){
+            $.ajax({
+                url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
+                method: "GET",
+                success: function (data) {
+                    ShowChart();
+                    IntervalCalculate(data)
+                },
+                error: function (error) {
+                   hideChart();
+                }
+            });
+        }else{
+            hideChart();
+        }
     });
 </script>

@@ -35,8 +35,9 @@ namespace Recon.Controllers
             {
                 IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
 
-                List<DayOffTicket> res = _ticketRepository.GetAllTicketsForPrincipal(userGroupsPrincipal);
-               
+                List<DayOffTicket> res = _ticketRepository.GetAllTicketsForPrincipal(userGroupsPrincipal).Where(ticket => ticket.isApproved == false)
+                                 .ToList(); ;
+                               
                
                 return View(res);
             }

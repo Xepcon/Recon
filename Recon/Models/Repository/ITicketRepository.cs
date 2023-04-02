@@ -15,6 +15,6 @@ namespace Recon.Models.Repository
 
         List<DayOffTicket> GetAllTicketsForPrincipal(IEnumerable<IGroup> Groups);
 
-        
+    
     }
 }

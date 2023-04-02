@@ -4,7 +4,9 @@
 
 @inject IUserService Auth
 <h1 style="text-align:center">Szabadság kérelmek</h1>
-<div class="ticket-list">
+<div id="scheduler"></div>
+ 
+<div  class="ticket-list">
 @foreach (var ticket in Model)
 { 
         <div class="ticket-box" data-id="@ticket.Id" style="background-color: @(ticket.isApproved ? "#4CAF50" : "#FF9800");">
@@ -27,7 +29,67 @@
 }
 </div>
 <script>
-    $(document).ready(function () {
+    
+    $(() => {
+        var dataForDayOffScheduler;
+        function callData(){        
+           $.ajax({
+                url: `@Url.Content("~/api/TicketDayOffDataDates")`,
+                method: "GET",
+                dataType: "json",
+                async:false,
+
+                success: function(data) {
+                    // Handle the successful response here
+                    //console.log(data)
+                    dataForDayOffScheduler = data
+                    $('#scheduler').dxScheduler({
+                        timeZone: 'Europe/Paris',
+                        dataSource: dataForDayOffScheduler,
+                        views: ['month'],
+                        currentView: 'month',
+                        editing: {
+                            allowDragging: false,
+                            allowResizing: false,
+                            allowDeleting: false,
+                            allowUpdating: false,
+                            allowAdding: false
+                        },
+
+                        onAppointmentDeleting: function (e) {
+                            e.cancel = true; // Prevent the appointment from being deleted
+                        },
+                        onAppointmentClick: function (e) {
+                            e.cancel = true; // Prevent the appointment popup from showing
+                        },
+
+                    });
+                },
+                error: function(xhr, status, error) {
+                    // Handle any errors here
+                    console.error(error);
+                }
+            });
+        }
+        callData();
+       
+
+        /*appointmentTemplate: function (data, _, element) {
+                 var container = $("<div>").addClass("dx-template-wrapper");
+                 var defaultTitle = $("<div>").addClass("dx-template-content").text(data.appointmentData.text);
+                 //var customTitle = $("<div>").addClass("my-custom-title").text(data.appointmentData.text);
+                 container.append(defaultTitle);
+                 console.log(data.appointmentData.approved)
+                 console.log(element)
+                 if (data.appointmentData.approved) {
+                     container.addClass('approved-appointment');
+                 } else {
+                     container.addClass('unapproved-appointment');
+                 }
+                 console.log(element)
+                 return container;
+             },*/
+
         $(".btn").click(function () {
             var ticketId = $(this).data("id");
             console.log(ticketId);
@@ -40,6 +102,7 @@
                         success: function () {
                             // Remove the ticket element from the DOM
                             $('.ticket-box[data-id="' + ticketId + '"]').remove();
+                            callData();
                         },
                         error: function () {
                             alert('Error approving ticket.');
@@ -48,6 +111,7 @@
                 }
             });           
         });
+
     });
 </script>
 

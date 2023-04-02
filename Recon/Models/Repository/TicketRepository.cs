@@ -48,8 +48,8 @@ namespace Recon.Models.Repository
             {
                 if (_dbContext.DayOffTicket.Where(x => x.groupId == item.groupId).Any())
                 {
-
-                    res.AddRange(_dbContext.DayOffTicket.Where(x => x.groupId == item.groupId && x.isApproved == false).ToList());
+                    //res.AddRange(_dbContext.DayOffTicket.Where(x => x.groupId == item.groupId && x.isApproved == false).ToList());
+                    res.AddRange(_dbContext.DayOffTicket.Where(x => x.groupId == item.groupId).ToList());
                 }
             }
             return res;
@@ -60,6 +60,7 @@ namespace Recon.Models.Repository
             return _dbContext.DayOffTicket.Where(x=>x.userId==userid);
         }
 
-   
+  
+
     }
 }
