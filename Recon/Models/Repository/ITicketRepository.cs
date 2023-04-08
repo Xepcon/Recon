@@ -6,9 +6,7 @@ namespace Recon.Models.Repository
     public interface ITicketRepository
     {
         void CreateTicket(DayOffTicket model);
-
       
-
         bool ApproveTicket(int id);
 
         IEnumerable<DayOffTicket> GetUsersTicket(int userid);

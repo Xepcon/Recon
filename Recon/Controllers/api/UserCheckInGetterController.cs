@@ -24,28 +24,7 @@ namespace Recon.Controllers.api
             _userService = userService; 
         }
 
-        [HttpGet("daytime/{id}")]
-        
-        public IActionResult GetTimeTable(string id)
-        {
-            if (!_userService.IsAuthenticated())
-            {
-                return Unauthorized();
-            }
-            if (id != null)
-            {
-                int Userid = int.Parse(id);
-             
-                    var WrokTimeEntitiy = _dbContext.WorkTimeUsers.Where(x => x.UserId == Userid).FirstOrDefault();
-                    return Ok(WrokTimeEntitiy);
-                
-            }
-            else
-            {
-                return BadRequest("Id null");
-            }
-
-        }
+     
         // GET api/<UserCheckInGetterController>/5
         [HttpGet("{id}")]
       
@@ -57,7 +36,9 @@ namespace Recon.Controllers.api
             }
             if (id != null)
             {
-                var cardid = _dbContext.magneticCards.Where(x => x.UserId == id).FirstOrDefault();
+                /// string was int new userId
+                int Id = int.Parse(id);
+                var cardid = _dbContext.magneticCards.Where(x => x.userId == Id).FirstOrDefault();
                 if (cardid != null)
                 {
                     var res = _dbContext.Checks.Where(x => x.CardId == cardid.CardId && x.Date >= startDate && x.Date <= endDate);

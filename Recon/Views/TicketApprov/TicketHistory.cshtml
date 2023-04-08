@@ -1,5 +1,35 @@
-﻿@model IEnumerable<Recon.Models.Model.Ticket.DayOffTicket>
+﻿@using Recon.ViewModel;
 
+@model IEnumerable<Recon.Models.Model.Ticket.DayOffTicket>
+
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .page-link,
+    .current-page {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 5px;
+        border: 1px solid #ccc;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .page-link:hover {
+            background-color: #eee;
+        }
+
+    .current-page {
+        background-color: #333;
+        color: #fff;
+        border-color: #333;
+    }
+</style>
 @if (Model.Any())
 {
     <div class="ticket-list">
@@ -18,6 +48,22 @@
                     <span>@(ticket.isApproved ? "Approved" : "Pending")</span>
                 </div>
             </div>
+        }
+    </div>
+    <div class="pagination">
+        @if (ViewBag.PageCount > 1)
+        {
+            for (int i = 1; i <= ViewBag.PageCount; i++)
+            {
+                if (i == ViewBag.CurrentPage)
+                {
+                    <span class="current-page">@i</span>
+                }
+                else
+                {
+                    <a href="@Url.Action("TicketHistory", new { page = i })" class="page-link">@i</a>
+                }
+            }
         }
     </div>
 }

@@ -15,41 +15,49 @@
         @if (Auth.IsInRole("HR") || Auth.IsInRole("Admin"))
         {
             <a class="dashboard-link" asp-area="" asp-controller="Roles" asp-action="Index">    
-                <div class="dashboard-item">            
+                <div class=" dashboard-item">            
                     <h3>Szerepkörök</h3>      
                     <p>Szerepkörök léttrehozása, módosítása</p>
                 </div>
             </a>
 
             <a class="dashboard-link" asp-area="" asp-controller="UsersInRoles" asp-action="Index">
-                 <div class="dashboard-item">            
+                 <div class=" dashboard-item">            
                     <h3>Szerepkörök felhasználóhoz rendelés</h3>      
                     <p>Felhasználókat lehet szerepekhez rendelni</p>
                 </div>
             </a>                                                                    
             <a class="dashboard-link" asp-area="" asp-controller="Groups" asp-action="Index">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Munkacsoportok</h3>
                     <p>Munkacsoportok léttrehozása, törlése, szerkesztése</p>
+                </div>
+            </a>
+        }
+        @if(Auth.IsInRole("HR") || Auth.IsInRole("Admin") || Auth.IsInRole("Recepcionist") ){
+                <a class="dashboard-link" asp-area="" asp-controller="MagneticCard" asp-action="Index">
+                <div class=" dashboard-item">
+                    <h3>Belépő kártyák</h3>
+                    <p>Belépő kártyák léttrehozása, törlése, szerkesztése</p>
                 </div>
             </a>
         }
         @if (group.IsGroupOwner() || Auth.IsInRole("Admin"))
         {
             <a class="dashboard-link" asp-area="" asp-controller="GroupMembers" asp-action="Index">
-                <div class="dashboard-item">
-                    <h3>Felhasználók a munkacsoportokban</h3>
+                <div class=" dashboard-item">
+                    <h3 >Felhasználók a munkacsoportokban</h3>
                     <p>Felhasználókat lehet munkacsoportokhoz rendelni</p>
                 </div>
             </a> 
             <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="Index">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Jelentétiív</h3>
                     <p>Új jelentléti ív léttrehozása</p>
                 </div>
             </a>
             <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="Riport">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Riportok</h3>
                     <p>Dolgozói munkaidő riportok</p>
                 </div>
@@ -60,13 +68,13 @@
         {
            
             <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="ApproveAttendance">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Jelenlétiív engedélyezés</h3>
                     <p>Gyakornokok jelenléti ívének engedélyezése</p>
                 </div>
             </a>
             <a class="dashboard-link" asp-area="" asp-controller="TicketApprov" asp-action="Index">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Szabadságolások</h3>
                     <p>Beadott szabadságok engedélyezése</p>
                 </div>
@@ -76,7 +84,7 @@
         @if (Auth.IsInRole("Intern"))
         {
             <a class="dashboard-link" asp-area="" asp-controller="Attendances" asp-action="AttendanceSheet">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Jelentétiívek</h3>
                     <p>Jelenlétívkitöltése</p>
                 </div>
@@ -85,22 +93,22 @@
         }
        
           
-        @if (!Auth.IsInRole("Intern"))
+        @if (!Auth.IsInRole("Intern") && !Auth.IsInRole("Admin"))
         {
             <a class="dashboard-link" asp-area="" asp-controller="Dashboard" asp-action="CheckHistory">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                 <h3>Munkaidő kimutatás</h3>
                 <p>Ledolgozott órák megnézése</p>
             </div>
             </a>
             <a class="dashboard-link" asp-area="" asp-controller="TicketApprov" asp-action="DayOff">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Szabadság</h3>
                     <p>Szabadság kérvény beadása</p>
                 </div>
             </a>
             <a class="dashboard-link" asp-area="" asp-controller="TicketApprov" asp-action="TicketHistory">
-                <div class="dashboard-item">
+                <div class=" dashboard-item">
                     <h3>Kérvények</h3>
                     <p>Kérvények megtekintése</p>
                 </div>
@@ -136,6 +144,8 @@ else
     }
 
     .dashboard-item {
+        
+        
         font-family: 'Roboto', sans-serif;
         font-weight: 900;
         background-color: #6C63FF;
@@ -144,7 +154,7 @@ else
         box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
         padding: 20px;
         text-align: center;
-        width: 250px;
+        width: 300px;
         height:250px;
         text-align: center; 
         display: flex;
@@ -159,4 +169,7 @@ else
        transform:scale(1.1);
       
     }
+
+
+
 </style>

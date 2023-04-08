@@ -1,0 +1,81 @@
+﻿
+<form action="@Url.Content("~/MagneticCard/Create/")" method="post">
+    <div id="form-container"></div>
+</form>
+
+
+
+@section scripts {
+    <script>
+
+        var userData;
+
+        $.ajax({
+            url: `@Url.Content("~/api/ListUser")`,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                userData = data
+                console.log(data)
+            },
+            error: function (error) {
+                console.log(error); // This will log any errors to the console
+            }
+        });
+
+        $(function () {
+            $("#form-container").dxForm({
+                items: [
+
+                    {
+                        dataField: "CardId",
+                        label: { text: "Kártyazonosító" }
+                    },
+                    {
+                        dataField: "userId",
+                        editorType: 'dxLookup',
+                        editorOptions: {
+                            dataSource: userData,
+                            displayExpr: 'name',
+                            valueExpr: 'userId'
+
+                        },
+                        label: {
+                            text: "Felhasználó"
+                        }
+
+                    },
+                    {
+                        dataField: "CardName",
+                        label: { text: "Kártyaneve" }
+                    },
+                     {
+                        dataField: "CardType",
+                        editorType: 'dxLookup',
+                        editorOptions: {
+                            dataSource: ['Vendég kártya', 'Dolgozói kártya', 'Külsős cégkártya']
+                          
+
+                        },
+                        label: {
+                            text: "Kárty típusa"
+                        }
+
+                    },
+                    
+                    {
+                        itemType: "button",
+                        buttonOptions: {
+                            text: "Mentés",
+                            type: "success",
+                            useSubmitBehavior: true,
+                        }
+                    }
+                ],
+
+                labelLocation: "top"
+            });
+        });
+    </script>
+}

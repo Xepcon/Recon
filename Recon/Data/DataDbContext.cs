@@ -33,7 +33,8 @@ namespace Recon.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<MagneticCard>().HasKey(entity => new { entity.CardId, entity.UserId });
+            //builder.Entity<MagneticCard>().HasNoKey();
+            builder.Entity<MagneticCard>().HasKey(entity => new { entity.CardId, entity.userId });
             builder.Entity<UsersInRoles>().HasKey(entity => new { entity.roleId, entity.userId });
             
             builder.Entity<AttendanceEntity>().HasKey(entity => new { entity.AttendanceId,entity.AttendanceDate });

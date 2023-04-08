@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using PagedList;
 using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
@@ -8,6 +9,7 @@ using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Ticket;
 using Recon.Models.Repository;
 using Recon.Utility;
+using Recon.ViewModel;
 using System.Diagnostics;
 
 namespace Recon.Controllers
@@ -60,14 +62,20 @@ namespace Recon.Controllers
           
         }
         [Authenticated]
-        public IActionResult TicketHistory()
+        public IActionResult TicketHistory(int? page)
         {
-
             var dataWithTickets = _ticketRepository.GetUsersTicket(_userService.GetUserId());
-           
-            return View(dataWithTickets);
-           
-           
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var pagedData = dataWithTickets.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+            int totalCount = dataWithTickets.Count();
+            int pageCount = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            ViewBag.PageCount = pageCount;
+            ViewBag.TotalItemCount = totalCount;
+
+            return View(pagedData);
         }
 
         public IActionResult DayOff()

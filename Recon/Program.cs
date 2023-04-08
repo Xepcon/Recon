@@ -13,8 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DataDbContextConnection") ?? throw new InvalidOperationException("Connection string 'DataDbContextConnection' not found.");
 
-
-
 builder.Services.AddDbContext<DataDbContext>(options =>
     options.UseSqlServer(connectionString));
 

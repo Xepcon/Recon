@@ -1,0 +1,110 @@
+﻿<div id="gridContainer"></div>
+
+<script>
+    var userData;
+
+    $.ajax({
+        url: `@Url.Content("~/api/ListUser")`,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            userData = data
+            console.log(data)
+        },
+        error: function (error) {
+            console.log(error); // This will log any errors to the console
+        }
+    });
+
+   
+
+    $(function () {
+        var dataSource = @Html.Raw(ViewBag.data);
+
+        $("#gridContainer").dxDataGrid({
+            dataSource: dataSource,
+            paging: { enabled: true },
+            paging: {
+                pageSize: 10,
+                pageIndex: 1    
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [2, 5, 10, 15, 20, 50],
+                showNavigationButtons: true
+            },
+            columns: [
+                { dataField: "CardId", caption: "Kartya azonosító" },
+               {
+                    dataField: "userId",
+                    caption: "Felhasználó",
+                    lookup: {
+                        dataSource: userData,
+                        valueExpr: "userId",
+                        displayExpr: "name",
+                    },
+                },
+           
+                { dataField: "CardName", caption: "Kártya neve" },
+                { dataField: "CardType", caption: "Kártya típusa" },
+
+                {
+                    type: 'buttons',
+                    buttons: [
+                        /*{
+                            hint: 'Módosítás',
+                            icon: 'edit',
+                            onClick(e) {
+                                window.location.href = `@Url.Content("~/MagneticCard/Edit/")${e.row.data.CardId}`;
+                            }
+                        },*/
+                        {
+                            hint: 'Törlés',
+                            icon: 'remove',
+                            onClick(e) {
+
+                              
+
+                                const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretné a Kártyát?", "Megerősítés");
+                                confirmation.then((dialogResult) => {
+                                    if (dialogResult === true) {
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "@Url.Content("~/MagneticCard/Delete/")" + e.row.data.CardId,
+                                            success: function () {
+                                                location.reload();
+                                            },
+                                            error: function () {
+                                                window.DevExpress.ui.dialog.alert("Hiba történt a csoport törlésekor!", "Hiba");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                },
+
+
+            ],
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: 'add',
+                            onClick() {
+                                window.location.href = `@Url.Content("~/MagneticCard/Create/")`;
+                            }
+                        }
+                    }
+
+                ]
+            }
+
+
+
+        });
+    });
+</script>

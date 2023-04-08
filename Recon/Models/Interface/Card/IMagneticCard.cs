@@ -10,6 +10,6 @@ namespace Recon.Models.Interface.Card
 
         [Key]
         [Required]
-        public string UserId { get; set; }
+        public int userId { get; set; }
     }
 }

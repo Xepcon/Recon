@@ -144,10 +144,8 @@ namespace Recon.Migrations
             modelBuilder.Entity("Recon.Models.Model.Card.MagneticCard", b =>
                 {
                     b.Property<string>("CardId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CardName")
                         .IsRequired()
@@ -157,12 +155,13 @@ namespace Recon.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CardId", "UserId");
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
 
                     b.ToTable("magneticCards");
                 });
 
-            modelBuilder.Entity("Recon.Models.Model.Group.Group", b =>
+            modelBuilder.Entity("Recon.Models.Model.GroupLib.Group", b =>
                 {
                     b.Property<int>("groupId")
                         .ValueGeneratedOnAdd()
@@ -182,7 +181,7 @@ namespace Recon.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("Recon.Models.Model.Group.GroupMember", b =>
+            modelBuilder.Entity("Recon.Models.Model.GroupLib.GroupMember", b =>
                 {
                     b.Property<int>("groupId")
                         .HasColumnType("int");

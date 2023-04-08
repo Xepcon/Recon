@@ -38,13 +38,6 @@ namespace Recon.Controllers.api
             _dbContext.SaveChanges();
         }
 
-        // POST api/<MagneticCardController>
-        /*[HttpPost]
-        public void Post1()
-        {
-            Debug.WriteLine("CALLED FROM ESP POST1");
-          
-        }*/
 
 
 
