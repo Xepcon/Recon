@@ -82,7 +82,7 @@ namespace Tests
             // Assert
 
             //Assert.IsType<ActionResult<Unauthorized>>(result);                       
-            Assert.Equal(true, result.Value.IsNullOrEmpty());
+            Assert.True(result.Value.IsNullOrEmpty());
         }
 
     }

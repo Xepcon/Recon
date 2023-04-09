@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Recon.Data;
 using Recon.Models.Interface.Account;
+using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
 using System;
@@ -39,8 +40,9 @@ namespace Tests
         [Fact]
         public void GroupServiceIntegrationTests()
         {
-           
 
+            _dbContext.Person.Add(new Person { userId = 1, FirstName = "Gibsz", LastName = "Jakab" });
+            _dbContext.SaveChanges();
             Group FirstGroup = new Group { groupId = 1, Name = "Group 1", principalId = 1 };
             Group SecondGroup = new Group { groupId = 2, Name = "Group 2" };
             Group ThirdGroup = new Group { groupId = 3, Name = "Group 3"  };
@@ -87,6 +89,24 @@ namespace Tests
             GroupMember MemberTmp = _groupService.GetMembersById(1, 3);
             Assert.Equal(1, MemberTmp.groupId);
             Assert.Equal(3, MemberTmp.userId);
+
+            var res = _groupService.IsInGroup();
+            Assert.True(res);
+            res = _groupService.IsInGroup(3,3);
+            Assert.False(res);
+            var UserGroups = _groupService.getUserGroup();
+            Assert.Equal(1,UserGroups.Count());
+            var GroupOwner = _groupService.IsGroupOwner(1);
+            Assert.True(GroupOwner);
+            GroupOwner = _groupService.IsGroupOwner(2);
+            Assert.False(GroupOwner);
+            var isInGroupRes = _groupService.IsInGroup(1);
+            Assert.True(isInGroupRes);
+            isInGroupRes = _groupService.IsInGroup(3);
+            Assert.False(isInGroupRes);
+            var GroupMembers = _groupService.GetGroupMembers(1);
+            Assert.Equal(1,GroupMembers.Count());
+
         }
 
         [Fact]
