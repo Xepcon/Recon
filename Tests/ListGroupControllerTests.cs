@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tests.Mock.Service.User;
 
 namespace Tests
 {
@@ -66,99 +67,6 @@ namespace Tests
             Assert.Equal(3, data.Count());
         }
 
-        public class MockUserService : IUserService
-        {
-            public bool IsAuthenticatedResult { get; set; } = true;
-
-            public UserEntity Authenticate(string username, string password)
-            {
-                return null;
-            }
-
-            public Task<UserEntity> AuthenticateAsync(string username, string password)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void ChangePassword(int userId, string newPassword)
-            {
-                throw new NotImplementedException();
-            }
-
-            public UserEntity Create(UserEntity user)
-            {
-                throw new NotImplementedException();
-            }
-
-            public UserEntity GetById(int id)
-            {
-                throw new NotImplementedException();
-            }
-
-            public UserEntity GetByName(string name)
-            {
-                throw new NotImplementedException();
-            }
-
-            public string GetFullName(int userid)
-            {
-                throw new NotImplementedException();
-            }
-
-            public string GetFullName()
-            {
-                throw new NotImplementedException();
-            }
-
-            public List<Roles> GetRolesForUser(int userId)
-            {
-                throw new NotImplementedException();
-            }
-
-            public int GetUserId()
-            {
-                throw new NotImplementedException();
-            }
-
-            public string GetUserName()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsAuthenticated()
-            {
-                return IsAuthenticatedResult;
-            }
-
-            public bool IsInRole(string Name)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void LogOut()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Register(RegisterViewModel user)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void UpdateUser(int userId, UserEntity updatedUser)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Person UserGetPersonalInfo(int userId)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void UserUpdatePersonalInfo(Person model)
-            {
-                throw new NotImplementedException();
-            }
-        }
+       
     }
 }

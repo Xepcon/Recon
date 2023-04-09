@@ -20,10 +20,15 @@
    
 
     $(function () {
-        var dataSource = @Html.Raw(ViewBag.data);
+          var Data = new DevExpress.data.DataSource({
+            store: {
+                type: 'array',
+                data: @Html.Raw(ViewBag.data)
+            }
+        });
 
         $("#gridContainer").dxDataGrid({
-            dataSource: dataSource,
+            dataSource: Data,
             paging: { enabled: true },
             paging: {
                 pageSize: 10,
@@ -73,10 +78,16 @@
                                             type: "POST",
                                             url: "@Url.Content("~/MagneticCard/Delete/")" + e.row.data.CardId,
                                             success: function () {
-                                                location.reload();
+                                                Data.store().remove(e.row.data);
+                                                Data.reload().done(function () {
+                                                    DevExpress.ui.notify("Sikeresen törölted a kártyát ", "success", 4000);
+                                                })
+                                                    .fail(function (error) {
+                                                        DevExpress.ui.notify("Hiba történt a frissítés közben: " + error, "error", 4000);
+                                                    });
                                             },
                                             error: function () {
-                                                window.DevExpress.ui.dialog.alert("Hiba történt a csoport törlésekor!", "Hiba");
+                                                DevExpress.ui.notify("Hiba történ a kártyát törlésekor ", "error", 4000);
                                             }
                                         });
                                     }

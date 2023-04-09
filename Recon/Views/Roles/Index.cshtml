@@ -4,10 +4,15 @@
    
 
     $(function () {
-        var dataSource = @Html.Raw(ViewBag.data);
+          var Data = new DevExpress.data.DataSource({
+            store: {
+                type: 'array',
+                data: @Html.Raw(ViewBag.data)
+            }
+        });
 
         $("#gridContainer").dxDataGrid({
-            dataSource: dataSource,
+            dataSource: Data,
              paging: { enabled: true },
             paging: {
                 pageSize: 5,
@@ -37,8 +42,8 @@
                             icon: 'remove',
                             onClick(e) {
 
-                                console.log(e.row)
-                                console.log(e.row.data.AttendanceId)
+                                //console.log(e.row)
+                                //console.log(e.row.data.AttendanceId)
                                 //Api
                                
 
@@ -49,10 +54,17 @@
                                             type: "POST",
                                             url: "@Url.Content("~/Roles/Delete/")" + e.row.data.Id,
                                             success: function () {
-                                                location.reload();
+                                                Data.store().remove(e.row.data);
+                                                Data.reload().done(function () {
+                                                    DevExpress.ui.notify("Sikeresen törölted a szerepkört ", "success", 4000);
+                                                })
+                                                    .fail(function (error) {
+                                                        DevExpress.ui.notify("Hiba történt a frissítés közben: " + error, "error", 4000);
+                                                    });
                                             },
                                             error: function () {
-                                                window.DevExpress.ui.dialog.alert("Hiba történt a szerepkör törlésekor!", "Hiba");
+                                                DevExpress.ui.notify("Hiba történt a szerepkör törlésekor!", "error", 4000);
+                                                //window.DevExpress.ui.dialog.alert("Hiba történt a szerepkör törlésekor!", "Hiba");
                                             }
                                         });
                                     }

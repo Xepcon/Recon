@@ -15,7 +15,6 @@ namespace Recon.Models.Model.GroupLib
             _userService = userService;
 
         }
-
         public List<IPerson> GetGroupMembers(int groupId)
         {
             if (_userService.IsAuthenticated())
@@ -37,7 +36,6 @@ namespace Recon.Models.Model.GroupLib
             return null;
 
         }
-
         public bool IsInGroup(int userid, int groupId){
             return _dbContext.GroupMembers.Where(x => x.userId == userid && x.groupId == groupId).Any() ;
         }
@@ -65,7 +63,6 @@ namespace Recon.Models.Model.GroupLib
 
             return userGroups;
         }
-
         public bool IsGroupOwner(int groupId)
         {
             if(_userService.IsAuthenticated()) {
@@ -74,7 +71,6 @@ namespace Recon.Models.Model.GroupLib
             }
             return false;
         }
-
         public bool IsInGroup(int groupId)
         {
             if (_userService.IsAuthenticated()) {
@@ -83,7 +79,6 @@ namespace Recon.Models.Model.GroupLib
             }
             return false;
         }
-
         public bool IsGroupOwner()
         {
             if (_userService.IsAuthenticated())
@@ -94,29 +89,24 @@ namespace Recon.Models.Model.GroupLib
             }
             return false;
         }
-
         public IEnumerable<Group> GetAllGroups()
         {
             return _dbContext.Groups;
         }
-
         public Group GetGroupById(int id)
         {
             return _dbContext.Groups.Find(id);
         }
-
         public void AddGroup(Group group)
         {
             _dbContext.Groups.Add(group);
             _dbContext.SaveChanges();
         }
-
         public void UpdateGroup(Group group)
         {
             _dbContext.Groups.Update(group);
             _dbContext.SaveChanges();
         }
-
         public void DeleteGroup(int id)
         {
             var model = _dbContext.Groups.Find(id);
@@ -126,7 +116,6 @@ namespace Recon.Models.Model.GroupLib
                 _dbContext.SaveChanges();
             }
         }
-
         public void CreateGroup(Group group) {
 
             _dbContext.Add(group);
@@ -139,17 +128,14 @@ namespace Recon.Models.Model.GroupLib
             _dbContext.GroupMembers.Add(member);
             _dbContext.SaveChanges();
         }
-
         public IEnumerable<GroupMember> GetAllMembers()
         {
             return _dbContext.GroupMembers;
         }
-
         public GroupMember GetMembersById(int groupid, int userid)
         {
             return _dbContext.GroupMembers.Where(x => x.groupId == groupid && x.userId == userid).FirstOrDefault();
         }
-
         public bool AddMembers(GroupMember model)
         {
             //Check if user intern only one group allowed 
@@ -169,9 +155,6 @@ namespace Recon.Models.Model.GroupLib
             }
             return false;
         }
-
-       
-
         public void DeleteMembers(int groupid, int userid)
         {
             var model = _dbContext.GroupMembers.Where(x => x.groupId == groupid & x.userId == userid).FirstOrDefault();

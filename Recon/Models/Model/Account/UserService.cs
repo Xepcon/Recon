@@ -264,6 +264,7 @@ namespace Recon.Models.Model.Account
                 
                 var tempororaryPersonId = new Person();
                 tempororaryPersonId.userId = user.Id;
+                tempororaryPersonId.FirstName = model.Username;
                 _dbContext.Person.Add(tempororaryPersonId);
                 _dbContext.SaveChanges();
                 

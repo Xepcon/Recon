@@ -1,10 +1,11 @@
 ﻿@model Recon.ViewModel.RegisterViewModel
 
-<h2>Register</h2>
+<h2>Regisztráció</h2>
 
 <form asp-action="Register" method="post">
+    <div id="form"></div>
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
+    <!--<div class="form-group">
         <label asp-for="Email"></label>
         <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
@@ -25,6 +26,57 @@
         <input asp-for="Username" class="form-control" />
         <span asp-validation-for="Username" class="text-danger"></span>
     </div>
-   
-    <button type="submit" class="btn btn-primary">Register</button>
+    
+    <button type="submit" class="btn btn-primary">Regisztráció</button>-->
 </form>
+<script>
+        $(function() {
+    $("#form").dxForm({
+        formData: {},
+        items: [
+            {
+                dataField: "Email",
+                label: { text: "E-mail" },
+                editorType: "dxTextBox"
+            },
+            {
+                dataField: "Password",
+                label: { text: "Jelszó" },
+                editorType: "dxTextBox",
+                editorOptions: { mode: "password" }
+            },
+            {
+                dataField: "ConfirmPassword",
+                label: { text: "Jelszó ismétlés" },
+                editorType: "dxTextBox",
+                editorOptions: { mode: "password" }
+            },
+            {
+                dataField: "Username",
+                label: { text: "Felhasználónév" },
+                editorType: "dxTextBox"
+            },
+            {
+                itemType: "button",
+                buttonOptions: {
+                    text: "Regisztrálás",
+                    type: "success",
+                    useSubmitBehavior: true
+                }
+            }
+        ],
+        colCount: 1,
+        labelLocation: "top",
+        minColWidth: "300px",
+        showColonAfterLabel: true,
+        validationGroup: "register",
+        onFieldDataChanged: function(e) {
+            // Field data changed event
+        },
+        onEditorEnterKey: function(e) {
+            // Enter key pressed event
+        }
+    });
+});
+</script>
+    

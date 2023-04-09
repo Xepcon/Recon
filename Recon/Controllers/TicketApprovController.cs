@@ -90,6 +90,7 @@ namespace Recon.Controllers
             ViewBag.ToastMessages = new List<ToastMessages>();
             ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
             model.userId = _userService.GetUserId();
+            model.Created = DateTime.Now;
             if (ModelState.IsValid){
                 _ticketRepository.CreateTicket(model);
                 ViewBag.ToastMessages.Add(new ToastMessages

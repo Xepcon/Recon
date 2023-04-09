@@ -2,8 +2,18 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+function hideChart() {
+    $("#chart").hide();
+    $(".hour-container").hide();
+}
+
+function ShowChart() {
+    $("#chart").show();
+    $(".hour-container").show();
+}
 
 function IntervalCalculate(data) {
+
 
 
         const groupedData = data.reduce((acc, cur) => {

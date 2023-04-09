@@ -53,15 +53,7 @@
 </div>
 
 <script>
-    function hideChart(){
-        $("#chart").hide();
-        $(".hour-container").hide();
-    }
-
-    function ShowChart(){
-        $("#chart").show();
-        $(".hour-container").show();
-    }
+   
     var personsDataSource;
     var selectedPerson //= @HttpContextAccessor.HttpContext.Session.GetString("UserId");
     var GlobalstartDate;
@@ -97,6 +89,7 @@
 
                             if (data.length == 0) {
                                 hideChart();
+                               DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz", "info", 6000);
                             } else {
                                 ShowChart();
                                 IntervalCalculate(data)
@@ -105,6 +98,7 @@
                         },
                         error: function (error) {
                             hideChart();
+                            DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz", "info", 6000);
                         }
                     });
                 }

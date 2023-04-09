@@ -38,14 +38,14 @@
             <div class="ticket-box" style="background-color: @(ticket.isApproved ? "#4CAF50" : "#FF9800");">
                 <div class="ticket-header">
                     <h3>@ticket.Title</h3>
-                    <span style="color:white">@ticket.Created.ToString("MMMM dd, yyyy")</span>
+                    <span style="color:white"> Létrehozás dátuma: @ticket.Created.ToString("MMMM dd, yyyy")</span>
                 </div>
                 <div class="ticket-body">
                     <p>@ticket.Description</p>
-                    <p><strong>Day off:</strong> @ticket.StartDayOff.ToString("MMMM dd, yyyy") - @ticket.EndDayOff.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Szabadság: </strong> @ticket.StartDayOff.ToString("MMMM dd, yyyy") - @ticket.EndDayOff.ToString("MMMM dd, yyyy")</p>
                 </div>
                 <div class="ticket-footer">
-                    <span>@(ticket.isApproved ? "Approved" : "Pending")</span>
+                    <span>@(ticket.isApproved ? "Engedélyezve" : "Nincs engedélyezve")</span>
                 </div>
             </div>
         }

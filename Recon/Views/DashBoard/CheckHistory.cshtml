@@ -95,7 +95,7 @@
     });
 
     const chartInstance = $('#chart').dxChart('instance');
-    
+    hideChart();
    
 
     
@@ -139,12 +139,18 @@
                     url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
                     method: "GET",
                     success: function(data) {
-                       
-                        IntervalCalculate(data)
+                        if (data.length == 0) {
+                            hideChart();
+                            DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz", "info", 6000);
+                        } else {
+                            ShowChart();
+                            IntervalCalculate(data)
+                        }
                       
                     },
                     error: function(error) {
-                       
+                        hideChart();
+                       DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz", "info", 6000);
                     }
                 });
               
@@ -161,9 +167,17 @@
             url: "/api/UserCheckInGetter/" + userid + "?startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
             method: "GET",
             success: function (data) {
-                IntervalCalculate(data)
+                if (data.length == 0) {
+                            hideChart();
+                            DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz", "info", 6000);
+                        } else {
+                            ShowChart();
+                            IntervalCalculate(data)
+                        }
             },
             error: function (error) {
+                hideChart();
+               DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz", "info", 6000);
             }
         });
     });

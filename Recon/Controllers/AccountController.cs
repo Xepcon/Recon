@@ -56,7 +56,7 @@ namespace Recon.Controllers
                             type = TypeToast.ERROR,
 
                         });
-                        return View(model);
+                        return View();
                     }
 
                     _userService.ChangePassword(userId, model.NewPassword);
@@ -68,7 +68,7 @@ namespace Recon.Controllers
 
                     });
                     //_userService.LogOut();
-                    return View(model);
+                    return View();
                     // redirect the user to the login page
                     //return RedirectToAction("Login", "Account");
                 }
@@ -168,7 +168,8 @@ namespace Recon.Controllers
             ViewBag.ToastMessages = new List<ToastMessages>();
             int userId = _userService.GetUserId();
             model.userId = userId;
-               
+
+           
             if (ModelState.IsValid)
             {
                 _userService.UserUpdatePersonalInfo(model);
@@ -178,6 +179,8 @@ namespace Recon.Controllers
                     type = TypeToast.SUCCES,
 
                 });
+                var person = _userService.UserGetPersonalInfo(_userService.GetUserId());
+                ViewBag.data = JsonConvert.SerializeObject(person);
                 return View(model);
             }
             ViewBag.ToastMessages.Add(new ToastMessages
