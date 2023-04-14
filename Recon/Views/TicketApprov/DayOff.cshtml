@@ -6,19 +6,25 @@
 @section scripts {
     <script>
         var groupData = @Html.Raw(@ViewBag.UserGroup);
-        console.log(groupData);
+        //console.log(groupData);
 
         $(function () {
             $("#form-container").dxForm({
                 items: [
                     {
                         dataField: "Title",
-                        editorType: 'dxTextBox',                                              
+                        editorType: 'dxTextBox',
+                        editorOptions:{
+                            required:true
+                        },
                         label: { text: "Cím" }
                     },
                     {
                         dataField: "Description",
                         label: { text: "Leírás" },
+                        editorOptions:{
+                            required:true
+                        },
                         editorType: "dxTextArea"
                     },
                     {
@@ -75,6 +81,19 @@
                                 
                                 if(startDayOffValue>endDayOffValue){
                                     DevExpress.ui.notify("Rossz intervallumot adtál meg ", "error", 4000);
+                                    return;
+                                }
+
+                                const titleValue = formInstance.getEditor("Title").option("value");
+
+                                // Check if the Title field value is empty or null
+                                if (!titleValue) {
+                                    DevExpress.ui.notify("Kérlek adj meg egy címet", "error", 4000);
+                                    return;
+                                }
+                                const descriptionValue = formInstance.getEditor("Description").option("value");
+                                if (!descriptionValue) {
+                                    DevExpress.ui.notify("Kérlek adj meg a szabadság indokát", "error", 4000);
                                     return;
                                 }
                                 console.log("Start Day Off:", startDayOffValue);

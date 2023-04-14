@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
@@ -66,7 +67,7 @@ namespace Recon.Controllers.api
 
                 List<int> groupids = _groupService.GetGroupIdByPrincipalId(_userService.GetUserId());
                 var members = _dbContext.GroupMembers.Where(x => groupids.Contains(x.groupId)).Select(x => x.userId);
-
+                
                 var data = _dbContext.Person
                       .Where(p => members.Contains(p.userId))
                       .Select(p => new ApiPersonViewModel { Name = $"{p.FirstName} {p.LastName}", UserId = p.userId })

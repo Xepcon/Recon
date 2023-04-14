@@ -89,6 +89,27 @@ namespace Recon.Models.Model.GroupLib
             }
             return false;
         }
+
+        public bool IsGroupOwnerAndMember() {
+            if (_userService.IsAuthenticated())
+            {
+                int userid = _userService.GetUserId();
+                var res = _dbContext.Groups.Where(x => x.principalId == userid);
+                var numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == userid).Count();
+                
+                if (!res.IsNullOrEmpty() && numOfGroups == 1) {
+                    var IsPrincipalAtGroup = _dbContext.GroupMembers.Where(x => x.userId == userid).FirstOrDefault();
+                    var pricipalIdOfGroup = _dbContext.Groups.Where(x=>x.groupId==IsPrincipalAtGroup.groupId).FirstOrDefault();
+                    if(pricipalIdOfGroup.principalId==userid)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
+        }
         public IEnumerable<Group> GetAllGroups()
         {
             return _dbContext.Groups;
@@ -138,16 +159,19 @@ namespace Recon.Models.Model.GroupLib
         }
         public bool AddMembers(GroupMember model)
         {
-            //Check if user intern only one group allowed 
-            if (_userService.GetRolesForUser(model.userId).Where(x => x.Name == "Intern").Any())
-            {
-                return false;
-            }
+          
+            
+            
 
             var list = _dbContext.GroupMembers.Where(x => x.groupId == model.groupId && x.userId == model.userId).ToList();
+            var numOfGroupIn = _dbContext.GroupMembers.Where(x=>x.userId==model.userId).Count();
 
             if (list.IsNullOrEmpty())
             {
+                if (_userService.GetRolesForUser(model.userId).Where(x => x.Name == "Intern").Any() && numOfGroupIn != 0)
+                {
+                    return false;
+                }
                 _dbContext.Add(model);
                 _dbContext.SaveChanges();
 
@@ -158,7 +182,8 @@ namespace Recon.Models.Model.GroupLib
         public void DeleteMembers(int groupid, int userid)
         {
             var model = _dbContext.GroupMembers.Where(x => x.groupId == groupid & x.userId == userid).FirstOrDefault();
-            if (model != null)
+             
+            if (model != null && _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr"))
             {
                 _dbContext.GroupMembers.Remove(model);
                 _dbContext.SaveChanges();

@@ -45,7 +45,7 @@ namespace Recon.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "DashBoard");
+                return RedirectToAction("Index", "Home");
             }           
 
         }
@@ -64,51 +64,62 @@ namespace Recon.Controllers
         [Authenticated]
         public IActionResult TicketHistory(int? page)
         {
-            var dataWithTickets = _ticketRepository.GetUsersTicket(_userService.GetUserId());
-            int pageSize = 5;
-            int pageNumber = (page ?? 1);
-            var pagedData = dataWithTickets.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            if (_groupService.IsInGroup())
+            {
+                var dataWithTickets = _ticketRepository.GetUsersTicket(_userService.GetUserId());
+                int pageSize = 5;
+                int pageNumber = (page ?? 1);
+                var pagedData = dataWithTickets.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
-            int totalCount = dataWithTickets.Count();
-            int pageCount = (int)Math.Ceiling((double)totalCount / pageSize);
+                int totalCount = dataWithTickets.Count();
+                int pageCount = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            ViewBag.PageCount = pageCount;
-            ViewBag.TotalItemCount = totalCount;
+                ViewBag.PageCount = pageCount;
+                ViewBag.TotalItemCount = totalCount;
 
-            return View(pagedData);
+                return View(pagedData);
+            }
+            return View("AccessDenied");
         }
 
         public IActionResult DayOff()
         {
-            ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
-            return View();
+            if (_groupService.IsInGroup()) {
+                ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
+                return View();
+            }
+            return View("AccessDenied");
+
         }
         
         [HttpPost]
         public IActionResult DayOff(DayOffTicket model)
         {
-            ViewBag.ToastMessages = new List<ToastMessages>();
-            ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
-            model.userId = _userService.GetUserId();
-            model.Created = DateTime.Now;
-            if (ModelState.IsValid){
-                _ticketRepository.CreateTicket(model);
+            if (_groupService.IsInGroup())
+            {
+                ViewBag.ToastMessages = new List<ToastMessages>();
+                ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
+                model.userId = _userService.GetUserId();
+                model.Created = DateTime.Now;
+                if (ModelState.IsValid){
+                    _ticketRepository.CreateTicket(model);
+                    ViewBag.ToastMessages.Add(new ToastMessages
+                    {
+                        message = "Sikeresen léttrehoztad a szabadsági kérelmedet",
+                        type = TypeToast.SUCCES,
+
+                    });
+                    return View("DayOff", ViewBag);
+                }
                 ViewBag.ToastMessages.Add(new ToastMessages
                 {
-                    message = "Sikeresen léttrehoztad a szabadsági kérelmedet",
-                    type = TypeToast.SUCCES,
+                    message = "Sikeretelen volt a szabadsági kérelmed léttrehozása",
+                    type = TypeToast.ERROR,
 
                 });
-                return View("DayOff", ViewBag);
+                return View("DayOff");
             }
-            ViewBag.ToastMessages.Add(new ToastMessages
-            {
-                message = "Sikeretelen volt a szabadsági kérelmed léttrehozása",
-                type = TypeToast.ERROR,
-
-            });
-            return View("DayOff"); 
-
+            return View("AccessDenied");
 
         }
 

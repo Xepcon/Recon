@@ -70,7 +70,7 @@
                     {
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Dashboard")">
-                            <span class="nav-link text-dark">Szia, @Auth.GetFullName()</span>                                                      
+                            <span class="nav-link text-dark">@Auth.GetFullName()</span>                                                      
                             </a>
                         </li>
                        <li class="nav-item">
@@ -86,9 +86,7 @@
                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Bejelentkezés</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Regisztráció</a>
-                        </li>
+                       
                     }
                    
                 </ul>

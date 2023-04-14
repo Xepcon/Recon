@@ -255,7 +255,7 @@ namespace Recon.Models.Model.Account
                 UserEntity user = new UserEntity
                 {
                     Username = model.Username,
-                    PasswordHash = model.Password,
+                    PasswordHash = "Asd123!",
                     Email = model.Email,
                 };
 

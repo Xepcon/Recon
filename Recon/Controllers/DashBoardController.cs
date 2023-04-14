@@ -39,8 +39,10 @@ namespace Recon.Controllers
         
         public IActionResult CheckHistory()
         {
-
-            return View();
+            if (_groupService.IsInGroup()) {
+                return View();
+            }
+            return View("AccessDenied");
         }
        
 

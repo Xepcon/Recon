@@ -1,4 +1,9 @@
-﻿<div id="gridContainer"></div>
+﻿
+@using Recon.Models.Interface.Account;
+@using Recon.Models.Model.Account
+@inject IUserService Auth
+
+<div id="gridContainer"></div>
 
 <script>
     var userData;
@@ -87,32 +92,36 @@
 
                                 //console.log(e.row)
                                 //console.log(e.row.data.AttendanceId)
-                             
-
-                                const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretnéd a dolgozót a csoportból?", "Megerősítés");
-                                confirmation.then((dialogResult) => {
-                                    if (dialogResult === true) {
-                                        $.ajax({
-                                            type: "POST",
-                                            url: "@Url.Content("~/GroupMembers/Delete?groupid=")" + e.row.data.groupId+"&userid="+e.row.data.userId,
-                                            success: function () {
-                                                //location.reload();
-                                                //DevExpress.ui.notify("Sikeresen törölted a felhasználót a csoportból ", "success", 4000);
-                                                Data.store().remove(e.row.data);
-                                                Data.reload().done(function () {
-                                                    DevExpress.ui.notify("Sikeresen törölted a felhasználót a csoportból ", "success", 4000);
-                                                })
-                                                    .fail(function (error) {
-                                                        DevExpress.ui.notify("Hiba történt a frissítés közben: " + error, "error", 4000);
-                                                    });
-                                            },
-                                            error: function () {
-                                                DevExpress.ui.notify("Hiba történt a törléskor! ", "error", 4000);
-                                                //window.DevExpress.ui.dialog.alert("Hiba történt a csoport törlésekor!", "Hiba");
-                                            }
-                                        });
-                                    }
-                                });
+                                //console.log(`@Auth.GetRolesForUser(Auth.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr")`)
+                                if(`@Auth.GetRolesForUser(Auth.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr")`=='False')
+                                {
+                                    DevExpress.ui.notify("Nem rendelkezel a megfelelő jogosultsággal", "error", 4000);
+                                }else{
+                                    const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretnéd a dolgozót a csoportból?", "Megerősítés");
+                                    confirmation.then((dialogResult) => {
+                                        if (dialogResult === true) {
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "@Url.Content("~/GroupMembers/Delete?groupid=")" + e.row.data.groupId+"&userid="+e.row.data.userId,
+                                                success: function () {
+                                                    //location.reload();
+                                                    //DevExpress.ui.notify("Sikeresen törölted a felhasználót a csoportból ", "success", 4000);
+                                                    Data.store().remove(e.row.data);
+                                                    Data.reload().done(function () {
+                                                        DevExpress.ui.notify("Sikeresen törölted a felhasználót a csoportból ", "success", 4000);
+                                                    })
+                                                        .fail(function (error) {
+                                                            DevExpress.ui.notify("Hiba történt a frissítés közben: " + error, "error", 4000);
+                                                        });
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Hiba történt a törléskor! ", "error", 4000);
+                                                    //window.DevExpress.ui.dialog.alert("Hiba történt a csoport törlésekor!", "Hiba");
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
                             }
                         }
                     ]

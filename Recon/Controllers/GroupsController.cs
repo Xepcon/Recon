@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Recon.Attribute;
 using Recon.Data;
+using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
@@ -20,10 +21,10 @@ namespace Recon.Controllers
     public class GroupsController : Controller
     {
         private readonly IGroupService _groupservice;
-
-        public GroupsController(IGroupService groupservice)
+        private readonly IUserService _userService;
+        public GroupsController(IGroupService groupservice, IUserService userService)
         {
-           
+            _userService= userService;
             _groupservice = groupservice;
         }
 
@@ -99,8 +100,7 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            
-            if (_groupservice.GetGroupById(id) == null)
+            if (_groupservice.GetGroupById(id) == null || !_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr"))
             {
                 return NotFound();
             }

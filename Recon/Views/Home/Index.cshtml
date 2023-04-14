@@ -33,6 +33,13 @@
                     <p>Munkacsoportok léttrehozása, törlése, szerkesztése</p>
                 </div>
             </a>
+            <a class="dashboard-link" asp-area="" asp-controller="Account" asp-action="Register">
+                <div class=" dashboard-item">
+                    <h3>Új munkatárs</h3>
+                    <p>Új munkatársakat tudsz regisztrálni</p>
+                </div>
+            </a>
+           
         }
         @if(Auth.IsInRole("HR") || Auth.IsInRole("Admin") || Auth.IsInRole("Recepcionist") ){
                 <a class="dashboard-link" asp-area="" asp-controller="MagneticCard" asp-action="Index">
@@ -91,9 +98,9 @@
             </a>
          
         }
-       
-          
-        @if (!Auth.IsInRole("Intern") && !Auth.IsInRole("Admin") && group.IsInGroup())
+
+
+        @if (!Auth.IsInRole("Intern") && !Auth.IsInRole("Admin") && !group.IsGroupOwnerAndMember() )
         {
             <a class="dashboard-link" asp-area="" asp-controller="Dashboard" asp-action="CheckHistory">
                 <div class=" dashboard-item">

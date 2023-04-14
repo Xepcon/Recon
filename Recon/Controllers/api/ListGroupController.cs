@@ -35,6 +35,29 @@ namespace Recon.Controllers.api
             return data;
         }
 
+        [HttpGet]
+        [Route("/ListOnlyGroupOwnedGroup")]
+        public ActionResult<List<Group>> GetOnlyPrincipalGroup() {
+            if (!_userService.IsAuthenticated())
+            {
+                return Unauthorized();
+            }
+            var userid = _userService.GetUserId();
+            
+            if (_userService.GetRolesForUser(userid).Any(r => r.Name == "Admin" || r.Name == "Hr"))
+            {
+                var data =  _dbContext.Groups.ToList();
+                return data;
+            }
+            else {
+                var data = _dbContext.Groups.Where(x => x.principalId == userid).ToList();
+                return data;
+            }
+            
+
+           
+        }
+
       
     }
 }

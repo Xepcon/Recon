@@ -76,25 +76,38 @@ namespace Recon.Controllers
 
             return View();
         }
-
+        [Authenticated]
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
-       
 
+        [Authenticated]
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
-        {           
+        {
+            ViewBag.ToastMessages = new List<ToastMessages>();
             if (ModelState.IsValid)
             {
-                 _userService.Register(model);                
-                return RedirectToAction("Login");
-                              
-            }
+                 _userService.Register(model);
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = $"Sikeres létrehoztál egy új fiókot ",
+                    type = TypeToast.SUCCES,
 
+                });
+                return View(model);
+                //return RedirectToAction("Login");
+
+            }
+            ViewBag.ToastMessages.Add(new ToastMessages
+            {
+                message = $"Sikertelen  volt a regisztrálás ",
+                type = TypeToast.ERROR,
+
+            });
             return View(model);
         }
 

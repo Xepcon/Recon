@@ -17,6 +17,7 @@ using Recon.Utility;
 namespace Recon.Controllers
 {
     [Authenticated]
+    [CustomRole("Hr", "Admin")]
     public class RolesController : Controller
     {
         private readonly IRolesRepository _rolesRepository;

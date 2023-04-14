@@ -22,11 +22,12 @@ namespace Recon.Controllers
     public class GroupMembersController : Controller
     {
         private readonly IGroupService _groupservice;
-      
+        //private readonly IUserService _userservice; 
 
         public GroupMembersController(IGroupService groupservice)
         {
            _groupservice= groupservice;
+            //_userservice= userService;
         }
         public IActionResult Index()
         {
@@ -76,7 +77,7 @@ namespace Recon.Controllers
         public IActionResult Delete(int groupid,int userid)
         {
             
-            if (groupid != null && userid != null)
+            if (groupid != null && userid != null )
             {
                 try
                 {
