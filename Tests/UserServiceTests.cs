@@ -2,15 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Recon.Data;
-using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
-using Recon.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using Xunit;
 
 namespace Recon.Tests.Models.Account
 {
@@ -111,7 +104,7 @@ namespace Recon.Tests.Models.Account
             };
             var userRole = new UsersInRoles
             {
-             
+
                 userId = user.Id,
                 roleId = role.Id
             };
@@ -153,14 +146,14 @@ namespace Recon.Tests.Models.Account
                 Id = 2,
                 Name = "Hr"
             };
-            
+
             var options = new DbContextOptionsBuilder<DataDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
             var dbContext = new DataDbContext(options);
-           
+
             dbContext.Role.Add(role);
-            
+
             dbContext.SaveChanges();
 
             var session = new Mock<ISession>();
@@ -180,7 +173,8 @@ namespace Recon.Tests.Models.Account
             Assert.False(isInRole);
         }
         [Fact]
-        public void IsAuthenticated_ReturnsTrue_WhenLoggedIn() {
+        public void IsAuthenticated_ReturnsTrue_WhenLoggedIn()
+        {
 
             var username = "Authuser";
             var password = "password";
@@ -264,7 +258,7 @@ namespace Recon.Tests.Models.Account
         [Fact]
         public void GetFullName_ReturnsCorrectName_WhenUserExists()
         {
-        
+
             // Arrange
             var options = new DbContextOptionsBuilder<DataDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDb")
@@ -273,9 +267,9 @@ namespace Recon.Tests.Models.Account
 
             var userid = 1;
 
-             var person = new Person
+            var person = new Person
             {
-                
+
                 userId = userid,
                 FirstName = "John",
                 LastName = "Doe"
@@ -316,7 +310,7 @@ namespace Recon.Tests.Models.Account
             httpContext.Setup(x => x.Session).Returns(session.Object);
             var httpContextAccessor = new Mock<IHttpContextAccessor>();
             httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext.Object);
-          
+
 
             var userService = new UserService(dbContext, httpContextAccessor.Object);
 
@@ -327,7 +321,7 @@ namespace Recon.Tests.Models.Account
             // Assert
             Assert.Equal("", fullName);
         }
-        
+
 
     }
 }

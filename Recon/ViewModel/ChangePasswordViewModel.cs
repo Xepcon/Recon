@@ -3,7 +3,7 @@
 namespace Recon.ViewModel
 {
     public class ChangePasswordViewModel
-    {       
+    {
         [Required]
         //[DataType(DataType.Password)]
         public string OldPassword { get; set; }

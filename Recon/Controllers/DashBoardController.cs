@@ -1,17 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
-using Recon.Models.Model.Account;
-using Recon.Models.Model.Ticket;
-using Recon.ViewModel;
-using System;
-using System.Diagnostics;
-using System.Drawing.Printing;
 
 namespace Recon.Controllers
 {
@@ -23,7 +15,8 @@ namespace Recon.Controllers
         private readonly DataDbContext _dbContext;
         private readonly IGroupService _groupService;
 
-        public DashBoardController(IUserService userService, IHttpContextAccessor httpContextAccessor, DataDbContext dbContext, IGroupService groupService) {
+        public DashBoardController(IUserService userService, IHttpContextAccessor httpContextAccessor, DataDbContext dbContext, IGroupService groupService)
+        {
             _userService = userService;
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
@@ -36,17 +29,18 @@ namespace Recon.Controllers
             return View();
 
         }
-        
+
         public IActionResult CheckHistory()
         {
-            if (_groupService.IsInGroup()) {
+            if (_groupService.IsInGroup())
+            {
                 return View();
             }
             return View("AccessDenied");
         }
-       
 
-     
+
+
         [CustomRole("Intern")]
         public IActionResult AttendanceSheet()
         {
@@ -58,10 +52,11 @@ namespace Recon.Controllers
                 return View();
 
             }
-            else {
+            else
+            {
                 return RedirectToAction("Login", "Account");
             }
-          
+
         }
 
         [CustomRole("Intern")]
@@ -74,13 +69,14 @@ namespace Recon.Controllers
                 int userId = _userService.GetUserId();
                 int attendId = int.Parse(id);
                 var userAttendence = _dbContext.Attendances.Where(x => x.AttendanceId == attendId).FirstOrDefault();
-                if (userAttendence.isClosed == true)            
+                if (userAttendence.isClosed == true)
                     ViewBag.IsClosed = "false";
                 else
-                     ViewBag.IsClosed = "true";
+                    ViewBag.IsClosed = "true";
 
-                ViewBag.AttendanceName = userAttendence.AttendanceName +"_"+ _userService.GetUserName();
-                if (userAttendence.userId != userId) {
+                ViewBag.AttendanceName = userAttendence.AttendanceName + "_" + _userService.GetUserName();
+                if (userAttendence.userId != userId)
+                {
                     //Error view 
                     return View("Error");
                 }
@@ -95,7 +91,7 @@ namespace Recon.Controllers
 
         }
 
-      
+
         public IActionResult Index()
         {
             return View();
@@ -105,6 +101,6 @@ namespace Recon.Controllers
         {
             return View();
         }
-        
+
     }
 }

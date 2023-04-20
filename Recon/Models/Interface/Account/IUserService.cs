@@ -32,6 +32,6 @@ namespace Recon.Models.Interface.Account
 
         void UserUpdatePersonalInfo(Person model);
 
-        
+
     }
 }

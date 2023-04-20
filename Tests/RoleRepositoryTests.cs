@@ -2,11 +2,6 @@
 using Recon.Data;
 using Recon.Models.Model.Account;
 using Recon.Models.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Recon.Tests.Repository
 {
@@ -30,7 +25,8 @@ namespace Recon.Tests.Repository
 
         [Fact]
 
-        public void IntegrationTestForRoleRepository() {
+        public void IntegrationTestForRoleRepository()
+        {
             Roles fst = new Roles { Name = "HR", Id = 1 };
             Roles snd = new Roles { Name = "Admin", Id = 2 };
             Roles third = new Roles { Name = "LEVEL 3 SUPPORT", Id = 3 };

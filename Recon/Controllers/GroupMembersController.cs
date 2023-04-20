@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Recon.Attribute;
-using Recon.Data;
-using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
-using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
 using Recon.Utility;
 
@@ -26,13 +15,13 @@ namespace Recon.Controllers
 
         public GroupMembersController(IGroupService groupservice)
         {
-           _groupservice= groupservice;
+            _groupservice = groupservice;
             //_userservice= userService;
         }
         public IActionResult Index()
         {
-            
-            ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllMembers());            
+
+            ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllMembers());
             return View();
         }
 
@@ -42,7 +31,7 @@ namespace Recon.Controllers
         {
             return View();
         }
-                      
+
         [HttpPost]
         public IActionResult Create(GroupMember model)
         {
@@ -50,7 +39,7 @@ namespace Recon.Controllers
             if (ModelState.IsValid)
             {
                 bool succes = _groupservice.AddMembers(model);
-                if(succes)
+                if (succes)
                 {
                     ViewBag.ToastMessages.Add(new ToastMessages
                     {
@@ -60,7 +49,8 @@ namespace Recon.Controllers
                     });
                     return View();
                 }
-                else {
+                else
+                {
                     ViewBag.ToastMessages.Add(new ToastMessages
                     {
                         message = "Nem sikerült hozzárendelni a felhasználót a munkacsoporthoz",
@@ -72,17 +62,17 @@ namespace Recon.Controllers
             }
             return View(model);
         }
-        
+
         [HttpPost]
-        public IActionResult Delete(int groupid,int userid)
+        public IActionResult Delete(int groupid, int userid)
         {
-            
-            if (groupid != null && userid != null )
+
+            if (groupid != null && userid != null)
             {
                 try
                 {
-                    _groupservice.DeleteMembers(groupid,userid);    
-                    
+                    _groupservice.DeleteMembers(groupid, userid);
+
                 }
                 catch (Exception e)
                 {
@@ -90,12 +80,13 @@ namespace Recon.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            else {
+            else
+            {
                 return View("CustomNotFoundView");
             }
-          
-           
+
+
         }
-      
+
     }
 }

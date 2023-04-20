@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Recon.Attribute;
-using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
-using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
 using Recon.Utility;
 
@@ -24,19 +15,19 @@ namespace Recon.Controllers
         private readonly IUserService _userService;
         public GroupsController(IGroupService groupservice, IUserService userService)
         {
-            _userService= userService;
+            _userService = userService;
             _groupservice = groupservice;
         }
 
         // GET: Groups
         public IActionResult Index()
         {
-          
-             ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllGroups());
-             return View();
+
+            ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllGroups());
+            return View();
         }
 
-       
+
         // GET: Groups/Create
         public IActionResult Create()
         {
@@ -44,7 +35,7 @@ namespace Recon.Controllers
         }
         public IActionResult Edit(int id)
         {
-           
+
 
             var group = _groupservice.GetGroupById(id);
             if (group == null)
@@ -56,23 +47,24 @@ namespace Recon.Controllers
         }
 
         [HttpPost]
-   
+
         public IActionResult Edit(Group group)
         {
             ViewBag.ToastMessages = new List<ToastMessages>();
-            if (group.groupId != null) {
+            if (group.groupId != null)
+            {
                 if (ModelState.IsValid)
                 {
                     _groupservice.UpdateGroup(group);
-                                    
+
                 }
-              
+
             }
             return RedirectToAction("Index");
-           
+
         }
         [HttpPost]
-        public IActionResult Create( Group group)
+        public IActionResult Create(Group group)
         {
             ViewBag.ToastMessages = new List<ToastMessages>();
             if (ModelState.IsValid)
@@ -85,7 +77,7 @@ namespace Recon.Controllers
                     type = TypeToast.SUCCES,
 
                 });
-                
+
                 return View();
             }
             ViewBag.ToastMessages.Add(new ToastMessages
@@ -105,7 +97,7 @@ namespace Recon.Controllers
                 return NotFound();
             }
             _groupservice.DeleteGroup(id);
-                 
+
 
             return RedirectToAction("Index");
         }

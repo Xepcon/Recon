@@ -3,9 +3,7 @@ using Newtonsoft.Json;
 using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Card;
-using Recon.Models.Model.GroupLib;
 using Recon.Utility;
 
 namespace Recon.Controllers
@@ -21,7 +19,7 @@ namespace Recon.Controllers
             _userService = userService;
             _dbContext = dbContext;
         }
-        
+
         public IActionResult Index()
         {
             ViewBag.data = JsonConvert.SerializeObject(_dbContext.magneticCards);
@@ -55,7 +53,8 @@ namespace Recon.Controllers
 
                     return View();
                 }
-                else {
+                else
+                {
                     ViewBag.ToastMessages.Add(new ToastMessages
                     {
                         message = $"Sikertelen a kártya hozzárendelése a felhasználóhoz, már a felhasználóhóz van kártya rendelve ",
@@ -81,7 +80,7 @@ namespace Recon.Controllers
             {
                 return NotFound();
             }
-            
+
             if (cardAssosiation != null)
             {
                 _dbContext.magneticCards.Remove(cardAssosiation);
@@ -91,6 +90,6 @@ namespace Recon.Controllers
 
             return RedirectToAction("Index");
         }
-       
-        }
+
     }
+}

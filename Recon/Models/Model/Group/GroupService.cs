@@ -2,7 +2,6 @@
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
-using Recon.Models.Model.Account;
 
 namespace Recon.Models.Model.GroupLib
 {
@@ -10,7 +9,8 @@ namespace Recon.Models.Model.GroupLib
     {
         private readonly DataDbContext _dbContext;
         private readonly IUserService _userService;
-        public GroupService(DataDbContext dbContext, IUserService userService) {
+        public GroupService(DataDbContext dbContext, IUserService userService)
+        {
             _dbContext = dbContext;
             _userService = userService;
 
@@ -36,11 +36,13 @@ namespace Recon.Models.Model.GroupLib
             return null;
 
         }
-        public bool IsInGroup(int userid, int groupId){
-            return _dbContext.GroupMembers.Where(x => x.userId == userid && x.groupId == groupId).Any() ;
+        public bool IsInGroup(int userid, int groupId)
+        {
+            return _dbContext.GroupMembers.Where(x => x.userId == userid && x.groupId == groupId).Any();
         }
-        public bool IsInGroup() {
-            return _dbContext.GroupMembers.Where(x=>x.userId==_userService.GetUserId()).Any();
+        public bool IsInGroup()
+        {
+            return _dbContext.GroupMembers.Where(x => x.userId == _userService.GetUserId()).Any();
         }
         public List<IGroup> getUserGroup()
         {
@@ -65,7 +67,8 @@ namespace Recon.Models.Model.GroupLib
         }
         public bool IsGroupOwner(int groupId)
         {
-            if(_userService.IsAuthenticated()) {
+            if (_userService.IsAuthenticated())
+            {
                 int userid = _userService.GetUserId();
                 return !_dbContext.Groups.Where(x => x.groupId == groupId && x.principalId == userid).IsNullOrEmpty();
             }
@@ -73,9 +76,10 @@ namespace Recon.Models.Model.GroupLib
         }
         public bool IsInGroup(int groupId)
         {
-            if (_userService.IsAuthenticated()) {
+            if (_userService.IsAuthenticated())
+            {
                 int userid = _userService.GetUserId();
-                return !_dbContext.GroupMembers.Where(x => x.groupId==groupId & x.userId == userid).IsNullOrEmpty();
+                return !_dbContext.GroupMembers.Where(x => x.groupId == groupId & x.userId == userid).IsNullOrEmpty();
             }
             return false;
         }
@@ -84,23 +88,25 @@ namespace Recon.Models.Model.GroupLib
             if (_userService.IsAuthenticated())
             {
                 int userid = _userService.GetUserId();
-                var res = _dbContext.Groups.Where(x=>x.principalId== userid);
+                var res = _dbContext.Groups.Where(x => x.principalId == userid);
                 return !res.IsNullOrEmpty();
             }
             return false;
         }
 
-        public bool IsGroupOwnerAndMember() {
+        public bool IsGroupOwnerAndMember()
+        {
             if (_userService.IsAuthenticated())
             {
                 int userid = _userService.GetUserId();
                 var res = _dbContext.Groups.Where(x => x.principalId == userid);
                 var numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == userid).Count();
-                
-                if (!res.IsNullOrEmpty() && numOfGroups == 1) {
+
+                if (!res.IsNullOrEmpty() && numOfGroups == 1)
+                {
                     var IsPrincipalAtGroup = _dbContext.GroupMembers.Where(x => x.userId == userid).FirstOrDefault();
-                    var pricipalIdOfGroup = _dbContext.Groups.Where(x=>x.groupId==IsPrincipalAtGroup.groupId).FirstOrDefault();
-                    if(pricipalIdOfGroup.principalId==userid)
+                    var pricipalIdOfGroup = _dbContext.Groups.Where(x => x.groupId == IsPrincipalAtGroup.groupId).FirstOrDefault();
+                    if (pricipalIdOfGroup.principalId == userid)
                     {
                         return true;
                     }
@@ -137,7 +143,8 @@ namespace Recon.Models.Model.GroupLib
                 _dbContext.SaveChanges();
             }
         }
-        public void CreateGroup(Group group) {
+        public void CreateGroup(Group group)
+        {
 
             _dbContext.Add(group);
             var member = new GroupMember();
@@ -159,12 +166,12 @@ namespace Recon.Models.Model.GroupLib
         }
         public bool AddMembers(GroupMember model)
         {
-          
-            
-            
+
+
+
 
             var list = _dbContext.GroupMembers.Where(x => x.groupId == model.groupId && x.userId == model.userId).ToList();
-            var numOfGroupIn = _dbContext.GroupMembers.Where(x=>x.userId==model.userId).Count();
+            var numOfGroupIn = _dbContext.GroupMembers.Where(x => x.userId == model.userId).Count();
 
             if (list.IsNullOrEmpty())
             {
@@ -182,15 +189,16 @@ namespace Recon.Models.Model.GroupLib
         public void DeleteMembers(int groupid, int userid)
         {
             var model = _dbContext.GroupMembers.Where(x => x.groupId == groupid & x.userId == userid).FirstOrDefault();
-             
+
             if (model != null && _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr"))
             {
                 _dbContext.GroupMembers.Remove(model);
                 _dbContext.SaveChanges();
             }
         }
-        public List<int> GetGroupIdByPrincipalId(int principalid) {
-            var result =  _dbContext.Groups.Where(x=>x.principalId == principalid).ToList();
+        public List<int> GetGroupIdByPrincipalId(int principalid)
+        {
+            var result = _dbContext.Groups.Where(x => x.principalId == principalid).ToList();
             if (result != null)
             {
                 List<int> groupIds = result.Select(x => x.groupId).ToList();

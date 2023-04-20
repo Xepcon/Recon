@@ -5,14 +5,7 @@ using Recon.Controllers.api;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tests.Mock.Service.User;
-using static Tests.ListGroupControllerTests;
 
 namespace Tests
 {
@@ -50,14 +43,14 @@ namespace Tests
             _dbContext.Role.AddRange(roles);
             _dbContext.Role.Count();
             _dbContext.SaveChanges();
-          
+
 
             // Set up the mock IUserService object to return true for IsAuthenticated method
             ((MockUserService)_userService).IsAuthenticatedResult = true;
 
             // Act
             var result = _controller.Get();
-           
+
 
             // Assert
             Assert.IsType<ActionResult<List<Roles>>>(result);
@@ -69,7 +62,7 @@ namespace Tests
         public void Get_ReturnsListOfRolesNotAuthenticated()
         {
             // Arrange
-           
+
 
 
             // Set up the mock IUserService object to return true for IsAuthenticated method
@@ -77,7 +70,7 @@ namespace Tests
 
             // Act
             var result = _controller.Get();
-           
+
 
             // Assert
 

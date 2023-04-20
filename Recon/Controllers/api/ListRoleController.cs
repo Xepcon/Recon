@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Recon.Attribute;
+﻿using Microsoft.AspNetCore.Mvc;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
@@ -9,7 +7,7 @@ namespace Recon.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class ListRoleController : ControllerBase
     {
         private readonly DataDbContext _dbContext;

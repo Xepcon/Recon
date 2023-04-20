@@ -8,7 +8,7 @@ using Recon.Models.Model.TimeManager;
 
 namespace Recon.Data
 {
-    public interface IDataDbContext: IDisposable
+    public interface IDataDbContext : IDisposable
     {
         public DbSet<MagneticCard> magneticCards { get; set; }
         public DbSet<CheckInWork> Checks { get; set; }

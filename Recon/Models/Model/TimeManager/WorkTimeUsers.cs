@@ -14,6 +14,6 @@ namespace Recon.Models.Model.TimeManager
 
         public string EndTime { get; set; }
 
-       
+
     }
 }

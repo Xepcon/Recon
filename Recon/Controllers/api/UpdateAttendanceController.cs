@@ -1,24 +1,22 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Model.TimeManager;
-using System.Diagnostics;
 
 
 namespace Recon.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
-   
+
     public class UpdateAttendanceController : ControllerBase
     {
         private readonly DataDbContext _dbContext;
         private readonly IUserService _userService;
 
-        public UpdateAttendanceController(DataDbContext dbContext, IUserService userService )
+        public UpdateAttendanceController(DataDbContext dbContext, IUserService userService)
         {
             _dbContext = dbContext;
             _userService = userService;
@@ -26,7 +24,8 @@ namespace Recon.Controllers.api
 
         [HttpGet("{id}")]
 
-        public IActionResult Get(string id) {
+        public IActionResult Get(string id)
+        {
 
             if (!_userService.IsAuthenticated())
             {
@@ -41,17 +40,19 @@ namespace Recon.Controllers.api
                 {
                     return Ok(res);
                 }
-                else {
+                else
+                {
                     return BadRequest("No Data");
                 }
-            
+
             }
-            else {
+            else
+            {
                 return BadRequest("Id null");
             }
         }
-        
-        [HttpPut("{id}")]        
+
+        [HttpPut("{id}")]
         public IActionResult UpdateAttendance(int id, AttendanceEntity updatedAttendance)
         {
             if (!_userService.IsAuthenticated())
@@ -73,15 +74,15 @@ namespace Recon.Controllers.api
                 return NotFound();
             }
             AttendanceEntity updateEntity = _dbContext.AttendanceEntitys.Where(x => x.AttendanceId == id && x.AttendanceDate == updatedAttendance.AttendanceDate).FirstOrDefault();
-            if(updateEntity != null)
+            if (updateEntity != null)
             {
-                
+
                 updateEntity.Hour = updatedAttendance.Hour;
                 updateEntity.Minutes = updatedAttendance.Minutes;
                 _dbContext.SaveChanges();
 
             }
-            
+
             return Ok();
         }
     }

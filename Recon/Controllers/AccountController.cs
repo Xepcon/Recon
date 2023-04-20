@@ -1,28 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Recon.Attribute;
-using Recon.Data;
-using Recon.Models;
 using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
 using Recon.Utility;
 using Recon.ViewModel;
-using System.Diagnostics;
-using System.Security.Claims;
 
 namespace Recon.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
-        
-        public AccountController(IUserService userService )
+
+        public AccountController(IUserService userService)
         {
-            _userService = userService;            
+            _userService = userService;
         }
 
         [Authenticated]
@@ -91,7 +83,7 @@ namespace Recon.Controllers
             ViewBag.ToastMessages = new List<ToastMessages>();
             if (ModelState.IsValid)
             {
-                 _userService.Register(model);
+                _userService.Register(model);
                 ViewBag.ToastMessages.Add(new ToastMessages
                 {
                     message = $"Sikeres létrehoztál egy új fiókot ",
@@ -113,7 +105,7 @@ namespace Recon.Controllers
 
         [HttpGet]
         public IActionResult Login()
-        {          
+        {
             return View();
         }
 
@@ -163,16 +155,16 @@ namespace Recon.Controllers
         [HttpGet]
         public IActionResult UpdatePersonalInfo()
         {
-           
-            var person = _userService.UserGetPersonalInfo(_userService.GetUserId());              
+
+            var person = _userService.UserGetPersonalInfo(_userService.GetUserId());
             ViewBag.data = JsonConvert.SerializeObject(person);
             if (person == null)
             {
-               
+
                 return View();
             }
-           
-            return View();            
+
+            return View();
         }
         [Authenticated]
         [HttpPost]
@@ -182,7 +174,7 @@ namespace Recon.Controllers
             int userId = _userService.GetUserId();
             model.userId = userId;
 
-           
+
             if (ModelState.IsValid)
             {
                 _userService.UserUpdatePersonalInfo(model);
@@ -202,7 +194,7 @@ namespace Recon.Controllers
                 type = TypeToast.ERROR,
 
             });
-            return View(model);           
+            return View(model);
         }
 
         public IActionResult Logout()

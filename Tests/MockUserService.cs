@@ -1,11 +1,6 @@
 ﻿using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
 using Recon.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests.Mock.Service.User
 {
@@ -13,7 +8,7 @@ namespace Tests.Mock.Service.User
     {
         public bool IsAuthenticatedResult { get; set; } = true;
         public int UserIDResult { get; set; } = 1;
-        public List<Roles> GetRolesForUserResult { get; set; } = new List<Roles>() ;
+        public List<Roles> GetRolesForUserResult { get; set; } = new List<Roles>();
 
         public UserEntity Authenticate(string username, string password)
         {

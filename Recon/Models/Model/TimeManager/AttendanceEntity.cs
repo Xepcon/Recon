@@ -21,6 +21,6 @@ namespace Recon.Models.Model.TimeManager
 
         public bool approved { get; set; }
 
-      
+
     }
 }

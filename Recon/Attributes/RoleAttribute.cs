@@ -14,12 +14,12 @@ public class CustomRoleAttribute : TypeFilterAttribute
 public class CustomRoleFilter : IAuthorizationFilter
 {
     private readonly string[] _roles;
-   
 
-    public CustomRoleFilter(string[] roles )
+
+    public CustomRoleFilter(string[] roles)
     {
         _roles = roles;
-        
+
     }
 
     public void OnAuthorization(AuthorizationFilterContext context)

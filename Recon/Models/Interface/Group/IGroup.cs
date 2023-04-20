@@ -7,6 +7,6 @@
         int groupId { get; }
 
         int principalId { get; }
-        
+
     }
 }

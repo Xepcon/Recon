@@ -12,7 +12,8 @@ namespace Recon.Controllers.api
     public class MagneticCardController : ControllerBase
     {
         private readonly DataDbContext _dbContext;
-        public MagneticCardController(DataDbContext dbContext) {
+        public MagneticCardController(DataDbContext dbContext)
+        {
             _dbContext = dbContext;
         }
 
@@ -23,16 +24,16 @@ namespace Recon.Controllers.api
             return "WORKING";
         }
 
-       
+
         // POST api/<MagneticCardController>
         [HttpPost]
         public void Post(string apiKey, string cardId)
         {
             Debug.WriteLine("CALLED FROM ESP");
-            Debug.WriteLine("cardId "+cardId);
+            Debug.WriteLine("cardId " + cardId);
             Debug.WriteLine("apiKey " + apiKey);
             CheckInWork entry = new CheckInWork();
-            
+
             entry.CardId = cardId;
             _dbContext.Checks.Add(entry);
             _dbContext.SaveChanges();

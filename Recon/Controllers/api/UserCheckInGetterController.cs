@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Model.Card;
-using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,7 +8,7 @@ namespace Recon.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
-   
+
     public class UserCheckInGetterController : ControllerBase
     {
         private readonly DataDbContext _dbContext;
@@ -21,13 +18,13 @@ namespace Recon.Controllers.api
         public UserCheckInGetterController(DataDbContext dbContext, IUserService userService)
         {
             _dbContext = dbContext;
-            _userService = userService; 
+            _userService = userService;
         }
 
-     
+
         // GET api/<UserCheckInGetterController>/5
         [HttpGet("{id}")]
-      
+
         public IActionResult Get(string id, DateTime startDate, DateTime endDate)
         {
             if (!_userService.IsAuthenticated())
@@ -55,14 +52,15 @@ namespace Recon.Controllers.api
                 return NotFound("Error");
 
             }
-            else {
+            else
+            {
                 return BadRequest("Id null");
             }
-            
+
 
 
         }
 
-       
+
     }
 }

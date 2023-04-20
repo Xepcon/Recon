@@ -1,19 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Moq;
+﻿using Microsoft.EntityFrameworkCore;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tests.Mock.Service.User;
 
 namespace Tests
@@ -31,10 +20,10 @@ namespace Tests
 
             _dbContext = new DataDbContext(options);
 
-           
+
             _userService = new MockUserService();
             _groupService = new GroupService(_dbContext, _userService);
-            
+
         }
 
         [Fact]
@@ -45,7 +34,7 @@ namespace Tests
             _dbContext.SaveChanges();
             Group FirstGroup = new Group { groupId = 1, Name = "Group 1", principalId = 1 };
             Group SecondGroup = new Group { groupId = 2, Name = "Group 2" };
-            Group ThirdGroup = new Group { groupId = 3, Name = "Group 3"  };
+            Group ThirdGroup = new Group { groupId = 3, Name = "Group 3" };
 
             GroupMember Memeber1 = new GroupMember { userId = 3, groupId = 1 };
             GroupMember Memeber2 = new GroupMember { userId = 5, groupId = 1 };
@@ -63,13 +52,13 @@ namespace Tests
             SecondGroup.principalId = 3;
             _groupService.UpdateGroup(SecondGroup);
 
-            Group group =  _groupService.GetGroupById(2);
+            Group group = _groupService.GetGroupById(2);
             Assert.Equal("Group 2", group.Name);
             Assert.Equal(2, group.groupId);
             Assert.Equal(3, group.principalId);
 
             ((MockUserService)_userService).UserIDResult = 1;
-            ((MockUserService)_userService).GetRolesForUserResult = new List<Roles>{new Roles { Id = 1, Name = "HR" },new Roles { Id = 2, Name = "Intern" }}; ;
+            ((MockUserService)_userService).GetRolesForUserResult = new List<Roles> { new Roles { Id = 1, Name = "HR" }, new Roles { Id = 2, Name = "Intern" } }; ;
             var isGroupOwnerResult = _groupService.IsGroupOwner();
             Assert.True(isGroupOwnerResult);
             _groupService.DeleteGroup(2);
@@ -92,10 +81,10 @@ namespace Tests
 
             var res = _groupService.IsInGroup();
             Assert.True(res);
-            res = _groupService.IsInGroup(3,3);
+            res = _groupService.IsInGroup(3, 3);
             Assert.False(res);
             var UserGroups = _groupService.getUserGroup();
-            Assert.Equal(1,UserGroups.Count());
+            Assert.Equal(1, UserGroups.Count());
             var GroupOwner = _groupService.IsGroupOwner(1);
             Assert.True(GroupOwner);
             GroupOwner = _groupService.IsGroupOwner(2);
@@ -105,7 +94,7 @@ namespace Tests
             isInGroupRes = _groupService.IsInGroup(3);
             Assert.False(isInGroupRes);
             var GroupMembers = _groupService.GetGroupMembers(1);
-            Assert.Equal(1,GroupMembers.Count());
+            Assert.Equal(1, GroupMembers.Count());
 
         }
 
@@ -116,10 +105,10 @@ namespace Tests
             ((MockUserService)_userService).UserIDResult = 478;
             var result = _groupService.IsGroupOwner();
             Assert.False(result);
-                      
+
         }
 
-      
+
 
     }
 

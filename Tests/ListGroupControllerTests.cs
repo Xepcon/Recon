@@ -1,19 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using Recon.Controllers.api;
 using Recon.Data;
 using Recon.Models.Interface.Account;
-using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
-using Recon.ViewModel;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tests.Mock.Service.User;
 
 namespace Tests
@@ -52,7 +43,7 @@ namespace Tests
             _dbContext.Groups.AddRange(groups);
             _dbContext.Groups.Count();
             _dbContext.SaveChanges();
-         
+
 
             // Set up the mock IUserService object to return true for IsAuthenticated method
             ((MockUserService)_userService).IsAuthenticatedResult = true;
@@ -60,13 +51,13 @@ namespace Tests
             // Act
             var result = _controller.Get();
             Debug.WriteLine(result);
-            
+
             // Assert
-            Assert.IsType<ActionResult<List<Group>>>(result);            
+            Assert.IsType<ActionResult<List<Group>>>(result);
             var data = Assert.IsAssignableFrom<List<Group>>(result.Value);
             Assert.Equal(3, data.Count());
         }
 
-       
+
     }
 }

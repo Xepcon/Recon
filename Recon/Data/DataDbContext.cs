@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.Card;
 using Recon.Models.Model.GroupLib;
@@ -23,7 +22,7 @@ namespace Recon.Data
 
         public DbSet<WorkTimeUsers> WorkTimeUsers { get; set; }
 
-        public DbSet<GroupMember> GroupMembers { get; set; }    
+        public DbSet<GroupMember> GroupMembers { get; set; }
 
         public DbSet<Group> Groups { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
@@ -36,10 +35,10 @@ namespace Recon.Data
             //builder.Entity<MagneticCard>().HasNoKey();
             builder.Entity<MagneticCard>().HasKey(entity => new { entity.CardId, entity.userId });
             builder.Entity<UsersInRoles>().HasKey(entity => new { entity.roleId, entity.userId });
-            
-            builder.Entity<AttendanceEntity>().HasKey(entity => new { entity.AttendanceId,entity.AttendanceDate });
-            builder.Entity<GroupMember>().HasKey(entity => new { entity.groupId,entity.userId });
-            builder.Entity<Group>().HasKey(entity => new { entity.groupId});
+
+            builder.Entity<AttendanceEntity>().HasKey(entity => new { entity.AttendanceId, entity.AttendanceDate });
+            builder.Entity<GroupMember>().HasKey(entity => new { entity.groupId, entity.userId });
+            builder.Entity<Group>().HasKey(entity => new { entity.groupId });
             builder.Entity<DayOffTicket>().HasKey(entity => new { entity.Id });
         }
 
@@ -48,6 +47,6 @@ namespace Recon.Data
             return base.SaveChanges();
         }
     }
-    
+
 }
 

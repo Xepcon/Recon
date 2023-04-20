@@ -12,7 +12,7 @@ namespace Recon.Models.Repository
         public TicketRepository(DataDbContext dbContext, IGroupService groupService)
         {
             _dbContext = dbContext;
-            _groupService = groupService;   
+            _groupService = groupService;
         }
 
         public bool ApproveTicket(int id)
@@ -33,12 +33,12 @@ namespace Recon.Models.Repository
 
         public void CreateTicket(DayOffTicket model)
         {
-            
+
             _dbContext.DayOffTicket.Add(model);
             _dbContext.SaveChanges();
-                
-                
-            }
+
+
+        }
 
         public List<DayOffTicket> GetAllTicketsForPrincipal(IEnumerable<IGroup> Groups)
         {
@@ -57,10 +57,10 @@ namespace Recon.Models.Repository
 
         public IEnumerable<DayOffTicket> GetUsersTicket(int userid)
         {
-            return _dbContext.DayOffTicket.Where(x=>x.userId==userid);
+            return _dbContext.DayOffTicket.Where(x => x.userId == userid);
         }
 
-  
+
 
     }
 }

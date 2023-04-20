@@ -3,7 +3,7 @@ using Recon.Models.Model.Account;
 
 namespace Recon.Models.Repository
 {
-    public class RolesRepository:IRolesRepository
+    public class RolesRepository : IRolesRepository
     {
         private readonly DataDbContext _dbContext;
 
@@ -38,6 +38,6 @@ namespace Recon.Models.Repository
                 _dbContext.SaveChanges();
             }
         }
-    
+
     }
 }

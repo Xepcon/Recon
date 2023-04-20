@@ -1,15 +1,7 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using NuGet.Protocol.Core.Types;
+﻿using Microsoft.EntityFrameworkCore;
 using Recon.Data;
-using Recon.Models.Interface.Account;
 using Recon.Models.Model.Account;
-using Recon.Models.Model.GroupLib;
 using Recon.Models.Repository;
-using Tests.Mock.Service.User;
-using Xunit;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Recon.Tests.Repository
 {
@@ -17,7 +9,7 @@ namespace Recon.Tests.Repository
     {
         private readonly DataDbContext _dbContext;
         private readonly UsersInRolesRepository _repository;
-   
+
         public UsersInRolesRepositoryTests()
         {
             var options = new DbContextOptionsBuilder<DataDbContext>()
@@ -26,7 +18,7 @@ namespace Recon.Tests.Repository
 
             _dbContext = new DataDbContext(options);
 
-           
+
             _repository = new UsersInRolesRepository(_dbContext);
 
         }
@@ -43,10 +35,10 @@ namespace Recon.Tests.Repository
             _repository.Add(thi);
 
 
-            
+
             var result = _repository.GetAll().ToList();
 
-           
+
             Assert.Equal(3, result.Count);
             _repository.Delete(1, 1);
             result = _repository.GetAll().ToList();
@@ -54,15 +46,15 @@ namespace Recon.Tests.Repository
 
             Assert.Equal(2, result.Count);
 
-            
+
             var model = _repository.GetById(2, 2);
             Assert.Equal(2, model.roleId);
             Assert.Equal(2, model.userId);
         }
 
-      
 
-        
+
+
 
 
     }

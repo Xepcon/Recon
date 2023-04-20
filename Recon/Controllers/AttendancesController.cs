@@ -1,29 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NuGet.Packaging;
 using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.Models.Interface.GroupLib;
-using Recon.Models.Model.GroupLib;
-using Recon.Models.Model.Ticket;
 using Recon.Models.Model.TimeManager;
 using Recon.Utility;
+using System.Diagnostics;
 
 namespace Recon.Controllers
 {
     [Authenticated]
     public class AttendancesController : Controller
-    {    
+    {
         private readonly DataDbContext _dbContext;
         private readonly IUserService _userService;
         private readonly IGroupService _groupService;
@@ -54,7 +43,7 @@ namespace Recon.Controllers
             if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
                 ViewBag.ToastMessages = new List<ToastMessages>();
-                if (id != null )
+                if (id != null)
                 {
                     try
                     {
@@ -66,7 +55,7 @@ namespace Recon.Controllers
                         }
                         else
                         {
-                     
+
                             return View("CustomNotFoundView");
                         }
                     }
@@ -74,9 +63,9 @@ namespace Recon.Controllers
                     {
                         return View("CustomNotFoundView");
                     }
-               
-               
-                
+
+
+
                     return RedirectToAction("Index");
                 }
                 else
@@ -98,15 +87,15 @@ namespace Recon.Controllers
             }
             return View("AccessDenied");
         }
-       
+
         [HttpPost]
-        
-        public IActionResult Create( Attendance attendance)
+
+        public IActionResult Create(Attendance attendance)
         {
             if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
                 ViewBag.ToastMessages = new List<ToastMessages>();
-            
+
                 if (ModelState.IsValid)
                 {
 
@@ -126,17 +115,17 @@ namespace Recon.Controllers
                                 }
                                 else
                                 {
-                               
+
                                     ViewBag.ToastMessages.Add(new ToastMessages
                                     {
-                                        message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó több munkacsoportba is tartozik",
+                                        message = "Hiba történt a jelenlét ív léttrehozásánál, a felhasználó több munkacsoportba is tartozik",
                                         type = TypeToast.ERROR,
 
                                     });
                                     return View();
                                 }
                             }
-                           
+
                             _dbContext.Add(attendance);
                             _dbContext.SaveChanges();
                             for (int i = 1; i <= DateTime.DaysInMonth(attendance.CreatedAt.Year, attendance.CreatedAt.Month); i++)
@@ -153,29 +142,31 @@ namespace Recon.Controllers
                                 tmp.interName = user.FirstName + " " + user.LastName;
                                 _dbContext.AttendanceEntitys.Add(tmp);
                             }
-                       
+
                             ViewBag.ToastMessages.Add(new ToastMessages
                             {
-                                message = "Sikeresen léttrehoztad a jelenlétiívet",
+                                message = "Sikeresen léttrehoztad a jelenléti ívet",
                                 type = TypeToast.SUCCES,
 
                             });
                             _dbContext.SaveChanges();
                             return View();
                         }
-                        else {
-                        
+                        else
+                        {
+
                             ViewBag.ToastMessages.Add(new ToastMessages
                             {
-                                message = "Hiba történt a jelenlétív léttrehozásánál, a felhasználó nem diák",
+                                message = "Hiba történt a jelenlét ív léttrehozásánál, a felhasználó nem diák",
                                 type = TypeToast.ERROR,
 
                             });
                             return View();
                         }
                     }
-                    else {
-                    
+                    else
+                    {
+
                         ViewBag.ToastMessages.Add(new ToastMessages
                         {
                             message = "A felhasználó nem található",
@@ -185,22 +176,23 @@ namespace Recon.Controllers
                         return View();
                     }
                 }
-           
+
                 ViewBag.ToastMessages.Add(new ToastMessages
                 {
                     message = "Hibás adatokat adtál meg ",
                     type = TypeToast.INFO,
 
                 });
-          
+
                 return View(attendance);
             }
             return View("AccessDenied");
         }
 
-        public IActionResult ApproveAttendance() {
+        public IActionResult ApproveAttendance()
+        {
             if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
-            { 
+            {
                 IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
 
                 List<Attendance> res = new List<Attendance>();
@@ -213,10 +205,10 @@ namespace Recon.Controllers
                         res.AddRange(_dbContext.Attendances.Where(x => x.groupId == item.groupId && x.isClosed == false).ToList());
                     }
                 }
-                ViewBag.data= JsonConvert.SerializeObject(res);
+                ViewBag.data = JsonConvert.SerializeObject(res);
                 Debug.WriteLine(res.Count);
                 return View();
-                
+
             }
             return View("AccessDenied");
 
@@ -266,7 +258,8 @@ namespace Recon.Controllers
             return View("AccessDenied");
         }
 
-        public IActionResult ApproveSheetAttendance(int id) {
+        public IActionResult ApproveSheetAttendance(int id)
+        {
             if (_groupService.IsGroupOwner() || _userService.IsInRole("Admin") || _userService.IsInRole("Hr"))
             {
                 var model = _dbContext.Attendances.Where(x => x.AttendanceId == id).FirstOrDefault();
@@ -304,7 +297,7 @@ namespace Recon.Controllers
         [CustomRole("Intern")]
         public IActionResult AttendanceSheetEdit(string id)
         {
-            
+
             ViewBag.AttendanceId = id;
 
             int userId = _userService.GetUserId();
@@ -324,8 +317,8 @@ namespace Recon.Controllers
 
             return View();
 
-            
-            
+
+
 
         }
         public IActionResult Riport()

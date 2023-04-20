@@ -5,7 +5,7 @@
         int userId { get; set; }
         string? FirstName { get; }
         string? LastName { get; }
-   
+
         string? PhoneNumber { get; }
 
         string? Address { get; }

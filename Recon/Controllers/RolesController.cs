@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Recon.Attribute;
-using Recon.Data;
 using Recon.Models.Model.Account;
 using Recon.Models.Repository;
 using Recon.Utility;
@@ -38,7 +29,7 @@ namespace Recon.Controllers
         }
         public IActionResult Edit(int id)
         {
-            if ( _rolesRepository.GetRoleById(id) == null)
+            if (_rolesRepository.GetRoleById(id) == null)
             {
                 return NotFound();
             }
@@ -55,11 +46,11 @@ namespace Recon.Controllers
 
         public IActionResult Edit(Roles role)
         {
-         
+
             if (ModelState.IsValid)
             {
-                _rolesRepository.UpdateRole(role);                                        
-            }           
+                _rolesRepository.UpdateRole(role);
+            }
             return RedirectToAction("Index");
 
         }

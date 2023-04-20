@@ -26,7 +26,7 @@ namespace Recon.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
 
-           
+
         }
 
         /// <inheritdoc />
@@ -52,7 +52,7 @@ namespace Recon.Migrations
                 oldType: "nvarchar(max)",
                 oldNullable: true);
 
-       
+
         }
     }
 }

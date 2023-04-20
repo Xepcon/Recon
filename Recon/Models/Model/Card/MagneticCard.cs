@@ -1,5 +1,4 @@
 ﻿using Recon.Models.Interface.Card;
-using System.ComponentModel.DataAnnotations;
 
 namespace Recon.Models.Model.Card
 {

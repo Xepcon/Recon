@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Recon.Attribute;
-using Recon.Data;
 using Recon.Models.Model.Account;
 using Recon.Models.Repository;
 using Recon.Utility;
@@ -17,17 +8,17 @@ using Recon.Utility;
 namespace Recon.Controllers
 {
     [Authenticated]
-    [CustomRole("Admin","Hr")]
+    [CustomRole("Admin", "Hr")]
     public class UsersInRolesController : Controller
     {
-        
+
         private readonly IUsersInRolesRepository _usersInRolesRepository;
         public UsersInRolesController(IUsersInRolesRepository usersInRolesRepository)
         {
             _usersInRolesRepository = usersInRolesRepository;
-          
+
         }
-        
+
         public IActionResult Index()
         {
             var usersInRoles = _usersInRolesRepository.GetAll();
@@ -45,44 +36,44 @@ namespace Recon.Controllers
             return View();
         }
 
-       /* public IActionResult Edit(int? roleId, int? userId)
-        {
-            if (roleId == null || userId == null)
-            {
-                return View("Error");
-            }
+        /* public IActionResult Edit(int? roleId, int? userId)
+         {
+             if (roleId == null || userId == null)
+             {
+                 return View("Error");
+             }
 
-            var usersInRoles = _usersInRolesRepository.GetById(roleId.Value, userId.Value);
-            if (usersInRoles == null)
-            {
-                return View("Error");
-            }
+             var usersInRoles = _usersInRolesRepository.GetById(roleId.Value, userId.Value);
+             if (usersInRoles == null)
+             {
+                 return View("Error");
+             }
 
-            ViewBag.data = JsonConvert.SerializeObject(usersInRoles);
-            return View();
-        }
+             ViewBag.data = JsonConvert.SerializeObject(usersInRoles);
+             return View();
+         }
 
-        [HttpPost]
-        public IActionResult Edit(UsersInRoles usersInRoles)
-        {
-            if (ModelState.IsValid)
-            {
-                var existingUsersInRoles = _usersInRolesRepository.GetById(usersInRoles.roleId, usersInRoles.userId);
-                if (existingUsersInRoles == null)
-                {
-                    return View("Error");
-                }
+         [HttpPost]
+         public IActionResult Edit(UsersInRoles usersInRoles)
+         {
+             if (ModelState.IsValid)
+             {
+                 var existingUsersInRoles = _usersInRolesRepository.GetById(usersInRoles.roleId, usersInRoles.userId);
+                 if (existingUsersInRoles == null)
+                 {
+                     return View("Error");
+                 }
 
-                existingUsersInRoles.roleId = usersInRoles.roleId;
-                existingUsersInRoles.userId = usersInRoles.userId;
+                 existingUsersInRoles.roleId = usersInRoles.roleId;
+                 existingUsersInRoles.userId = usersInRoles.userId;
 
-                _usersInRolesRepository.Update(existingUsersInRoles);
+                 _usersInRolesRepository.Update(existingUsersInRoles);
 
-                return RedirectToAction("Index");
-            }
+                 return RedirectToAction("Index");
+             }
 
-            return View(usersInRoles);
-        }*/
+             return View(usersInRoles);
+         }*/
 
         [HttpPost]
         public IActionResult Create(UsersInRoles usersInRoles)
@@ -137,7 +128,7 @@ namespace Recon.Controllers
         }
 
 
-        
+
     }
-    
+
 }

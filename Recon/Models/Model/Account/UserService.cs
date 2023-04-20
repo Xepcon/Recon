@@ -1,12 +1,9 @@
-﻿using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Recon.Data;
 using Recon.Models.Interface.Account;
 using Recon.ViewModel;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Recon.Models.Model.Account
@@ -21,7 +18,8 @@ namespace Recon.Models.Model.Account
             _dbContext = dbContext;
         }
 
-        public string GetUserName() {
+        public string GetUserName()
+        {
             if (IsAuthenticated())
             {
                 var userId = GetUserId();
@@ -31,13 +29,15 @@ namespace Recon.Models.Model.Account
                 {
                     return null;
                 }
-                else {
-                    if(personEntity.FirstName!=null && personEntity.LastName != null) {
+                else
+                {
+                    if (personEntity.FirstName != null && personEntity.LastName != null)
+                    {
                         return personEntity.FirstName + " " + personEntity.LastName;
                     }
                     return null;
-                    
-                }                
+
+                }
 
             }
             else
@@ -67,7 +67,8 @@ namespace Recon.Models.Model.Account
                     return userRolesWithNames.Contains(Name);
                 }
             }
-            else {
+            else
+            {
                 return false;
             }
         }
@@ -102,13 +103,13 @@ namespace Recon.Models.Model.Account
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
-                
+
                 return null;
             }
 
             _httpContextAccessor.HttpContext.Session.SetString("UserId", user.Id.ToString());
             _httpContextAccessor.HttpContext.Session.SetString("Username", user.Username);
-           
+
             return user;
         }
         public UserEntity Authenticate(string username, string password)
@@ -138,10 +139,11 @@ namespace Recon.Models.Model.Account
             {
                 return _dbContext.Users.FirstOrDefault(x => x.Username == name);
             }
-            else {
+            else
+            {
                 return null;
             }
-            
+
         }
         public UserEntity GetById(int id)
         {
@@ -167,12 +169,14 @@ namespace Recon.Models.Model.Account
 
         }
 
-        public List<Roles> GetRoles() {
+        public List<Roles> GetRoles()
+        {
             var roles = new List<Roles>();
 
             // Retrieve the user from the database
             int userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
-            if (userId == null) {
+            if (userId == null)
+            {
                 return roles;
             }
             else
@@ -190,10 +194,11 @@ namespace Recon.Models.Model.Account
 
                 return roles;
             }
-           
+
         }
 
-        public string GetFullName(int userid) {
+        public string GetFullName(int userid)
+        {
             if (IsAuthenticated())
             {
                 var model = _dbContext.Person.Where(x => x.userId == userid).FirstOrDefault();
@@ -214,13 +219,13 @@ namespace Recon.Models.Model.Account
                 {
                     return model.FirstName + " " + model.LastName;
                 }
-                
+
             }
             return "";
         }
 
 
-       
+
         public List<Roles> GetRolesForUser(int userId)
         {
             var roles = new List<Roles>();
@@ -240,40 +245,44 @@ namespace Recon.Models.Model.Account
             return roles;
         }
 
-        public int GetUserId() {
+        public int GetUserId()
+        {
             if (IsAuthenticated())
             {
                 var userId = int.Parse(_httpContextAccessor.HttpContext.Session.GetString("UserId"));
                 return userId;
             }
-            else {
+            else
+            {
                 return -1;
             }
         }
 
-        public void Register(RegisterViewModel model) {
-                UserEntity user = new UserEntity
-                {
-                    Username = model.Username,
-                    PasswordHash = "Asd123!",
-                    Email = model.Email,
-                };
+        public void Register(RegisterViewModel model)
+        {
+            UserEntity user = new UserEntity
+            {
+                Username = model.Username,
+                PasswordHash = "Asd123!",
+                Email = model.Email,
+            };
 
-           
-                Create(user);
-                
-                var tempororaryPersonId = new Person();
-                tempororaryPersonId.userId = user.Id;
-                tempororaryPersonId.FirstName = model.Username;
-                _dbContext.Person.Add(tempororaryPersonId);
-                _dbContext.SaveChanges();
-                
-               
-           
+
+            Create(user);
+
+            var tempororaryPersonId = new Person();
+            tempororaryPersonId.userId = user.Id;
+            tempororaryPersonId.FirstName = model.Username;
+            _dbContext.Person.Add(tempororaryPersonId);
+            _dbContext.SaveChanges();
+
+
+
 
 
         }
-        public Person UserGetPersonalInfo(int userId) {
+        public Person UserGetPersonalInfo(int userId)
+        {
             return _dbContext.Person.Where(x => x.userId == userId).FirstOrDefault();
         }
 
