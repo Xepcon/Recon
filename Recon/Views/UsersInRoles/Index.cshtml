@@ -1,4 +1,8 @@
-﻿<div id="gridContainer"></div>
+﻿@using Recon.Models.Interface.Account;
+@using Recon.Models.Model.Account
+@inject IUserService Auth
+
+<div id="gridContainer"></div>
 
 <script>
     var userData;
@@ -34,10 +38,16 @@
     });
 
     $(function () {
-        var dataSource = @Html.Raw(ViewBag.data);
+        //var dataSource = @Html.Raw(ViewBag.data);
 
+        var Data = new DevExpress.data.DataSource({
+            store: {
+                type: 'array',
+                data: @Html.Raw(ViewBag.data)
+                }
+        });
         $("#gridContainer").dxDataGrid({
-            dataSource: dataSource,
+            dataSource: Data,
             columns: [
               
                  {
@@ -71,22 +81,32 @@
                                 console.log(e.row.data.AttendanceId)
                                 //Api
 
-
-                                const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretné a szerepkört?", "Megerősítés");
-                                confirmation.then((dialogResult) => {
-                                    if (dialogResult === true) {
-                                        $.ajax({
-                                            type: "POST",
-                                            url: "@Url.Content("~/UsersInRoles/Delete?roleid=")"+ e.row.data.roleId+"&userid="+e.row.data.userId,
-                                            success: function () {
-                                                location.reload();
-                                            },
-                                            error: function () {
-                                                window.DevExpress.ui.dialog.alert("Hiba történt a szerepkör törlésekor!", "Hiba");
-                                            }
-                                        });
-                                    }
-                                });
+                                if (`@Auth.GetRolesForUser(Auth.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr")` == 'False') {
+                                    DevExpress.ui.notify("Nem rendelkezel a megfelelő jogosultsággal", "error", 4000);
+                                } else {
+                                    const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretné a szerepkört?", "Megerősítés");
+                                    confirmation.then((dialogResult) => {
+                                        if (dialogResult === true) {
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "@Url.Content("~/UsersInRoles/Delete?roleid=")"+ e.row.data.roleId+"&userid="+e.row.data.userId,
+                                                success: function () {
+                                                    Data.store().remove(e.row.data);
+                                                    Data.reload().done(function () {
+                                                        DevExpress.ui.notify("Sikeresen törölted a felhasználót a csoportból ", "success", 4000);
+                                                    })
+                                                        .fail(function (error) {
+                                                            DevExpress.ui.notify("Hiba történt a frissítés közben: " + error, "error", 4000);
+                                                        });
+                                                },
+                                                error: function () {
+                                                    //window.DevExpress.ui.dialog.alert("Hiba történt a szerepkör törlésekor!", "Hiba");
+                                                    DevExpress.ui.notify("Hiba történt a törléskor! ", "error", 4000);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
                             }
                         }
                     ]

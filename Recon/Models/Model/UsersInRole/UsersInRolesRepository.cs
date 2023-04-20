@@ -24,6 +24,7 @@ namespace Recon.Models.Repository
 
         public void Add(UsersInRoles usersInRoles)
         {
+
             _dbContext.UsersInRole.Add(usersInRoles);
             _dbContext.SaveChanges();
         }

@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Recon.Models.Model.Ticket.DayOffTicket>
 @using Recon.Models.Interface.Account;
 @using Recon.Models.Model.Account
+@using System.Globalization;
 
 @inject IUserService Auth
 <h1 style="text-align:center">Szabadság kérelmek</h1>
@@ -12,17 +13,17 @@
         <div class="ticket-box" data-id="@ticket.Id" style="background-color: @(ticket.isApproved ? "#4CAF50" : "#FF9800");">
             <div class="ticket-header">
                   <h3>@ticket.Title</h3>
-                <span style="color:white">@ticket.Created.ToString("MMMM dd, yyyy")</span>
+                <span style="color:white">Létrehozás dátuma : @ticket.Created.ToString("dd. MMMM yyyy", new CultureInfo("hu-HU"))</span>
             </div>
              <div class="ticket-body">
-                <p>@ticket.Description</p>
-                <p><strong>Day off:</strong> @ticket.StartDayOff.ToString("MMMM dd, yyyy") - @ticket.EndDayOff.ToString("MMMM dd, yyyy")</p>
-                <span>@Auth.GetFullName(ticket.userId)</span>
+                <p>Indok: @ticket.Description</p>
+                <p><strong>Szabadság hossza: </strong> @ticket.StartDayOff.ToString("dd. MMMM yyyy", new CultureInfo("hu-HU")) - @ticket.EndDayOff.ToString("dd. MMMM yyyy", new CultureInfo("hu-HU"))</p>
+                <span>Dolgozó : @Auth.GetFullName(ticket.userId)</span>
             </div>
              <div class="ticket-footer">
 
-                <span>@(ticket.isApproved ? "Approved" : "Pending")</span>
-                <button class="btn" data-id="@ticket.Id">Approve</button>
+                <span>@(ticket.isApproved ? "Engedélyezve" : "Nincs engedélyezve")</span>
+                <button class="btn" data-id="@ticket.Id">Engedélyezés</button>
             </div>
             
         </div>

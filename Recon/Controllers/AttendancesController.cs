@@ -116,7 +116,7 @@ namespace Recon.Controllers
 
                         if (_userService.GetRolesForUser(attendance.userId).Any(r => r.Name == "Intern"))
                         {
-                            if (_groupService.IsInGroup())
+                            if (_groupService.IsInGroup() || _userService.IsInRole("Admin"))
                             {
                                 int numOfGroups = _dbContext.GroupMembers.Where(x => x.userId == attendance.userId).Count();
                                 Debug.WriteLine(numOfGroups);
@@ -136,7 +136,7 @@ namespace Recon.Controllers
                                     return View();
                                 }
                             }
-
+                           
                             _dbContext.Add(attendance);
                             _dbContext.SaveChanges();
                             for (int i = 1; i <= DateTime.DaysInMonth(attendance.CreatedAt.Year, attendance.CreatedAt.Month); i++)

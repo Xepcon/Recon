@@ -12,6 +12,7 @@ using Recon.Attribute;
 using Recon.Data;
 using Recon.Models.Model.Account;
 using Recon.Models.Repository;
+using Recon.Utility;
 
 namespace Recon.Controllers
 {
@@ -44,7 +45,7 @@ namespace Recon.Controllers
             return View();
         }
 
-        public IActionResult Edit(int? roleId, int? userId)
+       /* public IActionResult Edit(int? roleId, int? userId)
         {
             if (roleId == null || userId == null)
             {
@@ -81,25 +82,39 @@ namespace Recon.Controllers
             }
 
             return View(usersInRoles);
-        }
+        }*/
 
         [HttpPost]
         public IActionResult Create(UsersInRoles usersInRoles)
         {
             if (ModelState.IsValid)
             {
+                ViewBag.ToastMessages = new List<ToastMessages>();
                 var existingUsersInRoles = _usersInRolesRepository.GetById(usersInRoles.roleId, usersInRoles.userId);
                 if (existingUsersInRoles != null)
                 {
-                    return View("Error");
+                    ViewBag.ToastMessages.Add(new ToastMessages
+                    {
+                        message = "Sikertelen volt a hozzárendelés a felhasználó már a szerepkörhöz tartozik",
+                        type = TypeToast.ERROR,
+
+                    });
+                    return View();
                 }
 
                 _usersInRolesRepository.Add(usersInRoles);
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = "Sikeresen hozzárendelted a felhasználót a szerepkörhöz",
+                    type = TypeToast.SUCCES,
 
-                return RedirectToAction("Index");
+                });
+
+                //return RedirectToAction("Index");
+                return View();
             }
 
-            return View(usersInRoles);
+            return View();
         }
 
         [HttpPost]

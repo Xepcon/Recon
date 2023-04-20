@@ -41,7 +41,7 @@
             },
             columns: [
 
-                { dataField: "AttendanceName", caption: "Jelenlétív neve" },
+                { dataField: "AttendanceName", caption: "Jelenlét ív neve" },
                 { dataField: "CreatedAt", caption: "Léttrehozás dátuma" },
                 {
                     dataField: "userId",
@@ -71,7 +71,7 @@
                                                 //location.reload();
                                                 Data.store().remove(e.row.data);
                                                 Data.reload().done(function () {
-                                                    DevExpress.ui.notify("Sikeresen engedélyezted a jelenlétiívet ", "success", 4000);
+                                                    DevExpress.ui.notify("Sikeresen engedélyezted a jelenléti ívet ", "success", 4000);
                                                 })
                                                     .fail(function (error) {
                                                         DevExpress.ui.notify("Hiba történt a frissítés közben: " + error, "error", 4000);

@@ -53,7 +53,7 @@
 </div>
 
 <script>
-   
+    
     var personsDataSource;
     var selectedPerson //= @HttpContextAccessor.HttpContext.Session.GetString("UserId");
     var GlobalstartDate;
@@ -153,16 +153,6 @@
     const chartInstance = $('#chart').dxChart('instance');
 
 
-    
-
-
-
-    
-
- 
-
-
-
     $(function () {
 
         var rangeSelector = $("#range-selector").dxRangeSelector({
@@ -218,7 +208,10 @@
             }
         }).dxRangeSelector("instance");
 
+        
+
     });
+    
     $(document).ready(function () {
         GlobalendDate =  new Date(2022, 2, 7);
         GlobalstartDate = new Date(2022, 1, 28);
@@ -241,4 +234,5 @@
             hideChart();
         }
     });
+
 </script>
