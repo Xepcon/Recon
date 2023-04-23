@@ -85,7 +85,7 @@
                     $.ajax({
                         url: "/api/UserCheckInGetter/" + userid + "?startDate=" + GlobalstartDate.toISOString() + "&endDate=" + GlobalendDate.toISOString(),
                         method: "GET",
-                        success: function (data) {
+                        success: function (data) {  
 
                             if (data.length == 0) {
                                 hideChart();
@@ -114,7 +114,7 @@
 
         rotated: true,
         argumentAxis: {
-            categories: ['Week days'],
+            categories: ['Napok'],
             tick: {
                 visible: false,
             },
