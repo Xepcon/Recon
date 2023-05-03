@@ -20,7 +20,7 @@ namespace Recon.Data
 
         public DbSet<Person> Person { get; set; }
 
-        public DbSet<WorkTimeUsers> WorkTimeUsers { get; set; }
+       
 
         public DbSet<GroupMember> GroupMembers { get; set; }
 
