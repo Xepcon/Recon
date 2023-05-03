@@ -5,8 +5,8 @@ namespace Recon.ViewModel
     public class RegisterViewModel
     {
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Kérlek add meg az emailcímet !")]
+        [EmailAddress(ErrorMessage = "Kérlek adj meg egy helyes emailcímet !")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
@@ -23,7 +23,7 @@ namespace Recon.ViewModel
 
 
 
-        [Required]
+        [Required(ErrorMessage = "Kérlek add meg a felhasználónevet !")]
         [Display(Name = "Username")]
         public string Username { get; set; }
 

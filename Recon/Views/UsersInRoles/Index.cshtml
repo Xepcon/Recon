@@ -84,7 +84,7 @@
                                 if (`@Auth.GetRolesForUser(Auth.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr")` == 'False') {
                                     DevExpress.ui.notify("Nem rendelkezel a megfelelő jogosultsággal", "error", 4000);
                                 } else {
-                                    const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretné a szerepkört?", "Megerősítés");
+                                    const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan törölni szeretné a felhasználót a szerepkörből?", "Megerősítés");
                                     confirmation.then((dialogResult) => {
                                         if (dialogResult === true) {
                                             $.ajax({

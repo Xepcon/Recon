@@ -14,8 +14,8 @@ function ShowChart() {
 
 function IntervalCalculate(data) {
 
-
-
+    console.log("Default : ");
+    console.log(data)
         const groupedData = data.reduce((acc, cur) => {
             const date = new Date(cur.date).toLocaleDateString();
             const time = new Date(cur.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -33,7 +33,8 @@ function IntervalCalculate(data) {
 
             return acc;
         }, {});
-
+    console.log("Grouped data : ");
+    console.log(groupedData);
         const intervalsByDay = Object.entries(groupedData).reduce((acc, [date, times]) => {
             const intervals = times.map((time, i) => {
                 const start = new Date(`${date} ${time.start}`);
@@ -49,8 +50,8 @@ function IntervalCalculate(data) {
             return acc;
         }, {});
 
-
-
+    console.log("intervalsByDay : ");
+    console.log(intervalsByDay);
         const earliestLatestByDay = Object.entries(intervalsByDay).reduce((acc, [date, intervals]) => {
             var times = intervals.reduce((times, interval) => {
                 times.push(interval.start, interval.end);
@@ -92,8 +93,8 @@ function IntervalCalculate(data) {
             return acc;
         }, {});
 
-
-
+    console.log("earliestLatestByDay : " );
+    console.log(earliestLatestByDay);
         const output = [];
         var workedHours = 0;
         var workedMinutes = 0;
@@ -107,9 +108,7 @@ function IntervalCalculate(data) {
                 const [endHour, endMinute] = interval.end.split(':');
                 const startDate = new Date(`$2022-02-01 ${startHour}:${startMinute}`);
                 const endDate = new Date(`2022-02-01 ${endHour}:${endMinute}`);
-                //console.log(startDate)
-                //console.log(endDate)
-                //console.log(counter)
+               
                 
                 if (counter % 2 == 0) {
 
@@ -140,7 +139,7 @@ function IntervalCalculate(data) {
 
       
         //console.log(BreakHours)
-        if (BreakMinutes < 0) {
+        /*if (BreakMinutes < 0) {
             //console.log("IF" + BreakHours)
             let mod = Math.ceil((BreakMinutes / 60));
             //console.log("MODD" + mod)
@@ -152,6 +151,25 @@ function IntervalCalculate(data) {
                 BreakMinutes += 60
             } else {
 
+            }
+        }*/
+        if (BreakMinutes < 0) {
+            let mod = Math.ceil(BreakMinutes / 60);
+            if (mod === 0) {
+                BreakHours = BreakHours - 1;
+                BreakMinutes += 60;
+            } else {
+                BreakHours -= mod;
+                BreakMinutes += mod * 60;
+            }
+        } else if (BreakMinutes >= 60) {
+            let mod = Math.floor(BreakMinutes / 60);
+            if (mod === 0) {
+                BreakHours = BreakHours + 1;
+                BreakMinutes -= 60;
+            } else {
+                BreakHours += mod;
+                BreakMinutes -= mod * 60;
             }
         }
 

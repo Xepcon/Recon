@@ -303,6 +303,10 @@ namespace Recon.Controllers
             int userId = _userService.GetUserId();
             int attendId = int.Parse(id);
             var userAttendence = _dbContext.Attendances.Where(x => x.AttendanceId == attendId).FirstOrDefault();
+            if(userAttendence==null)
+            {
+                return View("CustomNotFoundView");
+            }
             if (userAttendence.isClosed == true)
                 ViewBag.IsClosed = "false";
             else

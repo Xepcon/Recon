@@ -27,7 +27,7 @@ namespace Recon.Tests.Repository
 
         public void IntegrationTestForRoleRepository()
         {
-            Roles fst = new Roles { Name = "HR", Id = 1 };
+            Roles fst = new Roles { Name = "Hr", Id = 1 };
             Roles snd = new Roles { Name = "Admin", Id = 2 };
             Roles third = new Roles { Name = "LEVEL 3 SUPPORT", Id = 3 };
             _repository.AddRole(fst);
@@ -37,7 +37,7 @@ namespace Recon.Tests.Repository
             Assert.Equal(3, res.Count());
             Roles model = _repository.GetRoleById(1);
             Assert.Equal(1, model.Id);
-            Assert.Equal("HR", model.Name);
+            Assert.Equal("Hr", model.Name);
 
             _repository.DeleteRole(1);
             res = _repository.GetAllRoles();

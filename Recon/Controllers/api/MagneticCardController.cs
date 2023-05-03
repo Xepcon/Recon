@@ -27,16 +27,27 @@ namespace Recon.Controllers.api
 
         // POST api/<MagneticCardController>
         [HttpPost]
-        public void Post(string apiKey, string cardId)
+        public string Post(string apiKey, string cardId)
         {
             Debug.WriteLine("CALLED FROM ESP");
             Debug.WriteLine("cardId " + cardId);
             Debug.WriteLine("apiKey " + apiKey);
-            CheckInWork entry = new CheckInWork();
+            if (apiKey == null || apiKey!="TEST" || cardId==null)
+            {
+                return null;
+            }
+            if(_dbContext.magneticCards.Where(x=>x.CardId==cardId).Any())
+            {
+                
+                CheckInWork entry = new CheckInWork();
 
-            entry.CardId = cardId;
-            _dbContext.Checks.Add(entry);
-            _dbContext.SaveChanges();
+                entry.CardId = cardId;
+                _dbContext.Checks.Add(entry);
+                _dbContext.SaveChanges();
+                return "Valid Card";
+            }
+            return "Invalid Card";
+
         }
 
 

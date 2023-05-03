@@ -124,8 +124,8 @@
         },
         valueAxis: {
             type: 'continuous',
-            min: new Date(2022, 3, 1, 0),
-            max: new Date(2022, 3, 2, 0),
+            min: new Date(2023, 3, 1, 0),
+            max: new Date(2023, 3, 2, 0),
             tickInterval: { minutes: 30 }
         },
         
@@ -160,8 +160,8 @@
                 top: 50,
             },
             scale: {
-                startValue: new Date(2022, 1, 1),
-                endValue: new Date(2022, 12, 1),
+                startValue: new Date(2023, 1, 1),
+                endValue: new Date(2023, 12, 1),
                 minorTickInterval: 'day',
                 tickInterval: 'week',
                 minRange: 'day',
@@ -173,7 +173,7 @@
             sliderMarker: {
                 format: 'monthAndDay',
             },
-            value: [new Date(2022, 1, 28), new Date(2022, 2, 7)],
+            value: [new Date(2023, 1, 28), new Date(2023, 2, 7)],
             title: 'Válasz ki egy intervallumot',
 
             onValueChanged: function (e) {
@@ -189,9 +189,12 @@
                         method: "GET",
                         success: function (data) {
                            
-                            if(data.length==0){
+                            
+
+                             if (data.length == 0) {
                                 hideChart();
-                            }else{
+                                DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz az adott intervallumra", "info", 6000);
+                            } else {
                                 ShowChart();
                                 IntervalCalculate(data)
                             }
@@ -199,6 +202,7 @@
                         },
                         error: function (error) {
                             hideChart();
+                            DevExpress.ui.notify("Nem található belépési adat a felhasználóhoz", "info", 6000);
                         }
                     });
                 } else {
@@ -213,10 +217,10 @@
     });
     
     $(document).ready(function () {
-        GlobalendDate =  new Date(2022, 2, 7);
-        GlobalstartDate = new Date(2022, 1, 28);
-        var startDate = new Date(2022, 1, 28);
-        var endDate = new Date(2022, 2, 7);
+        GlobalendDate =  new Date(2023, 2, 7);
+        GlobalstartDate = new Date(2023, 1, 28);
+        var startDate = new Date(2023, 1, 28);
+        var endDate = new Date(2023, 2, 7);
         var days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
         if(userid!=undefined){
             $.ajax({

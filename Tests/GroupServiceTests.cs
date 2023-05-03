@@ -22,6 +22,7 @@ namespace Tests
 
 
             _userService = new MockUserService();
+            
             _groupService = new GroupService(_dbContext, _userService);
 
         }
@@ -58,7 +59,7 @@ namespace Tests
             Assert.Equal(3, group.principalId);
 
             ((MockUserService)_userService).UserIDResult = 1;
-            ((MockUserService)_userService).GetRolesForUserResult = new List<Roles> { new Roles { Id = 1, Name = "HR" }, new Roles { Id = 2, Name = "Intern" } }; ;
+            ((MockUserService)_userService).GetRolesForUserResult = new List<Roles> { new Roles { Id = 1, Name = "Hr" }, new Roles { Id = 2, Name = "Intern" } }; ;
             var isGroupOwnerResult = _groupService.IsGroupOwner();
             Assert.True(isGroupOwnerResult);
             _groupService.DeleteGroup(2);
@@ -72,7 +73,8 @@ namespace Tests
             Assert.Equal(3, GroupMembersCount);
             _groupService.DeleteMembers(1, 5);
             GroupMembersCount = _groupService.GetAllMembers().Count();
-
+            List<Roles> rolesList = new List<Roles>();
+          
             Assert.Equal(2, GroupMembersCount);
 
             GroupMember MemberTmp = _groupService.GetMembersById(1, 3);
