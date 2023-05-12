@@ -28,7 +28,7 @@ namespace Tests
         }
 
         [Fact]
-        public void GroupServiceIntegrationTests()
+        public void Integration_GroupServiceTest()
         {
 
             _dbContext.Person.Add(new Person { userId = 1, FirstName = "Gibsz", LastName = "Jakab" });
@@ -102,7 +102,7 @@ namespace Tests
         }
 
         [Fact]
-        public void IsGroupOwner_UsingGroupService()
+        public void Unit_IsGroupOwner_UsingGroupService()
         {
             ((MockUserService)_userService).IsAuthenticatedResult = true;
             ((MockUserService)_userService).UserIDResult = 478;
