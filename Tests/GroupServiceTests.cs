@@ -59,7 +59,8 @@ namespace Tests
             Assert.Equal(3, group.principalId);
 
             ((MockUserService)_userService).UserIDResult = 1;
-            ((MockUserService)_userService).GetRolesForUserResult = new List<Roles> { new Roles { Id = 1, Name = "Hr" }, new Roles { Id = 2, Name = "Intern" } }; ;
+
+            ((MockUserService)_userService).GetRolesForUserResult = new List<Roles> { new Roles { Id = 1, Name = "Admin" }, new Roles { Id = 2, Name = "Intern" } }; ;
             var isGroupOwnerResult = _groupService.IsGroupOwner();
             Assert.True(isGroupOwnerResult);
             _groupService.DeleteGroup(2);

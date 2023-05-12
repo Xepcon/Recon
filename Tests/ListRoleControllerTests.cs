@@ -30,15 +30,15 @@ namespace Tests
         }
 
         [Fact]
-        public void Get_ReturnsListOfRoles()
+        public void Api_Get_ReturnsListOfRoles()
         {
             // Arrange
             var roles = new List<Roles>()
             {
-                new Roles { Id = 3, Name = "Role 1" },
-                new Roles { Id = 4, Name = "Role 2" },
-                new Roles { Id = 5, Name = "Role 3" },
-                new Roles { Id = 6, Name = "Role 4" }
+                new Roles { Id = 13, Name = "Role 1" },
+                new Roles { Id = 14, Name = "Role 2" },
+                new Roles { Id = 15, Name = "Role 3" },
+                new Roles { Id = 16, Name = "Role 4" }
             };
             _dbContext.Role.AddRange(roles);
             _dbContext.Role.Count();
@@ -59,7 +59,7 @@ namespace Tests
         }
 
         [Fact]
-        public void Get_ReturnsListOfRolesNotAuthenticated()
+        public void Api_Get_ReturnsListOfRolesNotAuthenticated()
         {
             // Arrange
 
@@ -77,6 +77,10 @@ namespace Tests
             //Assert.IsType<ActionResult<Unauthorized>>(result);                       
             Assert.True(result.Value.IsNullOrEmpty());
         }
-
+        public void Dispose()
+        {
+            _dbContext.Database.EnsureDeleted();
+            _dbContext.Dispose();
+        }
     }
 }

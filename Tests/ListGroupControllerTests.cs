@@ -31,7 +31,7 @@ namespace Tests
         }
 
         [Fact]
-        public void Get_ReturnsListOfGroups()
+        public void Api_Get_ReturnsListOfGroups()
         {
             // Arrange
             var groups = new List<Group>()

@@ -21,7 +21,7 @@ namespace Recon.Tests.Models.Account
         }
 
         [Fact]
-        public void IsAuthenticated_ReturnsFalse_WhenSessionIsNull()
+        public void Unit_IsAuthenticated_ReturnsFalse_WhenSessionIsNull()
         {
             // Arrange
             var session = new Mock<ISession>();
@@ -40,7 +40,7 @@ namespace Recon.Tests.Models.Account
             Assert.False(isAuthenticated);
         }
         [Fact]
-        public void Create_AddsUserToDatabase()
+        public void Unit_Create_AddsUserToDatabase()
         {
             // Arrange
             var user = new UserEntity
@@ -67,7 +67,7 @@ namespace Recon.Tests.Models.Account
         }
 
         [Fact]
-        public void GetUserName_ReturnsNull_WhenNotAuthenticated()
+        public void Unit_GetUserName_ReturnsNull_WhenNotAuthenticated()
         {
             // Arrange
             var session = new Mock<ISession>();
@@ -87,7 +87,7 @@ namespace Recon.Tests.Models.Account
         }
         [Fact]
 
-        public void RolesTest_WhenAuthenticated()
+        public void Unit_RolesTest_WhenAuthenticated()
         {
             // Arrange
             var user = new UserEntity
@@ -137,7 +137,7 @@ namespace Recon.Tests.Models.Account
             Assert.True(isInRole);
         }
         [Fact]
-        public void IsInRole_ReturnsFalse_WhenUserIsNotInRole()
+        public void Unit_IsInRole_ReturnsFalse_WhenUserIsNotInRole()
         {
             // Arrange
             var userid = 1;
@@ -173,7 +173,7 @@ namespace Recon.Tests.Models.Account
             Assert.False(isInRole);
         }
         [Fact]
-        public void IsAuthenticated_ReturnsTrue_WhenLoggedIn()
+        public void Unit_IsAuthenticated_ReturnsTrue_WhenLoggedIn()
         {
 
             var username = "Authuser";
@@ -212,7 +212,7 @@ namespace Recon.Tests.Models.Account
             Assert.Equal(user.Email, authenticatedUser.Email);
         }
         [Fact]
-        public void LogOut_ClearsSession()
+        public void Unit_LogOut_ClearsSession()
         {
             // Arrange
             var session = new Mock<ISession>();
@@ -232,7 +232,7 @@ namespace Recon.Tests.Models.Account
 
         [Fact]
 
-        public void GetUserId_ReturnsCorrectUserId_WhenAuthenticated()
+        public void Unit_GetUserId_ReturnsCorrectUserId_WhenAuthenticated()
         {
             // Arrange
             var userId = 1;
@@ -256,7 +256,7 @@ namespace Recon.Tests.Models.Account
         }
 
         [Fact]
-        public void GetFullName_ReturnsCorrectName_WhenUserExists()
+        public void Unit_GetFullName_ReturnsCorrectName_WhenUserExists()
         {
 
             // Arrange
@@ -297,7 +297,7 @@ namespace Recon.Tests.Models.Account
         }
 
         [Fact]
-        public void GetFullName_WhenNotAuthenticated()
+        public void Unit_GetFullName_WhenNotAuthenticated()
         {
 
             // Arrange
