@@ -9,6 +9,7 @@ using Recon.Utility;
 namespace Recon.Controllers
 {
     [Authenticated]
+    [CustomRole("Hr", "Admin")]
     public class GroupsController : Controller
     {
         private readonly IGroupService _groupservice;

@@ -70,6 +70,7 @@ namespace Recon.Controllers
         }
         [Authenticated]
         [HttpGet]
+        [CustomRole( "Admin")]
         public IActionResult Register()
         {
             return View();
@@ -78,6 +79,7 @@ namespace Recon.Controllers
 
         [Authenticated]
         [HttpPost]
+        [CustomRole("Admin")]
         public IActionResult Register(RegisterViewModel model)
         {
             ViewBag.ToastMessages = new List<ToastMessages>();

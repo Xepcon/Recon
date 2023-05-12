@@ -9,6 +9,7 @@ using Recon.Utility;
 namespace Recon.Controllers
 {
     [Authenticated]
+    [CustomRole("Admin")]
     public class MagneticCardController : Controller
     {
         private readonly IUserService _userService;

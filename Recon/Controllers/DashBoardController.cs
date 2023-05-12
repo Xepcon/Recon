@@ -11,14 +11,14 @@ namespace Recon.Controllers
     public class DashBoardController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+       
         private readonly DataDbContext _dbContext;
         private readonly IGroupService _groupService;
 
-        public DashBoardController(IUserService userService, IHttpContextAccessor httpContextAccessor, DataDbContext dbContext, IGroupService groupService)
+        public DashBoardController(IUserService userService,  DataDbContext dbContext, IGroupService groupService)
         {
             _userService = userService;
-            _httpContextAccessor = httpContextAccessor;
+           
             _dbContext = dbContext;
             _groupService = groupService;
         }
@@ -32,7 +32,7 @@ namespace Recon.Controllers
 
         public IActionResult CheckHistory()
         {
-            if (_groupService.IsInGroup())
+            if (_groupService.IsInGroup() && !_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
             {
                 return View();
             }

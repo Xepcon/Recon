@@ -27,22 +27,24 @@ namespace Recon.Controllers
 
         public IActionResult Index()
         {
-
-            if (_groupService.IsGroupOwner())
+            if (!_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
             {
-                IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
+                if (_groupService.IsGroupOwner())
+                {
+                    IEnumerable<IGroup> userGroupsPrincipal = _groupService.getUserGroup().Where(x => x.principalId == _userService.GetUserId());
 
-                List<DayOffTicket> res = _ticketRepository.GetAllTicketsForPrincipal(userGroupsPrincipal).Where(ticket => ticket.isApproved == false)
-                                 .ToList(); ;
+                    List<DayOffTicket> res = _ticketRepository.GetAllTicketsForPrincipal(userGroupsPrincipal).Where(ticket => ticket.isApproved == false)
+                                     .ToList(); ;
 
 
-                return View(res);
+                    return View(res);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
+            return View("AccessDenied");
         }
         [HttpPost]
 
@@ -59,7 +61,7 @@ namespace Recon.Controllers
         [Authenticated]
         public IActionResult TicketHistory(int? page)
         {
-            if (_groupService.IsInGroup())
+            if (_groupService.IsInGroup() && !_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
             {
                 var dataWithTickets = _ticketRepository.GetUsersTicket(_userService.GetUserId());
                 int pageSize = 5;
@@ -79,7 +81,7 @@ namespace Recon.Controllers
 
         public IActionResult DayOff()
         {
-            if (_groupService.IsInGroup())
+            if (_groupService.IsInGroup() && !_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
             {
                 ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
                 return View();
@@ -91,7 +93,7 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult DayOff(DayOffTicket model)
         {
-            if (_groupService.IsInGroup())
+            if (_groupService.IsInGroup() && !_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
             {
                 ViewBag.ToastMessages = new List<ToastMessages>();
                 ViewBag.UserGroup = JsonConvert.SerializeObject(_groupService.getUserGroup());
