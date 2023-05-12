@@ -12,10 +12,17 @@
     }
 </style>
 
-
+<h1>@ViewBag.AttendanceName</h1>
 <div id="gridContainer"></div>
 <script>
     $(function () {
+
+        function decodeHTMLEntities(text) {
+            const element = document.createElement('textarea');
+            element.innerHTML = text;
+            return element.value;
+        }
+
         $.ajax({
             url: `@Url.Content("~/api/UpdateAttendance/")${@ViewBag.AttendanceId}`,
             type: "GET",
@@ -110,9 +117,12 @@
                                 component: $("#gridContainer").dxDataGrid("instance"),
                                 worksheet: worksheet
                             }).then(function () {
-                                // Save workbook to file
+                                // Save workbook to file                                                              
+                                const decodedString = decodeHTMLEntities('@ViewBag.AttendanceName');
+                               
+                                var filename = decodedString + ".xlsx";
                                 workbook.xlsx.writeBuffer().then(function (buffer) {
-                                    saveAs(new Blob([buffer], { type: "application/octet-stream" }), `@ViewBag.AttendanceName`+".xlsx");
+                                    saveAs(new Blob([buffer], { type: "application/octet-stream" }), filename);
                                 });
                             });
                         }

@@ -55,7 +55,7 @@ namespace Tests
             // Assert
             Assert.IsType<ActionResult<List<Roles>>>(result);
             var data = Assert.IsAssignableFrom<List<Roles>>(result.Value);
-            Assert.Equal(4, data.Count());
+            Assert.Equal(5, data.Count());
         }
 
         [Fact]

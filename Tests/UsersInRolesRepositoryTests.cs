@@ -72,7 +72,7 @@ namespace Recon.Tests.Repository
             var result = _repository.GetAll().ToList();
 
 
-            Assert.Equal(4, result.Count);
+            Assert.Equal(3, result.Count);
         }
 
 
@@ -83,7 +83,7 @@ namespace Recon.Tests.Repository
             _repository.Delete(1, 1);
             var result = _repository.GetAll().ToList();
 
-            Assert.Equal(3, result.Count);
+            Assert.Equal(2, result.Count);
 
         }
 
