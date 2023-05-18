@@ -6,6 +6,7 @@ using Recon.Models.Interface.GroupLib;
 using Recon.Models.Model.Account;
 using Recon.Models.Model.GroupLib;
 using Recon.Utility;
+using System.Diagnostics;
 
 namespace Recon.Controllers
 {
@@ -23,8 +24,19 @@ namespace Recon.Controllers
         }
         public IActionResult Index()
         {
+            Debug.WriteLine("HALLLOOO : "+ _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"));
             //_userservice.GetRolesForUser(_userservice.GetUserId())
-            if(!_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern") || _groupservice.IsGroupOwnerAndMember() || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
+            //Debug.WriteLine(_groupservice.IsGroupOwnerAndMember().ToString());
+            //Debug.WriteLine(_groupservice.IsGroupOwnerAndMember());
+            //Debug.WriteLine(_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"));
+
+            if(_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
+                return View("AccessDenied");
+            
+            if (//_groupservice.getUserGroup().Count() > 0
+                _groupservice.IsGroupOwner()
+                || _groupservice.IsGroupOwnerAndMember()
+                || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
             {
                 ViewBag.data = JsonConvert.SerializeObject(_groupservice.GetAllMembers());
                 return View();
@@ -36,7 +48,12 @@ namespace Recon.Controllers
         // GET: Groups/Create
         public IActionResult Create()
         {
-            if (!_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern") || _groupservice.IsGroupOwnerAndMember() || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
+
+            if (_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
+                return View("AccessDenied");
+
+            if (_groupservice.IsGroupOwner() ||
+                _groupservice.IsGroupOwnerAndMember() || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
             {
                 return View();
             }
@@ -46,7 +63,10 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Create(GroupMember model)
         {
-            if (!_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern") || _groupservice.IsGroupOwnerAndMember() || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
+            if (_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
+                return View("AccessDenied");
+
+            if (_groupservice.IsGroupOwner() ||  _groupservice.IsGroupOwnerAndMember() || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
             {
                 ViewBag.ToastMessages = new List<ToastMessages>();
                 if (ModelState.IsValid)
@@ -81,7 +101,10 @@ namespace Recon.Controllers
         [HttpPost]
         public IActionResult Delete(int groupid, int userid)
         {
-            if (!_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern") || _groupservice.IsGroupOwnerAndMember() || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
+            if (_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
+                return View("AccessDenied");
+
+            if (_groupservice.IsGroupOwner()  || _groupservice.IsGroupOwnerAndMember() || _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"))
             {
                 if (groupid != null && userid != null)
                 {

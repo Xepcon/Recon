@@ -6,13 +6,9 @@
 }
 
 @inject IUserService Auth
-<style>
-    .weekend-row {
-        background-color: #b30000; /* change to the desired color */
-    }
-</style>
 
-<h1>@ViewBag.AttendanceName</h1>
+
+
 <div id="gridContainer"></div>
 <script>
     $(function () {
@@ -46,7 +42,7 @@
                 mode: "cell",
                 allowUpdating: true,                    
             },
-           
+
            
           
             paging: false, // disable paging

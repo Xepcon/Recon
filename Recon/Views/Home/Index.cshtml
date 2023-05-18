@@ -100,7 +100,7 @@
         }
 
 
-        @if (!Auth.IsInRole("Intern") && !Auth.IsInRole("Admin") && !group.IsGroupOwnerAndMember() )
+        @if (!Auth.IsInRole("Intern") && !Auth.IsInRole("Admin") && !group.IsGroupOwnerAndMember() && group.IsInGroup())
         {
             <a class="dashboard-link" asp-area="" asp-controller="Dashboard" asp-action="CheckHistory">
                 <div class=" dashboard-item">

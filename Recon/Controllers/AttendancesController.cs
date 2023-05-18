@@ -312,7 +312,7 @@ namespace Recon.Controllers
             else
                 ViewBag.IsClosed = "true";
 
-            ViewBag.AttendanceName = userAttendence.AttendanceName + "_" + _userService.GetUserName();
+            ViewBag.AttendanceName = userAttendence.AttendanceName + "_" + _userService.GetFullName();
             if (userAttendence.userId != userId)
             {
                 //Error view 

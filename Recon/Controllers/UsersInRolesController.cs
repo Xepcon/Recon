@@ -92,7 +92,7 @@ namespace Recon.Controllers
                     });
                     return View();
                 }
-
+                                
                 _usersInRolesRepository.Add(usersInRoles);
                 ViewBag.ToastMessages.Add(new ToastMessages
                 {
@@ -113,13 +113,26 @@ namespace Recon.Controllers
         {
             if (roleId == null || userId == null)
             {
-                return View("Error");
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = "Sikertelen volt a felhasználó törlése",
+                    type = TypeToast.ERROR,
+
+                });
+                return View();
+                //return View("Error");
             }
 
             var existingUsersInRoles = _usersInRolesRepository.GetById(roleId.Value, userId.Value);
             if (existingUsersInRoles == null)
             {
-                return View("Error");
+                ViewBag.ToastMessages.Add(new ToastMessages
+                {
+                    message = "Sikertelen volt a felhasználó törlése nem található a felhasználó",
+                    type = TypeToast.ERROR,
+
+                });
+                return View();
             }
 
             _usersInRolesRepository.Delete(roleId.Value, userId.Value);
