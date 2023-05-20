@@ -316,7 +316,8 @@ namespace Recon.Controllers
             if (userAttendence.userId != userId)
             {
                 //Error view 
-                return View("Error");
+                //return View("Error");
+                return View("CustomNotFoundView");
             }
 
             return View();
