@@ -21,7 +21,7 @@ namespace Recon.Controllers.api
         [HttpGet]
         public string Get()
         {
-            return "WORKING";
+            return "Api working";
         }
 
 
@@ -29,7 +29,7 @@ namespace Recon.Controllers.api
         [HttpPost]
         public string Post(string apiKey, string cardId)
         {
-            Debug.WriteLine("CALLED FROM ESP");
+            
             Debug.WriteLine("cardId " + cardId);
             Debug.WriteLine("apiKey " + apiKey);
             if (apiKey == null || apiKey!="TEST" || cardId==null)

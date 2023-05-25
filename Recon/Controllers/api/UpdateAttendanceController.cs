@@ -59,15 +59,9 @@ namespace Recon.Controllers.api
             {
                 return Unauthorized();
             }
-            //Debug.WriteLine("CALLED FUKIN PUT");
-            // Find the attendance record with the specified id
+         
             Attendance attendance = _dbContext.Attendances.Find(id);
-            /*Debug.WriteLine("Date: " + updatedAttendance.AttendanceDate);
-            Debug.WriteLine("Hour: " + updatedAttendance.Hour);
-            Debug.WriteLine("Minutes: " + updatedAttendance.Minutes);
-            Debug.WriteLine("isWeekend: " + updatedAttendance.isWeekend);
-            Debug.WriteLine("interName: " + updatedAttendance.interName);
-            Debug.WriteLine("approved: " + updatedAttendance.approved);*/
+         
             // If the attendance record doesn't exist, return a 404 error
             if (attendance == null)
             {

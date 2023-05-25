@@ -41,7 +41,7 @@ namespace Recon.Controllers
 
                     if (!BCrypt.Net.BCrypt.Verify(model.OldPassword, user.PasswordHash))
                     {
-                        //ModelState.AddModelError("OldPassword", "Old password is incorrect");
+                       
                         ViewBag.ToastMessages.Add(new ToastMessages
                         {
                             message = "Sikertelen volt a jelszó változtatás a jelenlegi jelszó helytelen",

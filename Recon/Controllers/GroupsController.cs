@@ -34,6 +34,7 @@ namespace Recon.Controllers
         {
             return View();
         }
+        // GET: Groups/Edit
         public IActionResult Edit(int id)
         {
 
@@ -47,8 +48,8 @@ namespace Recon.Controllers
             return View();
         }
 
+        // Post: Groups/Edit
         [HttpPost]
-
         public IActionResult Edit(Group group)
         {
             ViewBag.ToastMessages = new List<ToastMessages>();
@@ -64,6 +65,7 @@ namespace Recon.Controllers
             return RedirectToAction("Index");
 
         }
+        // Post: Groups/Create
         [HttpPost]
         public IActionResult Create(Group group)
         {
@@ -89,7 +91,7 @@ namespace Recon.Controllers
             });
             return View(group);
         }
-
+        // Post: Groups/Delete
         [HttpPost]
         public IActionResult Delete(int id)
         {

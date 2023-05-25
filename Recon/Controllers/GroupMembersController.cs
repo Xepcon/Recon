@@ -24,11 +24,9 @@ namespace Recon.Controllers
         }
         public IActionResult Index()
         {
-            Debug.WriteLine("HALLLOOO : "+ _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"));
+            // Debug.WriteLine( _userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"));
             //_userservice.GetRolesForUser(_userservice.GetUserId())
-            //Debug.WriteLine(_groupservice.IsGroupOwnerAndMember().ToString());
-            //Debug.WriteLine(_groupservice.IsGroupOwnerAndMember());
-            //Debug.WriteLine(_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Admin"));
+   
 
             if(_userService.GetRolesForUser(_userService.GetUserId()).Any(r => r.Name == "Intern"))
                 return View("AccessDenied");

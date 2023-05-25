@@ -6,7 +6,7 @@ namespace Recon.ViewModel
     {
 
         [Required(ErrorMessage = "Kérlek add meg az emailcímet !")]
-        [EmailAddress(ErrorMessage = "Kérlek adj meg egy helyes emailcímet !")]
+        [EmailAddress(ErrorMessage = "Kérlek adj meg egy helyes email címet !")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 

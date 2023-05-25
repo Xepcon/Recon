@@ -54,14 +54,6 @@ namespace Recon.Controllers.api
                 return BadRequest();
             }
         }
-
-        // GET api/<TicketDayOffDataDatesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-
+      
     }
 }
