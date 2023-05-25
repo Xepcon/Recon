@@ -11,8 +11,8 @@ function ShowChart() {
 
 function IntervalCalculate(data) {
 
-    console.log("Default : ");
-    console.log(data)
+    //console.log("Default : ");
+    //console.log(data)
         const groupedData = data.reduce((acc, cur) => {
             const date = new Date(cur.date).toLocaleDateString();
             const time = new Date(cur.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -30,8 +30,8 @@ function IntervalCalculate(data) {
 
             return acc;
         }, {});
-    console.log("Grouped data : ");
-    console.log(groupedData);
+    //console.log("Grouped data : ");
+    //console.log(groupedData);
         const intervalsByDay = Object.entries(groupedData).reduce((acc, [date, times]) => {
             const intervals = times.map((time, i) => {
                 const start = new Date(`${date} ${time.start}`);
@@ -47,8 +47,8 @@ function IntervalCalculate(data) {
             return acc;
         }, {});
 
-    console.log("intervalsByDay : ");
-    console.log(intervalsByDay);
+    //console.log("intervalsByDay : ");
+    //console.log(intervalsByDay);
         const earliestLatestByDay = Object.entries(intervalsByDay).reduce((acc, [date, intervals]) => {
             var times = intervals.reduce((times, interval) => {
                 times.push(interval.start, interval.end);
@@ -90,8 +90,8 @@ function IntervalCalculate(data) {
             return acc;
         }, {});
 
-    console.log("earliestLatestByDay : " );
-    console.log(earliestLatestByDay);
+    //console.log("earliestLatestByDay : " );
+    //console.log(earliestLatestByDay);
         const output = [];
         var workedHours = 0;
         var workedMinutes = 0;
