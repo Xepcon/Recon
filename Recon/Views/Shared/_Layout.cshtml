@@ -128,19 +128,19 @@
                 toastr.options.timeOut = 8000;
                 var message = messages[i];
                 var type = "info";
-                    console.log(message.time)
+                   
                 if(message.type == 0){
                     type="error"
                         toastr.error(message.message);
                 }
                 if(message.type == 1){
                     type="info"
-                    console.log("INFO")
+                    
                         toastr.info(message.message);
                 }
                 if(message.type == 2){
                     type="succes"
-                        console.log("succes")
+                        
                         toastr.success(message.message );
                 }
                 if (message.type == 3) {

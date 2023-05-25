@@ -94,7 +94,7 @@
 
                 var rowData = e.newData;
                 var dateSent;
-                console.log(e.key)
+                //console.log(e.key)
                 if (e.newData.hour != null) {
                     dateSent = JSON.stringify({
                         Hour: e.newData.hour,
@@ -114,7 +114,7 @@
                         attendanceDate: e.key.attendanceDate
                     });
                 }
-                console.log(dateSent)
+                //console.log(dateSent)
 
                 $.ajax({
                     url: `@Url.Content("~/api/UpdateAttendance/")${@ViewBag.AttendanceId}`,
@@ -122,7 +122,7 @@
                     contentType: "application/json",
                     data: dateSent,
                     success: function () {
-                        console.log("Attendance updated successfully");
+                        //console.log("Attendance updated successfully");
                     },
                     error: function () {
                         console.error("Error updating attendance");

@@ -13,10 +13,10 @@
         async: false,
         success: function (data) {
             userData = data
-            console.log(data)
+            //console.log(data)
         },
         error: function (error) {
-            console.log(error);
+            //console.log(error);
         }
     });
     $(function () {
@@ -75,7 +75,7 @@
                                 const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan jóváhagyod az egész hónapi munkát ?", "Megerősítés");
                                 confirmation.then((dialogResult) => {
                                     if (dialogResult === true) {
-                                        console.log(e.row.data.AttendanceId);
+                                        //console.log(e.row.data.AttendanceId);
                                         $.ajax({
                                             type: "POST",
                                             url: "@Url.Content("~/Attendances/ApproveAtt/")" + e.row.data.AttendanceId,
@@ -102,7 +102,7 @@
                             hint: 'Megtekintés',
                             icon: 'edit',
                             onClick(e) {
-                                console.log(e.row.data.AttendanceId);
+                                //console.log(e.row.data.AttendanceId);
                                 window.location.href = "@Url.Content("~/Attendances/ApproveSheetAttendance/")" + e.row.data.AttendanceId                                                                            
                             }
                         }

@@ -1,7 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿
 function hideChart() {
     $("#chart").hide();
     $(".hour-container").hide();
@@ -138,21 +135,7 @@ function IntervalCalculate(data) {
         });
 
       
-        //console.log(BreakHours)
-        /*if (BreakMinutes < 0) {
-            //console.log("IF" + BreakHours)
-            let mod = Math.ceil((BreakMinutes / 60));
-            //console.log("MODD" + mod)
-
-            //console.log("IF2" + BreakHours)
-            if (mod == 0) {
-                BreakHours = BreakHours - 1;
-               // console.log(BreakHours)
-                BreakMinutes += 60
-            } else {
-
-            }
-        }*/
+       
         if (BreakMinutes < 0) {
             let mod = Math.ceil(BreakMinutes / 60);
             if (mod === 0) {

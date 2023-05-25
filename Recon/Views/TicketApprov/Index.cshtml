@@ -75,25 +75,11 @@
         callData();
        
 
-        /*appointmentTemplate: function (data, _, element) {
-                 var container = $("<div>").addClass("dx-template-wrapper");
-                 var defaultTitle = $("<div>").addClass("dx-template-content").text(data.appointmentData.text);
-                 //var customTitle = $("<div>").addClass("my-custom-title").text(data.appointmentData.text);
-                 container.append(defaultTitle);
-                 console.log(data.appointmentData.approved)
-                 console.log(element)
-                 if (data.appointmentData.approved) {
-                     container.addClass('approved-appointment');
-                 } else {
-                     container.addClass('unapproved-appointment');
-                 }
-                 console.log(element)
-                 return container;
-             },*/
+     
 
         $(".btn").click(function () {
             var ticketId = $(this).data("id");
-            console.log(ticketId);
+            //console.log(ticketId);
             const confirmation = window.DevExpress.ui.dialog.confirm("Biztosan jóváhagyod a szabadságot ?", "Megerősítés");
             confirmation.then((dialogResult) => {
                 if (dialogResult === true) {

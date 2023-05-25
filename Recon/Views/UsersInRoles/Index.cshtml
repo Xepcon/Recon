@@ -14,7 +14,7 @@
         async: false,
         success: function (data) {
             userData = data
-            console.log(data)
+            //console.log(data)
         },
         error: function (error) {
             console.log(error); 
@@ -30,7 +30,7 @@
         async: false,
         success: function (data) {
             roleData = data
-           console.log(data)
+           //console.log(data)
         },
         error: function (error) {
             console.log(error); 
@@ -77,8 +77,8 @@
                             icon: 'remove',
                             onClick(e) {
 
-                                console.log(e.row)
-                                console.log(e.row.data.AttendanceId)
+                                //console.log(e.row)
+                                //console.log(e.row.data.AttendanceId)
                                 //Api
 
                                 if (`@Auth.GetRolesForUser(Auth.GetUserId()).Any(r => r.Name == "Admin" || r.Name == "Hr")` == 'False') {
