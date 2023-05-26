@@ -34,7 +34,7 @@ namespace Recon.Controllers.api
             Debug.WriteLine("apiKey " + apiKey);
             if (apiKey == null || apiKey!="TEST" || cardId==null)
             {
-                return null;
+                return "BadRequest";
             }
             if(_dbContext.magneticCards.Where(x=>x.CardId==cardId).Any())
             {
