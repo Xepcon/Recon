@@ -133,26 +133,7 @@ namespace Recon.Controllers
             return View(model);
         }
 
-        /*[HttpPost]
-        public IActionResult Login(LoginViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = _userService.Authenticate(model.Username, model.Password);
-
-                if (user != null)
-                {                                         
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Helytelen felhasználónév vagy jelszó");
-                    return View(model);
-                }
-            }
-
-            return View(model);
-        }*/
+      
         [Authenticated]
         [HttpGet]
         public IActionResult UpdatePersonalInfo()
