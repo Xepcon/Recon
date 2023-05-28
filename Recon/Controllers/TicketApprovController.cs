@@ -104,7 +104,7 @@ namespace Recon.Controllers
                     _ticketRepository.CreateTicket(model);
                     ViewBag.ToastMessages.Add(new ToastMessages
                     {
-                        message = "Sikeresen léttrehoztad a szabadsági kérelmedet",
+                        message = "Sikeresen létrehoztad a szabadsági kérelmedet",
                         type = TypeToast.SUCCES,
 
                     });
@@ -112,7 +112,7 @@ namespace Recon.Controllers
                 }
                 ViewBag.ToastMessages.Add(new ToastMessages
                 {
-                    message = "Sikeretelen volt a szabadsági kérelmed léttrehozása",
+                    message = "Sikeretelen volt a szabadsági kérelmed létrehozása",
                     type = TypeToast.ERROR,
 
                 });

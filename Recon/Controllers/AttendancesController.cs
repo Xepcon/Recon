@@ -118,7 +118,7 @@ namespace Recon.Controllers
 
                                     ViewBag.ToastMessages.Add(new ToastMessages
                                     {
-                                        message = "Hiba történt a jelenlét ív léttrehozásánál, a felhasználó több munkacsoportba is tartozik",
+                                        message = "Hiba történt a jelenlét ív létrehozásánál, a felhasználó több munkacsoportba is tartozik",
                                         type = TypeToast.ERROR,
 
                                     });
@@ -145,7 +145,7 @@ namespace Recon.Controllers
 
                             ViewBag.ToastMessages.Add(new ToastMessages
                             {
-                                message = "Sikeresen léttrehoztad a jelenléti ívet",
+                                message = "Sikeresen létrehoztad a jelenléti ívet",
                                 type = TypeToast.SUCCES,
 
                             });
@@ -157,7 +157,7 @@ namespace Recon.Controllers
 
                             ViewBag.ToastMessages.Add(new ToastMessages
                             {
-                                message = "Hiba történt a jelenlét ív léttrehozásánál, a felhasználó nem diák",
+                                message = "Hiba történt a jelenlét ív létrehozásánál, a felhasználó nem diák",
                                 type = TypeToast.ERROR,
 
                             });

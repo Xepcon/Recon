@@ -85,7 +85,7 @@ namespace Recon.Controllers
             }
             ViewBag.ToastMessages.Add(new ToastMessages
             {
-                message = $"Sikeretelen a munkacsoport léttrehozása  ",
+                message = $"Sikeretelen a munkacsoport létrehozása  ",
                 type = TypeToast.ERROR,
 
             });

@@ -65,7 +65,7 @@ namespace Recon.Controllers
 
                 ViewBag.ToastMessages.Add(new ToastMessages
                 {
-                    message = $"Sikeresen léttrehoztad a {role.Name} szerepet",
+                    message = $"Sikeresen létrehoztad a {role.Name} szerepet",
                     type = TypeToast.SUCCES,
 
                 });
