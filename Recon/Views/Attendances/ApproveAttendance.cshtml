@@ -43,7 +43,7 @@
 
                 { dataField: "AttendanceName", caption: "Jelenlét ív neve" },
                 {
-                    dataField: "CreatedAt", caption: "Léttrehozás dátuma", cellTemplate: function (container, options) {
+                    dataField: "CreatedAt", caption: "Létrehozás dátuma", cellTemplate: function (container, options) {
                         var createdDate = new Date(options.value);
                         var formattedDate = createdDate.toLocaleDateString("en-US", {
                             year: "numeric",
